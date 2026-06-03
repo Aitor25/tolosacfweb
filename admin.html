@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Cloud - Panel de Jornadas - TOLOSA CF ESKUBALOIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- Firebase SDK (Compat v9) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- App Logic -->
+    <script src="js/firebase-config.js" defer></script>
+    <script src="js/admin-logic.js" defer></script>
+    <script src="js/noticias-data.js" defer></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 500: '#0E1A3D', 900: '#020308' },
+                        highlight: '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .loading-spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid #3B82F6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-primary-900 text-white min-h-screen font-sans">
+
+    <!-- Navigation (Simple for Admin) -->
+    <nav class="w-full z-50 py-4 border-b border-white/10 bg-primary-900">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-4">
+                <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
+                <span class="font-black text-xl tracking-tighter uppercase hidden sm:block text-white">Tolosa CF <span class="text-highlight">Eskubaloia</span></span>
+            </a>
+            
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="font-bold hover:text-highlight transition-colors text-sm uppercase hidden lg:block">Volver a la web</a>
+                <button class="lg:hidden flex items-center" id="menu-toggle">
+                    <i data-feather="menu" class="w-8 h-8 text-white"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu-overlay" class="lg:hidden"></div>
+    <div id="mobile-menu" class="lg:hidden p-8 flex flex-col">
+        <div class="flex justify-between items-center mb-12">
+            <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" class="h-10 dark:grayscale dark:brightness-200">
+            <button id="close-menu" class="text-primary-500 dark:text-white">
+                <i data-feather="x" class="w-8 h-8"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-6 text-xl font-black uppercase text-primary-500 dark:text-white">
+            <a href="index.html" class="hover:text-highlight transition-colors">Volver a Inicio</a>
+            <a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a>
+            <a href="club.html" class="hover:text-highlight transition-colors">El Club</a>
+            <a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a>
+        </nav>
+    </div>
+
+    <!-- Login Gate (Firebase Auth) -->
+    <div id="login-gate" class="fixed inset-0 z-[100] bg-primary-900 flex items-center justify-center p-6">
+        <div class="max-w-md w-full bg-primary-500/50 p-10 rounded-3xl border border-white/10 shadow-2xl text-center">
+            <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" class="h-20 mx-auto mb-8">
+            <h1 class="text-2xl font-black uppercase mb-2 tracking-tighter">Acceso Cloud</h1>
+            <p class="text-white/40 text-sm mb-8 italic">Solo personal autorizado</p>
+            
+            <div class="space-y-4">
+                <input type="email" id="admin-email" placeholder="Email" class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight">
+                <input type="password" id="admin-pass" placeholder="Contraseña" class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight text-center">
+                    <div class="grid grid-cols-2 gap-4">
+                        <button id="login-btn" onclick="handleLogin()" class="bg-highlight py-4 rounded-xl font-bold uppercase transition-transform hover:scale-105 flex justify-center items-center">
+                            <span>Entrar</span>
+                        </button>
+                        <button id="register-btn" onclick="handleRegister()" class="bg-white/5 border border-white/10 py-4 rounded-xl font-bold uppercase transition-transform hover:scale-105 flex justify-center items-center">
+                            <span>Registrar</span>
+                        </button>
+                    </div>
+                    <button onclick="handleResetPassword()" class="text-[10px] uppercase font-bold text-white/30 hover:text-highlight transition-colors mt-2">¿Has olvidado tu contraseña?</button>
+                </div>
+            <p id="login-error" class="text-red-400 mt-4 text-sm hidden bg-red-500/10 p-3 rounded-lg border border-red-500/20"></p>
+            <p class="text-[10px] text-white/20 mt-6 uppercase tracking-widest font-bold">Si es tu primera vez, usa "Registrar" para crear tu usuario.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="hidden container mx-auto px-6 py-12">
+        
+        <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+            <div>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl font-black uppercase tracking-tighter">Admin <span class="text-highlight">Cloud</span></h1>
+                    <span class="bg-primary-500 text-[10px] px-2 py-1 rounded font-bold border border-white/10">v2.0 PRO</span>
+                </div>
+                <p id="user-display" class="text-white/50 text-sm"></p>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="flex bg-primary-500 rounded-xl p-1 border border-white/10">
+                    <button onclick="switchAdminTab('competitions')" id="tab-competitions" class="px-4 py-2 text-xs font-bold uppercase rounded-lg bg-highlight text-white">Competiciones</button>
+                    <button onclick="switchAdminTab('news')" id="tab-news" class="px-4 py-2 text-xs font-bold uppercase rounded-lg text-white/50 hover:text-white">Noticias</button>
+                </div>
+                <select id="category-selector" onchange="loadCategoryData()" class="bg-primary-500 border border-white/20 rounded-xl px-4 py-2 text-sm outline-none focus:border-highlight">
+                    <option value="senior-masculino">Senior Masculino</option>
+                    <option value="senior-femenino">Senior Femenino</option>
+                    <option value="juvenil-masculino">Juvenil Masculino</option>
+                </select>
+                <button onclick="handleLogout()" class="p-3 bg-white/5 rounded-xl hover:bg-red-500 transition-colors">
+                    <i data-feather="log-out" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </header>
+
+        <div id="section-competitions" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            
+            <!-- Input Side -->
+            <div class="space-y-6">
+                <div class="glass-card p-8 rounded-3xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <label class="text-sm font-bold uppercase tracking-widest text-highlight">Importar Jornada</label>
+                        <button onclick="migrateFromLocalJSON()" class="text-[10px] uppercase font-bold text-white/30 hover:text-white flex items-center border border-white/10 px-2 py-1 rounded transition-colors">
+                            <i data-feather="upload-cloud" class="w-3 h-3 mr-1"></i> Sincronizar desde JSON Local
+                        </button>
+                    </div>
+                    
+                    <textarea id="raw-input" class="w-full h-64 md:h-96 bg-primary-900 border border-white/10 rounded-2xl p-6 font-mono text-sm outline-none focus:border-highlight transition-all" placeholder="Pega aquí el texto de la jornada o la tabla de clasificación..."></textarea>
+                    
+                    <div class="flex gap-4 mt-4">
+                        <button onclick="setMode('journey')" id="mode-journey" class="flex-1 py-2 rounded-lg text-[10px] font-bold uppercase border border-highlight bg-highlight text-white">Modo Jornada</button>
+                        <button onclick="setMode('standings')" id="mode-standings" class="flex-1 py-2 rounded-lg text-[10px] font-bold uppercase border border-white/10 text-white/50 hover:border-white/30">Modo Clasificación</button>
+                    </div>
+                    
+                <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                    <div class="flex-1">
+                        <label class="block text-[10px] uppercase font-bold text-white/40 mb-2">Número de Jornada</label>
+                        <input type="number" id="journey-number" value="1" min="1" class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight text-center">
+                    </div>
+                    <div class="flex-[2] flex items-end gap-2">
+                        <button id="process-btn" onclick="processInput()" class="flex-1 bg-white text-primary-900 py-4 rounded-full font-black uppercase shadow-xl hover:bg-highlight hover:text-white transition-all">
+                            Procesar
+                        </button>
+                        <button onclick="deleteJourney()" class="p-4 bg-red-500/20 text-red-500 border border-red-500/20 rounded-full hover:bg-red-500 hover:text-white transition-all" title="Borrar Jornada Completa">
+                            <i data-feather="trash-2" class="w-5 h-5"></i>
+                        </button>
+                        <button onclick="repairDatabase()" class="p-4 bg-primary-500 border border-white/10 rounded-full hover:bg-highlight transition-all" title="Reparar Duplicados">
+                            <i data-feather="tool" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Preview & Save Side -->
+            <div id="preview-area" class="hidden space-y-6 animate-fade-in">
+                <div class="glass-card p-8 rounded-3xl border-highlight/30">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-black uppercase">Vista Previa Cloud</h2>
+                        <span id="match-count" class="bg-highlight text-white px-3 py-1 rounded-full text-[10px] font-bold">0 partidos</span>
+                    </div>
+                    
+                    <div id="parsed-results" class="space-y-4 max-h-[400px] overflow-y-auto mb-8 pr-2 custom-scrollbar">
+                        <!-- Matches -->
+                    </div>
+
+                    <div class="p-4 bg-highlight/10 rounded-xl mb-8 border border-highlight/20">
+                        <p class="text-xs text-highlight font-bold uppercase mb-2">Resumen de Clasificación</p>
+                        <p id="standings-summary" class="text-sm text-white/70 italic italic leading-relaxed"></p>
+                    </div>
+
+                    <button id="save-btn" onclick="saveToCloud()" class="w-full bg-green-500 text-white py-4 rounded-full font-black uppercase flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all transform hover:scale-[1.02]">
+                        <i data-feather="cloud" class="mr-2"></i> Guardar en la Nube
+                    </button>
+                    <p class="text-[10px] text-white/30 mt-4 text-center">Toda la web pública se actualizará automáticamente al instante.</p>
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+        <!-- News Management Section -->
+        <div id="section-news" class="hidden animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <!-- News Form -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="glass-card p-8 rounded-3xl">
+                        <h2 class="text-xl font-black uppercase mb-6 text-highlight">Nueva Noticia</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-white/40 mb-2">Título de la noticia</label>
+                                <input type="text" id="news-title-input" class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] uppercase font-bold text-white/40 mb-2">Fecha (Ej: 07 NOV 2025)</label>
+                                    <input type="text" id="news-date-input" class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase font-bold text-white/40 mb-2">Categoría (Etiqueta)</label>
+                                    <input type="text" id="news-tag-input" placeholder="Club, Senior..." class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-white/40 mb-2">URL de la Imagen</label>
+                                <input type="text" id="news-image-input" placeholder="https://..." class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-white/40 mb-2">Resumen corto (para la lista)</label>
+                                <textarea id="news-summary-input" class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight h-24"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-white/40 mb-2">Contenido de la noticia (HTML permitido)</label>
+                                <textarea id="news-content-input" class="w-full bg-primary-900 border border-white/20 p-4 rounded-xl outline-none focus:border-highlight h-64 font-mono text-xs" placeholder="<p>Texto aquí...</p>"></textarea>
+                            </div>
+                            <button onclick="saveNews()" id="news-save-btn" class="w-full bg-highlight text-white py-4 rounded-full font-black uppercase shadow-xl hover:shadow-highlight/20 transition-all">
+                                Publicar Noticia
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- News List / Preview -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="glass-card p-8 rounded-3xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-black uppercase">Noticias en la Nube</h2>
+                            <button onclick="migrateStaticNews(event)" class="px-4 py-2 bg-highlight/10 text-highlight hover:bg-highlight hover:text-white border border-highlight/20 rounded-xl transition-all flex items-center font-bold text-[10px] uppercase tracking-widest shadow-lg group">
+                                <i data-feather="upload-cloud" class="w-4 h-4 mr-2 group-hover:animate-bounce"></i> Sincronizar noticias del código
+                            </button>
+                        </div>
+                        <div id="news-admin-list" class="space-y-2">
+                            <!-- Inyectado por JS -->
+                            <div class="text-white/20 text-center py-10 italic">Cargando noticias...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script>
+        let currentDBData = null;
+        let pendingUpdate = null;
+
+        function switchAdminTab(tab) {
+            document.getElementById('section-competitions').classList.toggle('hidden', tab !== 'competitions');
+            document.getElementById('section-news').classList.toggle('hidden', tab !== 'news');
+            
+            document.getElementById('tab-competitions').classList.toggle('bg-highlight', tab === 'competitions');
+            document.getElementById('tab-competitions').classList.toggle('text-white/50', tab !== 'competitions');
+            document.getElementById('tab-news').classList.toggle('bg-highlight', tab === 'news');
+            document.getElementById('tab-news').classList.toggle('text-white/50', tab !== 'news');
+
+            if (tab === 'news') loadNewsList();
+        }
+
+        async function loadNewsList() {
+            const container = document.getElementById('news-admin-list');
+            container.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+            try {
+                const snapshot = await db.collection('news').orderBy('timestamp', 'desc').get();
+                if (snapshot.empty) {
+                    container.innerHTML = '<div class="text-white/20 text-center py-10 italic text-sm uppercase font-bold tracking-widest">No hay noticias dinámicas publicadas</div>';
+                    return;
+                }
+
+                container.innerHTML = snapshot.docs.map(doc => {
+                    const n = doc.data();
+                    return `
+                        <div class="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded-xl hover:border-highlight/30 transition-all group">
+                            <div class="min-w-0 flex-1">
+                                <h3 class="text-sm font-bold uppercase truncate pr-4">${n.title}</h3>
+                                <div class="flex items-center gap-3 mt-1">
+                                    <span class="text-[9px] text-white/30 font-black uppercase tracking-tighter">${n.date}</span>
+                                    <span class="text-[9px] text-highlight font-black uppercase tracking-tighter">${n.tag || 'CLUB'}</span>
+                                </div>
+                            </div>
+                            <button onclick="deleteNews('${doc.id}')" class="p-2 text-white/20 hover:text-red-500 transition-colors">
+                                <i data-feather="x-circle" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+                feather.replace();
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div class="text-red-400 text-xs p-4 bg-red-500/10 rounded-xl border border-red-500/20">Error de permisos: Asegúrate de configurar las reglas de Firestore.</div>';
+            }
+        }
+
+        async function saveNews() {
+            const title = document.getElementById('news-title-input').value;
+            const date = document.getElementById('news-date-input').value;
+            const tag = document.getElementById('news-tag-input').value;
+            const image = document.getElementById('news-image-input').value;
+            const summary = document.getElementById('news-summary-input').value;
+            const content = document.getElementById('news-content-input').value;
+            const btn = document.getElementById('news-save-btn');
+
+            if (!title || !content) return alert("El título y el contenido son obligatorios.");
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+
+            try {
+                await db.collection('news').add({
+                    title, date, tag, image, summary, content,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("¡Noticia publicada con éxito!");
+                document.getElementById('news-title-input').value = '';
+                document.getElementById('news-content-input').value = '';
+                document.getElementById('news-date-input').value = '';
+                document.getElementById('news-tag-input').value = '';
+                document.getElementById('news-image-input').value = '';
+                document.getElementById('news-summary-input').value = '';
+                loadNewsList();
+            } catch (e) {
+                alert("Error: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Publicar Noticia';
+            }
+        }
+
+        async function deleteNews(id) {
+            if (!confirm("¿Borrar esta noticia definitivamente?")) return;
+            await db.collection('news').doc(id).delete();
+            loadNewsList();
+        }
+
+        async function migrateStaticNews(event) {
+            if (typeof noticiasData === 'undefined') return alert("No se han encontrado noticias locales.");
+            if (!confirm(`Se van a importar ${Object.keys(noticiasData).length} noticias al sistema Cloud. ¿Continuar?`)) return;
+
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading-spinner w-4 h-4 mx-auto"></div>';
+
+            try {
+                for (let id in noticiasData) {
+                    const n = noticiasData[id];
+                    await db.collection('news').add({
+                        title: n.title,
+                        date: n.date,
+                        tag: n.tag || 'CLUB',
+                        image: n.image,
+                        summary: n.summary,
+                        content: n.content,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                alert("¡Noticias importadas con éxito!");
+                loadNewsList();
+            } catch (e) {
+                alert("Error en la importación: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-feather="download-cloud" class="w-3 h-3 mr-1"></i> Importar Noticias Locales';
+                feather.replace();
+            }
+        }
+
+        // --- AUTH LOGIC ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('login-gate').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                document.getElementById('user-display').textContent = `Sesión iniciada como: ${user.email}`;
+                loadCategoryData();
+            } else {
+                document.getElementById('login-gate').classList.remove('hidden');
+                document.getElementById('admin-panel').classList.add('hidden');
+            }
+        });
+
+        async function handleLogin() {
+            const email = document.getElementById('admin-email').value;
+            const pass = document.getElementById('admin-pass').value;
+            const btn = document.getElementById('login-btn');
+            const err = document.getElementById('login-error');
+
+            if (!email || !pass) return;
+
+            btn.innerHTML = '<div class="loading-spinner"></div>';
+            err.classList.add('hidden');
+
+            try {
+                await auth.signInWithEmailAndPassword(email, pass);
+            } catch (e) {
+                console.error(e);
+                if (e.code === 'auth/user-not-found') {
+                    err.textContent = "Usuario no encontrado. Prueba a 'Registrar' primero.";
+                } else if (e.code === 'auth/wrong-password') {
+                    err.textContent = "Contraseña incorrecta.";
+                } else {
+                    err.textContent = "Error: " + e.message;
+                }
+                err.classList.remove('hidden');
+            } finally {
+                btn.innerHTML = '<span>Entrar</span>';
+            }
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('admin-email').value;
+            const pass = document.getElementById('admin-pass').value;
+            const btn = document.getElementById('register-btn');
+            const err = document.getElementById('login-error');
+
+            if (!email || pass.length < 6) {
+                err.textContent = "El email debe ser válido y la contraseña de al menos 6 caracteres.";
+                err.classList.remove('hidden');
+                return;
+            }
+
+            btn.innerHTML = '<div class="loading-spinner"></div>';
+            err.classList.add('hidden');
+
+            try {
+                await auth.createUserWithEmailAndPassword(email, pass);
+                alert("Usuario creado con éxito. Ya puedes acceder.");
+            } catch (e) {
+                console.error(e);
+                err.textContent = "Error al registrar: " + e.message;
+                err.classList.remove('hidden');
+            } finally {
+                btn.innerHTML = '<span>Registrar</span>';
+            }
+        }
+
+        function handleLogout() {
+            auth.signOut();
+        }
+
+        async function handleResetPassword() {
+            const email = document.getElementById('admin-email').value;
+            if (!email) return alert("Por favor, introduce tu email para enviarte el enlace de recuperación.");
+            
+            try {
+                await auth.sendPasswordResetEmail(email);
+                alert("Se ha enviado un email a " + email + " para restablecer tu contraseña. Revisa tu bandeja de entrada (o spam).");
+            } catch (e) {
+                alert("Error: " + e.message);
+            }
+        }
+
+        // --- CLOUD LOGIC ---
+        async function loadCategoryData() {
+            const catId = document.getElementById('category-selector').value;
+            try {
+                const doc = await db.collection('competitions').doc(catId).get();
+                if (doc.exists) {
+                    currentDBData = doc.data();
+                    console.log("Cargada categoría:", catId);
+                } else {
+                    currentDBData = { name: catId, competition: "Pendiente", season: "2025/26", results: [], standings: [] };
+                    console.warn("Nueva categoría creada en memoria.");
+                }
+            } catch (e) {
+                alert("Error cargando Firestore. Revisa las reglas de seguridad.");
+            }
+        }
+
+        let editMode = 'journey'; // 'journey' o 'standings'
+
+        function setMode(mode) {
+            editMode = mode;
+            const jBtn = document.getElementById('mode-journey');
+            const sBtn = document.getElementById('mode-standings');
+            const jInput = document.getElementById('journey-number').parentElement;
+            
+            if (mode === 'journey') {
+                jBtn.classList.add('bg-highlight', 'text-white', 'border-highlight');
+                sBtn.classList.remove('bg-highlight', 'text-white', 'border-highlight');
+                sBtn.classList.add('text-white/50', 'border-white/10');
+                jInput.classList.remove('hidden');
+                document.getElementById('raw-input').placeholder = "Pega aquí los partidos de la jornada...";
+            } else {
+                sBtn.classList.add('bg-highlight', 'text-white', 'border-highlight');
+                jBtn.classList.remove('bg-highlight', 'text-white', 'border-highlight');
+                jBtn.classList.add('text-white/50', 'border-white/10');
+                jInput.classList.add('hidden');
+                document.getElementById('raw-input').placeholder = "Pega aquí la tabla de clasificación (formato: Pos Equipo PJ PG PE PP GF GC Pts)...";
+            }
+        }
+
+        function processInput() {
+            const text = document.getElementById('raw-input').value;
+            const journeyNum = parseInt(document.getElementById('journey-number').value);
+            if (!text.trim()) return;
+            
+            if (!currentDBData) {
+                return alert("Error: No se han podido cargar los datos de la nube.");
+            }
+
+            if (editMode === 'journey') {
+                // 1. Parsear partidos con el número de jornada
+                const newJourneyMatches = AdminLogic.parseJourneyText(text, journeyNum);
+                if (newJourneyMatches.length === 0) return alert("No se han detectado partidos.");
+
+                // 2. Eliminar PRIMERO cualquier partido existente de esta jornada (evita duplicados)
+                const historicalResults = (currentDBData.results || []).filter(
+                    m => Number(m.journey || 1) !== journeyNum
+                );
+
+                // 3. Unir con históricos ya limpios (Anti-duplicados)
+                const allResultsSorted = AdminLogic.mergeResults(historicalResults, newJourneyMatches);
+
+                // 4. Recalcular Clasificación global con el nuevo listado limpio
+                const newStandings = AdminLogic.calculateStandings(allResultsSorted);
+
+                // 5. Mostrar Vista Previa
+                displayPreview(newJourneyMatches, newStandings, allResultsSorted);
+            } else {
+                // Modo Importación Directa de Clasificación
+                const newStandings = AdminLogic.parseStandingsTable(text);
+                if (newStandings.length === 0) return alert("No se ha podido procesar la tabla. Asegúrate de que tiene el formato correcto.");
+                
+                // En este modo, mantenemos los resultados anteriores
+                displayPreviewStandingsOnly(newStandings);
+            }
+        }
+
+        function displayPreviewStandingsOnly(standings) {
+            document.getElementById('preview-area').classList.remove('hidden');
+            document.getElementById('match-count').textContent = `Importando ${standings.length} equipos`;
+
+            const resultsContainer = document.getElementById('parsed-results');
+            resultsContainer.innerHTML = `
+                <table class="w-full text-[10px] text-left opacity-80">
+                    <thead>
+                        <tr class="border-b border-white/10">
+                            <th class="p-2">POS</th>
+                            <th class="p-2">EQUIPO</th>
+                            <th class="p-2">PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${standings.map(t => `
+                            <tr>
+                                <td class="p-2 font-bold text-highlight">${t.pos}</td>
+                                <td class="p-2">${t.team}</td>
+                                <td class="p-2 font-bold">${t.pts}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            // Guardar para subir
+            window.finalData = AdminLogic.generateCategoryData(
+                currentDBData.name,
+                currentDBData.competition,
+                currentDBData.season,
+                currentDBData.results || [],
+                standings
+            );
+
+            const tolosa = standings.find(t => t.team.toLowerCase().includes('tolosa'));
+            if (tolosa) {
+                document.getElementById('standings-summary').textContent = `CLASIFICACIÓN MANUAL: Tolosa CF en #${tolosa.pos} con ${tolosa.pts} pts.`;
+            }
+        }
+
+        function displayPreview(matches, standings, allResultsClean) {
+            document.getElementById('preview-area').classList.remove('hidden');
+            document.getElementById('match-count').textContent = `${matches.length} partidos detectados`;
+
+            const resultsContainer = document.getElementById('parsed-results');
+            resultsContainer.innerHTML = matches.map(m => `
+                <div class="bg-white/5 p-4 rounded-xl border border-white/5 flex justify-between items-center text-xs">
+                    <div class="flex flex-col">
+                        <span class="text-highlight font-bold uppercase text-[9px]">Jornada ${m.journey}</span>
+                        <div class="text-white/40">${m.date || ''} | ${m.time || ''}</div>
+                    </div>
+                    <div class="font-bold flex items-center gap-2">
+                        ${m.home} <span class="bg-primary-900 px-2 py-1 mx-2 rounded text-highlight">${m.score}</span> ${m.away}
+                    </div>
+                </div>
+            `).join('');
+
+            // Guardar el listado final ya procesado sin duplicados
+            window.finalData = AdminLogic.generateCategoryData(
+                currentDBData.name || "Categoría",
+                currentDBData.competition || "Competición",
+                currentDBData.season || "2025/26",
+                allResultsClean,
+                standings
+            );
+
+            const tolosa = standings.find(t => t.team.toLowerCase().includes('tolosa'));
+            if (tolosa) {
+                document.getElementById('standings-summary').textContent = `El Tolosa CF queda en la posición #${tolosa.pos} con ${tolosa.pts} puntos.`;
+            }
+        }
+
+        async function saveToCloud() {
+            if (!window.finalData) return;
+            const btn = document.getElementById('save-btn');
+            const catId = document.getElementById('category-selector').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading-spinner"></div> Guardando...';
+
+            try {
+                await db.collection('competitions').doc(catId).set(window.finalData);
+                alert("¡Base de Datos Actualizada! Los cambios ya son visibles en la web.");
+                document.getElementById('preview-area').classList.add('hidden');
+                document.getElementById('raw-input').value = '';
+                loadCategoryData(); // Refrescar memoria
+            } catch (e) {
+                console.error("Error al guardar:", e);
+                alert("Error técnico al guardar: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-feather="cloud" class="mr-2"></i> Guardar en la Nube';
+                feather.replace();
+            }
+        }
+
+        // --- GESTIÓN DE JORNADAS ---
+        async function deleteJourney() {
+            const journeyNum = parseInt(document.getElementById('journey-number').value);
+            if (!confirm(`¿Estás seguro de que quieres BORRAR COMPLETAMENTE la Jornada ${journeyNum}? Esta acción no se puede deshacer.`)) return;
+            
+            try {
+                const catId = document.getElementById('category-selector').value;
+                const doc = await db.collection('competitions').doc(catId).get();
+                if (!doc.exists) return;
+                
+                const data = doc.data();
+                const oldResults = data.results || [];
+                
+                // Filtrar para quitar todo lo de esta jornada (o lo que no tenga jornada si es la 1)
+                const cleanedResults = oldResults.filter(m => Number(m.journey || 1) !== journeyNum);
+                
+                const newStandings = AdminLogic.calculateStandings(cleanedResults);
+                const updatedData = AdminLogic.generateCategoryData(data.name, data.competition, data.season, cleanedResults, newStandings);
+                
+                await db.collection('competitions').doc(catId).set(updatedData);
+                alert(`Jornada ${journeyNum} eliminada correctamente.`);
+                location.reload();
+            } catch (e) {
+                alert("Error al borrar jornada: " + e.message);
+            }
+        }
+
+        // --- HERRAMIENTA DE REPARACIÓN ---
+        async function repairDatabase() {
+            if (!confirm("¿Deseas ejecutar la limpieza de duplicados? Esto consolidará todos los partidos basándose en Jornada y Equipos.")) return;
+            
+            try {
+                const catId = document.getElementById('category-selector').value;
+                const doc = await db.collection('competitions').doc(catId).get();
+                if (!doc.exists) return alert("No hay datos que reparar.");
+                
+                const data = doc.data();
+                const oldResults = data.results || [];
+                
+                // Limpieza manual usando Map para asegurar unicidad absoluta
+                const resultsMap = new Map();
+                oldResults.forEach(m => {
+                    const key = AdminLogic.getMatchKey(m);
+                    resultsMap.set(key, m);
+                });
+                
+                const cleanedResults = Array.from(resultsMap.values()).sort((a,b) => a.journey - b.journey);
+                
+                // Recalcular clasificación con los datos limpios
+                const newStandings = AdminLogic.calculateStandings(cleanedResults);
+                
+                // Guardar
+                const updatedData = AdminLogic.generateCategoryData(data.name, data.competition, data.season, cleanedResults, newStandings);
+                await db.collection('competitions').doc(catId).set(updatedData);
+                
+                alert(`¡Limpieza completada! Antes: ${oldResults.length} / Ahora: ${cleanedResults.length} partidos.`);
+                location.reload();
+            } catch (e) {
+                alert("Error durante la reparación: " + e.message);
+            }
+        }
+
+        async function migrateFromLocalJSON() {
+            if (!confirm("Esto subirá tus datos actuales de equipo1.json a la nube. ¿Continuar?")) return;
+            try {
+                const res = await fetch('data/equipo1.json');
+                const localData = await res.json();
+                const cat = localData.categories[0];
+                
+                const cloudObj = {
+                    name: cat.name,
+                    competition: cat.competition,
+                    season: cat.season,
+                    lastUpdate: new Date().toISOString(),
+                    results: cat.results,
+                    standings: cat.standings
+                };
+
+                await db.collection('competitions').doc('senior-masculino').set(cloudObj);
+                alert("Sincronización inicial completada. Ya puedes borrar el archivo JSON si lo deseas.");
+                loadCategoryData();
+            } catch (e) {
+                alert("Error en la migración. Asegúrate de que el archivo data/equipo1.json existe.");
+            }
+        }
+    </script>
+    <script src="js/common.js"></script>
+</body>
+</html>

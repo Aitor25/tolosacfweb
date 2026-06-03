@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos y Condiciones - TOLOSA CF ESKUBALOIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#0E1A3D',
+                            600: '#0a1430',
+                            700: '#070c1e',
+                            800: '#04060f',
+                            900: '#020308',
+                        },
+                        highlight: '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
+    
+    <!-- Navigation -->
+    <nav id="navbar" class="w-full z-50 bg-primary-500 dark:bg-primary-800 py-4 shadow-xl">
+        <div class="container mx-auto px-6 flex justify-between items-center text-white">
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="flex items-center space-x-4">
+                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
+                    <span class="font-black text-xl tracking-tighter uppercase hidden md:block">Tolosa CF <span class="text-highlight">Eskubaloia</span></span>
+                </a>
+            </div>
+            
+            <div class="hidden lg:flex items-center space-x-8 text-sm">
+                <a href="index.html" class="font-bold hover:text-highlight transition-colors">INICIO</a>
+                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
+                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
+                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors">1. EQUIPO</a>
+                <a href="patrocinadores.html" class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
+                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
+                
+                <button id="theme-toggle" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all">
+                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
+                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+            </div>
+            
+            <button class="lg:hidden flex items-center" id="menu-toggle">
+                <i data-feather="menu" class="w-8 h-8"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="py-24">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <h1 class="text-4xl md:text-6xl font-black uppercase mb-12 text-primary-500 dark:text-white">Términos y <span class="text-highlight">Condiciones</span></h1>
+            
+            <div class="prose prose-lg dark:prose-invert max-w-none space-y-10 text-primary-400 dark:text-primary-100">
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">1. Objeto y Ámbito de Aplicación</h2>
+                    <p>Los presentes Términos y Condiciones regulan el acceso, navegación y uso del sitio web oficial de <strong>Tolosa Club de Fútbol Eskubaloia</strong> (en adelante, "El Club"). Al acceder a este portal, usted adquiere la condición de Usuario y acepta sin reservas todas las cláusulas aquí expuestas.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">2. Propiedad Intelectual e Industrial</h2>
+                    <p>El Club es titular de todos los derechos de propiedad intelectual e industrial de su página web, así como de los elementos contenidos en la misma:</p>
+                    <ul class="list-disc pl-6 space-y-2 mt-4">
+                        <li><strong>Escudos y Logotipos:</strong> El escudo oficial del Tolosa CF y la marca "Eskubaloia" están protegidos por normativa de marcas.</li>
+                        <li><strong>Contenidos:</strong> Textos, crónicas de partidos, fotografías de jugadores y material audiovisual son propiedad exclusiva del club o sus colaboradores.</li>
+                    </ul>
+                    <p class="mt-4 bg-red-500/10 p-4 rounded-xl text-sm border border-red-500/20">Está estrictamente prohibida la reproducción, distribución o comunicación pública de cualquier contenido de esta web con fines comerciales sin la autorización expresa y por escrito de El Club.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">3. Normas de Uso del Portal</h2>
+                    <p>El Usuario se compromete a hacer un uso lícito del sitio web. Queda prohibido:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li>Introducir virus informáticos o cualquier sistema destinado a alterar el funcionamiento de la web.</li>
+                        <li>Utilizar los contenidos para actividades ilícitas, contrarias a la buena fe o al orden público.</li>
+                        <li>Intentar acceder a las áreas de administración (Panel Cloud) sin autorización explícita.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">4. Exclusión de Responsabilidad</h2>
+                    <p>El Club no garantiza la disponibilidad permanente del sitio web ni se hace responsable de:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li>Errores en la información de partidos o clasificaciones (datos extraídos de fuentes federativas que pueden variar).</li>
+                        <li>Daños producidos por virus o malware ajenos a nuestro control técnico.</li>
+                        <li>El uso que terceros hagan de la información publicada.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">5. Legislación y Jurisdicción</h2>
+                    <p>Para la resolución de todas las controversias o cuestiones relacionadas con el presente sitio web, será de aplicación la legislación española, a la que se someten expresamente las partes, siendo competentes para la resolución de todos los conflictos derivados o relacionados con su uso los <strong>Juzgados y Tribunales de Tolosa / Donostia-San Sebastián</strong>.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="theme-aware-footer py-20">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="h-20 mb-8">
+                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed">
+                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Navegación</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
+                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
+                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
+                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
+                        <li><a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Contacto</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i> Usabal Kiroldegia, 20400 Tolosa</li>
+                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i> eskubaloia.tolosacf@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Síguenos</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="instagram" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="twitter" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="facebook" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
+                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
+                    <span>|</span>
+                    <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
+                    <span>|</span>
+                    <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/common.js"></script>
+</body>
+</html>

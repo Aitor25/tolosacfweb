@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1. Equipo Masculino - TOLOSA CF ESKUBALOIA</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Firebase SDK (Compat v9) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#0E1A3D',
+                            600: '#0a1430',
+                            700: '#070c1e',
+                            800: '#04060f',
+                            900: '#020308',
+                        },
+                        highlight: '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
+    
+    <!-- Navigation -->
+    <nav class="sticky top-0 w-full z-50 py-4 shadow-xl theme-aware-header">
+        <div class="container mx-auto px-6 flex justify-between items-center text-inherit">
+            <div class="flex items-center space-x-4">
+                <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
+                <span class="font-black text-xl tracking-tighter uppercase hidden xl:block">Tolosa CF <span class="text-highlight dark:text-white">Eskubaloia</span></span>
+            </div>
+            
+            <div class="hidden lg:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base">
+                <a href="index.html" class="font-bold hover:text-highlight transition-colors">INICIO</a>
+                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
+                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
+                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors border-b-2 border-current">1. EQUIPO</a>
+                <a href="patrocinadores.html" class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
+                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
+                
+                <button id="theme-toggle" class="p-2 rounded-full bg-primary-50 dark:bg-primary-800 hover:bg-highlight hover:text-white transition-all ml-4">
+                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
+                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+            </div>
+            
+            <button class="lg:hidden flex items-center" id="menu-toggle">
+                <i data-feather="menu" class="w-8 h-8"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu-overlay" class="lg:hidden"></div>
+    <div id="mobile-menu" class="lg:hidden p-8 flex flex-col">
+        <div class="flex justify-between items-center mb-12">
+            <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" class="h-10 dark:grayscale dark:brightness-200">
+            <button id="close-menu" class="text-primary-500 dark:text-white">
+                <i data-feather="x" class="w-8 h-8"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-6 text-xl font-black uppercase text-primary-500 dark:text-white">
+            <a href="index.html" class="hover:text-highlight transition-colors">Inicio</a>
+            <a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a>
+            <a href="club.html" class="hover:text-highlight transition-colors">El Club</a>
+            <a href="equipo1.html" class="text-highlight">1. Equipo</a>
+            <a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a>
+            <a href="contacto.html" class="hover:text-highlight transition-colors">Contacto</a>
+        </nav>
+        <div class="mt-auto pt-8 border-t border-primary-100 dark:border-primary-800">
+            <button id="mobile-theme-toggle" class="flex items-center space-x-4 font-bold text-primary-500 dark:text-white">
+                <span class="dark:hidden flex items-center"><i data-feather="sun" class="mr-3"></i> Modo Claro</span>
+                <span class="hidden dark:flex items-center"><i data-feather="moon" class="mr-3"></i> Modo Oscuro</span>
+            </button>
+        </div>
+    </div>
+    </div>
+
+    <header class="py-20 bg-primary-500 text-white relative overflow-hidden dark:bg-primary-800">
+        <div class="container mx-auto px-6 relative z-10">
+            <h1 data-edit="text" id="category-name" class="text-4xl sm:text-6xl font-black uppercase mb-4 animate-fade-in">Primer Equipo</h1>
+            <p data-edit="text" id="competition-name" class="text-xl text-primary-100 opacity-90 max-w-2xl">Cargando competición...</p>
+        </div>
+        <div class="absolute right-0 bottom-0 opacity-10 translate-x-1/4 translate-y-1/4">
+            <img data-edit="image" src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="" class="w-96 text-primary-500">
+        </div>
+    </header>
+
+    <!-- Dashboard Main Content -->
+    <main class="py-12 bg-white dark:bg-primary-900 min-h-[60vh]">
+        <div class="container mx-auto px-6">
+            
+            <!-- Tab Navigation -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button onclick="switchTab('standings')" class="tab-btn active px-8 py-3 rounded-full font-black uppercase text-sm border-2 border-primary-500 dark:border-white transition-all hover:bg-primary-500 hover:text-white dark:hover:bg-white dark:hover:text-primary-900 shadow-lg">
+                    Clasificación
+                </button>
+                <button onclick="switchTab('results')" class="tab-btn px-8 py-3 rounded-full font-black uppercase text-sm border-2 border-primary-500 dark:border-white transition-all hover:bg-primary-500 hover:text-white dark:hover:bg-white dark:hover:text-primary-900 shadow-lg">
+                    Resultados
+                </button>
+                <button onclick="switchTab('calendar')" class="tab-btn px-8 py-3 rounded-full font-black uppercase text-sm border-2 border-primary-500 dark:border-white transition-all hover:bg-primary-500 hover:text-white dark:hover:bg-white dark:hover:text-primary-900 shadow-lg">
+                    Calendario
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div id="dashboard-content" class="animate-fade-in">
+                <!-- Data will be injected here -->
+                <div class="flex justify-center items-center py-20">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-highlight"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="theme-aware-footer py-20">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="h-20 mb-8">
+                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed" data-edit="text">
+                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">Navegación</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
+                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
+                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
+                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
+                        <li><a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">Contacto</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i> Usabal Kiroldegia, 20400 Tolosa</li>
+                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i> eskubaloia.tolosacf@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">Síguenos</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="instagram" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="twitter" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="facebook" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
+                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-4">
+                    <div class="flex justify-center space-x-4">
+                        <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
+                        <span>|</span>
+                        <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
+                        <span>|</span>
+                        <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
+                    </div>
+                </div>
+                <a href="admin.html" class="opacity-30 hover:opacity-100 transition-opacity inline-block" title="Administración">
+                    <i data-feather="lock" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Logic -->
+    <script>
+        let currentData = null;
+        let activeTab = 'standings';
+        let selectedJourney = null; // Jornada actualmente visualizada
+        const competitionId = 'senior-masculino'; // Podría sacarse de la URL en el futuro
+
+        function loadData() {
+            // Escucha en tiempo real de Firestore
+            db.collection('competitions').doc(competitionId)
+                .onSnapshot((doc) => {
+                    if (doc.exists) {
+                        currentData = doc.data();
+                        console.log("Datos recibidos de Firestore:", currentData);
+                        
+                        document.getElementById('category-name').textContent = currentData.name;
+                        document.getElementById('competition-name').textContent = `${currentData.competition} | ${currentData.season}`;
+                        
+                        renderActiveTab();
+                    } else {
+                        console.warn("El documento no existe en Firestore. Comprueba el ID.");
+                        handleLoadError("No hay datos disponibles en la nube para esta categoría.");
+                    }
+                }, (error) => {
+                    console.error("Error Firestore:", error);
+                    handleLoadError("Error de conexión con la base de datos.");
+                });
+        }
+
+        function handleLoadError(msg) {
+            document.getElementById('dashboard-content').innerHTML = `
+                <div class="text-center py-20">
+                    <i data-feather="alert-circle" class="w-16 h-16 mx-auto mb-4 text-red-500"></i>
+                    <p class="text-xl font-bold">${msg}</p>
+                    <p class="text-primary-400">Si eres el administrador, inicia sesión para configurar la base de datos.</p>
+                </div>
+            `;
+            feather.replace();
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            
+            // UI Update
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-primary-500', 'text-white', 'dark:bg-white', 'dark:text-primary-900');
+            });
+            
+            const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => 
+                btn.onclick.toString().includes(tab)
+            );
+            
+            if (activeBtn) {
+                activeBtn.classList.add('active', 'bg-primary-500', 'text-white', 'dark:bg-white', 'dark:text-primary-900');
+            }
+            
+            renderActiveTab();
+        }
+
+        function renderActiveTab() {
+            if (!currentData) return;
+            
+            const content = document.getElementById('dashboard-content');
+            content.classList.remove('animate-fade-in');
+            void content.offsetWidth; // Trigger reflow
+            content.classList.add('animate-fade-in');
+
+            if (activeTab === 'standings') {
+                renderStandings();
+            } else if (activeTab === 'results') {
+                renderResults();
+            } else if (activeTab === 'calendar') {
+                renderCalendar();
+            }
+            
+            feather.replace();
+        }
+
+        function renderStandings() {
+            const standings = currentData.standings;
+            let html = `
+                <div class="overflow-x-auto rounded-2xl shadow-2xl border border-primary-100 dark:border-primary-800">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-primary-500 text-white uppercase text-xs font-black tracking-widest">
+                                <th class="p-4 text-center">Pos</th>
+                                <th class="p-4">Equipo</th>
+                                <th class="p-4 text-center">PJ</th>
+                                <th class="p-4 text-center hidden sm:table-cell">PG</th>
+                                <th class="p-4 text-center hidden sm:table-cell">PE</th>
+                                <th class="p-4 text-center hidden sm:table-cell">PP</th>
+                                <th class="p-4 text-center font-bold text-highlight bg-white/10">PTS</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-primary-100 dark:divide-primary-800">
+            `;
+
+            standings.forEach(item => {
+                const isTolosa = item.team.toLowerCase().includes('tolosa');
+                html += `
+                    <tr class="${isTolosa ? 'bg-highlight/10 font-bold' : 'hover:bg-primary-50 dark:hover:bg-primary-800/50'} transition-colors">
+                        <td class="p-4 text-center font-black">${item.pos}</td>
+                        <td class="p-4 flex items-center">
+                            <span class="w-1 h-6 mr-3 ${isTolosa ? 'bg-highlight' : 'bg-transparent'} rounded-full"></span>
+                            ${item.team}
+                        </td>
+                        <td class="p-4 text-center">${item.pj}</td>
+                        <td class="p-4 text-center hidden sm:table-cell">${item.pg}</td>
+                        <td class="p-4 text-center hidden sm:table-cell">${item.pe}</td>
+                        <td class="p-4 text-center hidden sm:table-cell">${item.pp}</td>
+                        <td class="p-4 text-center font-black text-highlight">${item.pts}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div>`;
+            document.getElementById('dashboard-content').innerHTML = html;
+        }
+
+        function renderResults() {
+            const results = currentData.results || [];
+            
+            // 1. Obtener jornadas únicas disponibles
+            const journeys = [...new Set(results.map(m => m.journey || 1))].sort((a, b) => b - a);
+            
+            // 2. Si no hay jornada seleccionada, coger la última
+            if (selectedJourney === null && journeys.length > 0) {
+                selectedJourney = journeys[0];
+            }
+
+            let html = `
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                    <h2 class="text-2xl font-black uppercase tracking-tighter">Resultados <span class="text-highlight">Temporada</span></h2>
+                    
+                    <div class="flex items-center bg-primary-50 dark:bg-primary-800 p-2 rounded-xl border border-primary-100 dark:border-primary-700">
+                        <label class="text-[10px] font-black uppercase text-primary-400 mr-3 px-2">Filtrar por:</label>
+                        <select onchange="changeJourney(this.value)" class="bg-transparent font-bold outline-none text-sm pr-4 cursor-pointer">
+                            ${journeys.map(j => `<option value="${j}" ${j == selectedJourney ? 'selected' : ''}>Jornada ${j}</option>`).join('')}
+                            ${journeys.length === 0 ? '<option>Sin jornadas</option>' : ''}
+                        </select>
+                    </div>
+                </div>
+            `;
+
+            // 3. Filtrar resultados por la jornada seleccionada
+            const filteredResults = results.filter(m => (m.journey || 1) == selectedJourney);
+
+            html += `<div class="grid grid-cols-1 gap-6">`;
+            
+            filteredResults.forEach(item => {
+                html += `
+                    <div class="bg-white dark:bg-primary-800 p-6 rounded-2xl border border-primary-100 dark:border-primary-700 shadow-lg hover-lift flex flex-col md:flex-row justify-between items-center text-center md:text-left transition-all">
+                        <div class="mb-4 md:mb-0">
+                            <div class="text-[10px] uppercase font-black text-highlight mb-1">Jornada ${item.journey || 1}</div>
+                            <div class="text-xs uppercase font-black text-primary-400 opacity-60">${item.date}</div>
+                        </div>
+                        <div class="flex items-center space-x-6 md:space-x-12">
+                            <div class="text-base md:text-lg font-black w-24 md:w-48 text-right uppercase leading-tight">${item.home}</div>
+                            <div class="bg-primary-500 text-white px-5 py-2 rounded-xl font-black text-xl md:text-2xl shadow-lg min-w-[100px] md:min-w-[140px] text-center border-b-4 border-highlight">${item.score}</div>
+                            <div class="text-base md:text-lg font-black w-24 md:w-48 text-left uppercase leading-tight">${item.away}</div>
+                        </div>
+                        <div class="mt-4 md:mt-0 text-[10px] font-black text-primary-400 uppercase tracking-widest hidden lg:block">
+                            Finalizado
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (filteredResults.length === 0) {
+                html += `<div class="text-center py-20 text-primary-400 italic">No hay partidos registrados en esta jornada.</div>`;
+            }
+
+            html += `</div>`;
+            document.getElementById('dashboard-content').innerHTML = html;
+        }
+
+        function changeJourney(j) {
+            selectedJourney = j;
+            renderResults();
+        }
+
+        function renderCalendar() {
+            const calendar = currentData.calendar;
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">`;
+            
+            calendar.forEach(item => {
+                html += `
+                    <div class="bg-primary-50 dark:bg-primary-800 p-8 rounded-2xl border-l-8 border-highlight shadow-xl hover-lift">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <div class="text-sm font-black text-primary-400 flex items-center">
+                                    <i data-feather="calendar" class="w-4 h-4 mr-2"></i> ${item.date}
+                                </div>
+                                <div class="text-sm font-black text-primary-400 flex items-center mt-1">
+                                    <i data-feather="clock" class="w-4 h-4 mr-2"></i> ${item.time}
+                                </div>
+                            </div>
+                            <div class="bg-highlight/20 text-highlight px-3 py-1 rounded text-xs font-black uppercase">Próximo</div>
+                        </div>
+                        <div class="text-2xl font-black mb-6 uppercase flex flex-col">
+                            <span class="text-primary-400 text-sm">Local</span>
+                            <span>${item.home}</span>
+                            <span class="text-highlight my-2 italic text-sm">vs</span>
+                            <span class="text-primary-400 text-sm">Visitante</span>
+                            <span>${item.away}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-primary-500 dark:text-white opacity-70">
+                            <i data-feather="map-pin" class="w-4 h-4 mr-2 text-highlight"></i> ${item.venue}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            document.getElementById('dashboard-content').innerHTML = html;
+        }
+
+        // Init
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+        });
+    </script>
+    <script src="js/common.js"></script>
+    <script src="editor.js"></script>
+</body>
+</html>

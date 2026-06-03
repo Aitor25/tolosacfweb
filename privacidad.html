@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - TOLOSA CF ESKUBALOIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#0E1A3D',
+                            600: '#0a1430',
+                            700: '#070c1e',
+                            800: '#04060f',
+                            900: '#020308',
+                        },
+                        highlight: '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
+    
+    <!-- Navigation -->
+    <nav id="navbar" class="w-full z-50 bg-primary-500 dark:bg-primary-800 py-4 shadow-xl">
+        <div class="container mx-auto px-6 flex justify-between items-center text-white">
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="flex items-center space-x-4">
+                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
+                    <span class="font-black text-xl tracking-tighter uppercase hidden md:block">Tolosa CF <span class="text-highlight">Eskubaloia</span></span>
+                </a>
+            </div>
+            
+            <div class="hidden lg:flex items-center space-x-8 text-sm">
+                <a href="index.html" class="font-bold hover:text-highlight transition-colors">INICIO</a>
+                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
+                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
+                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors">1. EQUIPO</a>
+                <a href="patrocinadores.html" class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
+                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
+                
+                <button id="theme-toggle" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all">
+                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
+                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+            </div>
+            
+            <button class="lg:hidden flex items-center" id="menu-toggle">
+                <i data-feather="menu" class="w-8 h-8"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="py-24">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <h1 class="text-4xl md:text-6xl font-black uppercase mb-12 text-primary-500 dark:text-white">Política de <span class="text-highlight">Privacidad</span></h1>
+            
+            <div class="prose prose-lg dark:prose-invert max-w-none space-y-10 text-primary-400 dark:text-primary-100">
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">1. Identificación del Responsable</h2>
+                    <p>En cumplimiento del Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD), le informamos que el Responsable del tratamiento de sus datos es:</p>
+                    <ul class="list-none space-y-2 mt-4 bg-primary-50 dark:bg-primary-800/50 p-6 rounded-2xl border border-primary-100 dark:border-primary-700">
+                        <li><strong>Entidad:</strong> Tolosa Club de Fútbol Eskubaloia (en adelante, "El Club")</li>
+                        <li><strong>CIF:</strong> [Añadir CIF si se dispone]</li>
+                        <li><strong>Dirección:</strong> Usabal Kiroldegia, 20400 Tolosa, Gipuzkoa</li>
+                        <li><strong>Email:</strong> <a href="mailto:eskubaloia.tolosacf@gmail.com" class="text-highlight font-bold">eskubaloia.tolosacf@gmail.com</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">2. ¿Qué datos recopilamos?</h2>
+                    <p>El Club únicamente solicita los datos estrictamente necesarios para llevar a cabo su actividad deportiva y administrativa. Estos pueden incluir:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li><strong>Datos identificativos:</strong> Nombre, apellidos, DNI/NIE.</li>
+                        <li><strong>Datos de contacto:</strong> Correo electrónico, teléfono, dirección postal.</li>
+                        <li><strong>Datos de navegación:</strong> Dirección IP, cookies (ver Política de Cookies).</li>
+                        <li><strong>Imagen:</strong> Fotografías o vídeos de eventos deportivos (siempre bajo consentimiento o interés legítimo).</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">3. Finalidad y Legitimación</h2>
+                    <p>Tratamos sus datos personales con las siguientes bases legales:</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
+                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Gestión Deportiva</h4>
+                            <p class="text-sm italic">Tramitación de licencias federativas, seguros deportivos y organización de entrenamientos y partidos.</p>
+                        </div>
+                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
+                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Comunicación</h4>
+                            <p class="text-sm italic">Envío de circulares, avisos de partidos y noticias relevantes del club vía email o WhatsApp.</p>
+                        </div>
+                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
+                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Atención al Usuario</h4>
+                            <p class="text-sm italic">Resolución de dudas o solicitudes enviadas a través de nuestros formularios de contacto.</p>
+                        </div>
+                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
+                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Obligación Legal</h4>
+                            <p class="text-sm italic">Cumplimiento de normativas tributarias, administrativas y deportivas vigentes.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">4. Conservación de los Datos</h2>
+                    <p>Los datos personales se conservarán mientras se mantenga la relación con El Club (socios, jugadores, abonados) o durante los años necesarios para cumplir con las obligaciones legales correspondientes.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">5. Derechos del Interesado</h2>
+                    <p>Usted puede ejercer sus derechos enviando un correo a <span class="text-highlight font-bold">eskubaloia.tolosacf@gmail.com</span> adjuntando copia de su DNI:</p>
+                    <div class="flex flex-wrap gap-3 mt-4">
+                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Acceso</span>
+                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Rectificación</span>
+                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Suprimición (Olvido)</span>
+                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Oposición</span>
+                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Limitación</span>
+                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Portabilidad</span>
+                    </div>
+                </section>
+
+                <section class="bg-highlight/5 p-8 rounded-3xl border border-highlight/10">
+                    <h2 class="text-xl font-black uppercase text-primary-500 dark:text-white mb-4">Información adicional</h2>
+                    <p class="text-sm">Si considera que no hemos tratado sus datos correctamente, tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="theme-aware-footer py-20">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="h-20 mb-8">
+                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed">
+                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Navegación</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
+                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
+                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
+                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
+                        <li><a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Contacto</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i> Usabal Kiroldegia, 20400 Tolosa</li>
+                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i> eskubaloia.tolosacf@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Síguenos</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="instagram" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="twitter" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="facebook" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
+                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
+                    <span>|</span>
+                    <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
+                    <span>|</span>
+                    <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/common.js"></script>
+</body>
+</html>

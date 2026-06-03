@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Cookies - TOLOSA CF ESKUBALOIA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#0E1A3D',
+                            600: '#0a1430',
+                            700: '#070c1e',
+                            800: '#04060f',
+                            900: '#020308',
+                        },
+                        highlight: '#3B82F6',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
+    
+    <!-- Navigation -->
+    <nav id="navbar" class="w-full z-50 bg-primary-500 dark:bg-primary-800 py-4 shadow-xl">
+        <div class="container mx-auto px-6 flex justify-between items-center text-white">
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="flex items-center space-x-4">
+                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
+                    <span class="font-black text-xl tracking-tighter uppercase hidden md:block">Tolosa CF <span class="text-highlight">Eskubaloia</span></span>
+                </a>
+            </div>
+            
+            <div class="hidden lg:flex items-center space-x-8 text-sm">
+                <a href="index.html" class="font-bold hover:text-highlight transition-colors">INICIO</a>
+                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
+                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
+                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors">1. EQUIPO</a>
+                <a href="patrocinadores.html" class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
+                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
+                
+                <button id="theme-toggle" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all">
+                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
+                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+            </div>
+            
+            <button class="lg:hidden flex items-center" id="menu-toggle">
+                <i data-feather="menu" class="w-8 h-8"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="py-24">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <h1 class="text-4xl md:text-6xl font-black uppercase mb-12 text-primary-500 dark:text-white">Política de <span class="text-highlight">Cookies</span></h1>
+            
+            <div class="prose prose-lg dark:prose-invert max-w-none space-y-10 text-primary-400 dark:text-primary-100">
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">¿Qué son las Cookies?</h2>
+                    <p>Una cookie es un pequeño archivo de texto que se almacena en su navegador cuando visita casi cualquier página web. Su utilidad es que la web sea capaz de recordar su visita cuando vuelva a navegar por esa página, mejorando su experiencia de usuario.</p>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">Tipos de Cookies que utilizamos</h2>
+                    <p>Este sitio web utiliza las siguientes categorías de cookies para funcionar correctamente:</p>
+                    
+                    <div class="space-y-6 mt-8">
+                        <div class="bg-primary-50 dark:bg-primary-800/50 p-6 rounded-2xl border-l-4 border-green-500">
+                            <h4 class="font-black text-primary-500 dark:text-white uppercase text-sm mb-2">Cookies Técnicas (Necesarias)</h4>
+                            <p class="text-sm">Son aquellas que permiten al usuario la navegación a través de una página web y la utilización de las diferentes opciones o servicios que en ella existan. Sin ellas, la web no funcionaría correctamente.</p>
+                        </div>
+
+                        <div class="bg-primary-50 dark:bg-primary-800/50 p-6 rounded-2xl border-l-4 border-highlight">
+                            <h4 class="font-black text-primary-500 dark:text-white uppercase text-sm mb-2">Cookies de Personalización</h4>
+                            <p class="text-sm">Permiten recordar información para que el usuario acceda al servicio con determinadas características (por ejemplo, su preferencia de <strong>Modo Oscuro</strong> o el idioma).</p>
+                        </div>
+
+                        <div class="bg-primary-50 dark:bg-primary-800/50 p-6 rounded-2xl border-l-4 border-purple-500">
+                            <h4 class="font-black text-primary-500 dark:text-white uppercase text-sm mb-2">Cookies de Terceros</h4>
+                            <p class="text-sm">Utilizamos servicios de terceros (como <strong>Google Fonts, Firebase y Redes Sociales</strong>) que pueden instalar cookies para funciones estadísticas o para mostrar contenido incrustado.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">¿Cómo desactivar las Cookies?</h2>
+                    <p>Usted puede restringir, bloquear o borrar las cookies de este sitio web en cualquier momento modificando la configuración de su navegador. A continuación, le facilitamos los enlaces a las instrucciones de los navegadores principales:</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                        <a href="https://support.google.com/chrome/answer/95647?hl=es" target="_blank" class="p-4 bg-primary-50 dark:bg-primary-800 text-center rounded-xl text-xs font-bold hover:bg-highlight hover:text-white transition-colors">Google Chrome</a>
+                        <a href="https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-sitios-web-rastrear-preferencias" target="_blank" class="p-4 bg-primary-50 dark:bg-primary-800 text-center rounded-xl text-xs font-bold hover:bg-highlight hover:text-white transition-colors">Mozilla Firefox</a>
+                        <a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" target="_blank" class="p-4 bg-primary-50 dark:bg-primary-800 text-center rounded-xl text-xs font-bold hover:bg-highlight hover:text-white transition-colors">Safari</a>
+                        <a href="https://support.microsoft.com/es-es/microsoft-edge/eliminar-las-cookies-en-microsoft-edge-63496676-91cd-49da-bbd5-4460a1339426" target="_blank" class="p-4 bg-primary-50 dark:bg-primary-800 text-center rounded-xl text-xs font-bold hover:bg-highlight hover:text-white transition-colors">Microsoft Edge</a>
+                    </div>
+                </section>
+
+                <section class="bg-primary-500 text-white p-8 rounded-3xl">
+                    <h2 class="text-xl font-black uppercase mb-4 text-highlight">Nota Importante</h2>
+                    <p class="text-sm opacity-80 italic">Si decide bloquear las cookies, es posible que algunas funciones de nuestra web (como el cambio de tema o el acceso al Panel Admin) no funcionen correctamente.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="theme-aware-footer py-20">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="h-20 mb-8">
+                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed">
+                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Navegación</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
+                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
+                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
+                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
+                        <li><a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Contacto</h4>
+                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
+                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i> Usabal Kiroldegia, 20400 Tolosa</li>
+                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i> eskubaloia.tolosacf@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Síguenos</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="instagram" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="twitter" class="w-6 h-6"></i>
+                        </a>
+                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
+                            <i data-feather="facebook" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
+                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
+                    <span>|</span>
+                    <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
+                    <span>|</span>
+                    <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/common.js"></script>
+</body>
+</html>

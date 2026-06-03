@@ -1,0 +1,192 @@
+:root {
+  --primary: #0E1A3D;
+  --primary-light: #1A2B5A;
+  --secondary: #3B82F6; /* Action Blue */
+  --accent: #FFFFFF;
+  --text-dark: #0E1A3D;
+  --text-light: #F8F9FA;
+  --bg-light: #FFFFFF;
+  --bg-dark: #0A1430;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.6s ease-out forwards;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  scroll-behavior: smooth;
+}
+
+.hover-lift {
+  transition: var(--transition);
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-card {
+  background: rgba(14, 26, 61, 0.4);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, white 0%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
+/* Navbar blur & Theme-aware colors */
+nav.scrolled {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dark nav.scrolled {
+  background: rgba(14, 26, 61, 0.8) !important;
+}
+
+/* Specific Footer/Header classes to ensure "lightness" */
+.theme-aware-header {
+  background-color: var(--bg-light);
+  color: var(--primary);
+  border-bottom: 1px solid rgba(14, 26, 61, 0.1);
+}
+
+.dark .theme-aware-header {
+  background-color: var(--primary);
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-aware-footer {
+  background-color: #F8F9FA;
+  color: var(--primary);
+  border-top: 1px solid rgba(14, 26, 61, 0.1);
+}
+
+.dark .theme-aware-footer {
+  background-color: var(--primary);
+  color: white;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animation refinement */
+.hero-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(14, 26, 61, 0.9), rgba(14, 26, 61, 0.4), transparent);
+}
+
+.dark .hero-gradient-overlay {
+  background: linear-gradient(to right, rgba(10, 20, 48, 1), rgba(10, 20, 48, 0.7), transparent);
+}
+
+/* Mobile Menu Drawer */
+#mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(14, 26, 61, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+}
+
+#mobile-menu-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 400px;
+    height: 100%;
+    background-color: var(--bg-light);
+    z-index: 101;
+    transition: var(--transition);
+    box-shadow: -10px 0 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.dark #mobile-menu {
+    background-color: var(--primary);
+}
+
+#mobile-menu.active {
+    right: 0;
+}
+
+.body-lock {
+    overflow: hidden;
+}
+
+/* Mobile-friendly table improvements */
+.overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+/* Cookie Banner */
+#cookie-banner.translate-y-full {
+    transform: translateY(100%);
+}
+
+#cookie-banner:not(.translate-y-full) {
+    transform: translateY(0);
+}
+
+.backdrop-blur-xl {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+}
