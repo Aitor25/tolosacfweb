@@ -95,7 +95,6 @@
     line-height: 1;
   }
   .nav-brand-text span { color: var(--accent); }
-  /* Modo claro: nombre siempre oscuro */
   html:not(.dark) #navbar .nav-brand-text { color: var(--navy); }
   html:not(.dark) #navbar .nav-brand-text span { color: var(--accent); }
 
@@ -131,7 +130,6 @@
   .nav-links a:hover::after { width: 100%; }
   .nav-links a.active::after { width: 100%; }
 
-  /* Modo claro: links siempre oscuros */
   html:not(.dark) #navbar .nav-links a { color: var(--navy); text-shadow: none; }
   html:not(.dark) #navbar .nav-links a:hover { color: var(--accent); }
   html:not(.dark) #navbar #theme-toggle { color: var(--navy); border-color: rgba(0,0,0,0.2); background: transparent; }
@@ -257,7 +255,7 @@
     position: relative; z-index: 10;
     max-width: 1400px; width: 100%;
     margin: 0 auto;
-    padding: 0 2rem 5rem;
+    padding: 0 2rem 12rem;
   }
 
   .hero-title {
@@ -508,7 +506,7 @@
 
   @media(max-width: 768px) {
     .section { padding: 3rem 1.25rem; }
-    .hero-content { padding: 0 1.25rem 4rem; }
+    .hero-content { padding: 0 1.25rem 6rem; }
     .stat-item { padding: 2rem 1rem; }
   }
 </style>
