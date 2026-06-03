@@ -51,37 +51,32 @@
     z-index: 100;
     transition: background 0.35s, padding 0.35s, backdrop-filter 0.35s;
     padding: 1.25rem 0;
-    background: rgba(4, 16, 31, 0.45);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid transparent;
   }
 
-  /* Dark mode navbar */
   html.dark #navbar {
-    background: rgba(4, 16, 31, 0.45);
+    background: rgba(4, 16, 31, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
   html.dark #navbar.scrolled {
-    background: rgba(4, 16, 31, 0.92);
+    background: rgba(4, 16, 31, 0.95);
     border-bottom: 1px solid rgba(255,255,255,0.08);
   }
 
-  /* Light mode navbar */
   html:not(.dark) #navbar {
-    background: rgba(220, 232, 255, 0.35);
-    border-bottom: 1px solid rgba(255,255,255,0.4);
+    background: rgba(220, 235, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(18, 85, 201, 0.1);
   }
   html:not(.dark) #navbar.scrolled {
-    background: rgba(240, 246, 255, 0.92);
-    border-bottom: 1px solid rgba(18, 85, 201, 0.12);
+    background: rgba(240, 246, 255, 0.95);
+    border-bottom: 1px solid rgba(18, 85, 201, 0.15);
   }
 
-  #navbar.scrolled {
-    padding: 0.75rem 0;
-  }
-
-  /* Remove the old ::before gradient — blur handles contrast now */
+  #navbar.scrolled { padding: 0.75rem 0; }
   #navbar::before { display: none; }
 
   .nav-inner {
@@ -232,8 +227,9 @@
   /* ─── HERO ─── */
   #hero {
     position: relative;
-    height: 100vh;
-    min-height: 640px;
+    height: calc(100vh - 72px);
+    min-height: 560px;
+    margin-top: 72px;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -254,13 +250,21 @@
   }
   @keyframes heroZoom { to { transform: scale(1); } }
 
-  /* Deep gradient over photo */
+  /* Deep gradient over photo — dark mode */
   #hero-overlay {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(to right, rgba(4,16,31,0.95) 0%, rgba(4,16,31,0.55) 60%, rgba(4,16,31,0.1) 100%),
-      linear-gradient(to top,   rgba(4,16,31,1)    0%, transparent 55%);
+      linear-gradient(to right, rgba(4,16,31,0.92) 0%, rgba(4,16,31,0.5) 60%, rgba(4,16,31,0.15) 100%),
+      linear-gradient(to top, rgba(4,16,31,0.95) 0%, transparent 55%);
+    transition: background 0.35s;
+  }
+
+  /* Light mode: capa azul claro */
+  html:not(.dark) #hero-overlay {
+    background:
+      linear-gradient(to right, rgba(180,210,255,0.82) 0%, rgba(180,210,255,0.45) 60%, rgba(180,210,255,0.1) 100%),
+      linear-gradient(to top, rgba(200,225,255,0.9) 0%, transparent 55%);
   }
 
   /* Diagonal accent stripe */
@@ -315,7 +319,6 @@
     width: 100%;
     margin: 0 auto;
     padding: 0 2rem;
-    margin-top: 80px;
   }
 
   .hero-tag {
@@ -417,6 +420,28 @@
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(30px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+
+  html:not(.dark) .hero-title {
+    color: var(--navy);
+    text-shadow: 0 2px 12px rgba(180,210,255,0.5);
+  }
+  html:not(.dark) .hero-title em {
+    color: var(--accent);
+    text-shadow: none;
+  }
+  html:not(.dark) .hero-sub {
+    color: rgba(4, 16, 31, 0.8);
+    text-shadow: none;
+  }
+  html:not(.dark) .hero-tag { box-shadow: none; }
+  html:not(.dark) .btn-outline {
+    color: var(--navy);
+    border-color: rgba(4,16,31,0.4);
+  }
+  html:not(.dark) .btn-outline:hover {
+    background: rgba(4,16,31,0.08);
+    border-color: var(--navy);
   }
 
   /* Hero scroll indicator */
