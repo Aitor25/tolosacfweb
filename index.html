@@ -95,9 +95,9 @@
     line-height: 1;
   }
   .nav-brand-text span { color: var(--accent); }
-  html:not(.dark) #navbar:not(.scrolled) .nav-brand-text { color: white; }
-  html:not(.dark) #navbar.scrolled .nav-brand-text { color: var(--navy); }
-  html:not(.dark) #navbar.scrolled .nav-brand-text span { color: var(--accent); }
+  /* Modo claro: nombre siempre oscuro */
+  html:not(.dark) #navbar .nav-brand-text { color: var(--navy); }
+  html:not(.dark) #navbar .nav-brand-text span { color: var(--accent); }
 
   .nav-links {
     display: none;
@@ -131,11 +131,11 @@
   .nav-links a:hover::after { width: 100%; }
   .nav-links a.active::after { width: 100%; }
 
-  html:not(.dark) #navbar.scrolled .nav-links a { color: var(--navy-mid); text-shadow: none; }
-  html:not(.dark) #navbar.scrolled .nav-links a:hover { color: var(--accent); }
-  html:not(.dark) #navbar:not(.scrolled) .nav-links a { color: white; }
-  html:not(.dark) #navbar.scrolled #theme-toggle { color: var(--navy); border-color: rgba(0,0,0,0.2); background: transparent; }
-  html:not(.dark) #navbar.scrolled #menu-toggle { color: var(--navy); }
+  /* Modo claro: links siempre oscuros */
+  html:not(.dark) #navbar .nav-links a { color: var(--navy); text-shadow: none; }
+  html:not(.dark) #navbar .nav-links a:hover { color: var(--accent); }
+  html:not(.dark) #navbar #theme-toggle { color: var(--navy); border-color: rgba(0,0,0,0.2); background: transparent; }
+  html:not(.dark) #navbar #menu-toggle { color: var(--navy); }
 
   #theme-toggle {
     background: rgba(255,255,255,0.1);
@@ -148,8 +148,7 @@
     transition: all 0.2s;
     margin-left: 1rem;
   }
-  #theme-toggle:hover { background: var(--accent); border-color: var(--accent); }
-  html:not(.dark) #navbar.scrolled #theme-toggle { color: var(--navy); border-color: var(--navy-light); background: transparent; }
+  #theme-toggle:hover { background: var(--accent); border-color: var(--accent); color: white; }
 
   #menu-toggle {
     display: flex;
@@ -157,7 +156,6 @@
     color: white; cursor: pointer; padding: 0.5rem;
   }
   @media(min-width: 1024px) { #menu-toggle { display: none; } }
-  html:not(.dark) #navbar.scrolled #menu-toggle { color: var(--navy); }
 
   #mobile-menu {
     position: fixed;
