@@ -1,248 +1,1374 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOLOSA CF ESKUBALOIA - Sitio Oficial</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <link rel="stylesheet" href="styles.css">
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#0E1A3D',
-                            600: '#0a1430',
-                            700: '#070c1e',
-                            800: '#04060f',
-                            900: '#020308',
-                        },
-                        highlight: '#3B82F6',
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOLOSA CF ESKUBALOIA - Sitio Oficial</title>
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  :root {
+    --navy: #04101f;
+    --navy-mid: #081829;
+    --navy-light: #0e2340;
+    --accent: #1255c9;
+    --accent-bright: #1e6ef5;
+    --accent-glow: rgba(18, 85, 201, 0.45);
+    --white: #f0f4ff;
+    --gray-muted: #7a8fad;
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: #f5f3ee;
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  html.dark body {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  /* global accent replacements: --crimson → --accent */
+  /* applied inline below; no further :root needed */
+
+  /* ─── NAVBAR ─── */
+  #navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    transition: background 0.35s, padding 0.35s, backdrop-filter 0.35s;
+    padding: 1.5rem 0;
+  }
+  /* Always a subtle glass on hero so links are legible */
+  #navbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(4,16,31,0.7) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  #navbar.scrolled {
+    background: rgba(4,16,31,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  html:not(.dark) #navbar.scrolled {
+    background: rgba(240,244,255,0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .nav-brand img {
+    height: 48px;
+    width: auto;
+  }
+  .nav-brand-text {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: white;
+    line-height: 1;
+  }
+  .nav-brand-text span { color: var(--accent); }
+  html:not(.dark) #navbar:not(.scrolled) .nav-brand-text { color: white; }
+  html:not(.dark) #navbar.scrolled .nav-brand-text { color: var(--navy); }
+  html:not(.dark) #navbar.scrolled .nav-brand-text span { color: var(--accent); }
+
+  .nav-links {
+    display: none;
+    gap: 2rem;
+    align-items: center;
+    list-style: none;
+  }
+  @media(min-width: 1024px) { .nav-links { display: flex; } }
+
+  .nav-links a {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(255,255,255,1);
+    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.25s;
+  }
+  .nav-links a:hover { color: white; }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a.active::after { width: 100%; }
+
+  html:not(.dark) #navbar.scrolled .nav-links a { color: var(--navy-mid); }
+  html:not(.dark) #navbar.scrolled .nav-links a:hover { color: var(--accent); }
+
+  #theme-toggle {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    margin-left: 1rem;
+  }
+  #theme-toggle:hover { background: var(--accent); border-color: var(--accent); }
+  html:not(.dark) #navbar.scrolled #theme-toggle { color: var(--navy); border-color: var(--navy-light); background: transparent; }
+
+  /* hamburger */
+  #menu-toggle {
+    display: flex;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  @media(min-width: 1024px) { #menu-toggle { display: none; } }
+  html:not(.dark) #navbar.scrolled #menu-toggle { color: var(--navy); }
+
+  /* Mobile menu */
+  #mobile-menu {
+    position: fixed;
+    top: 0; right: -100%;
+    width: min(320px, 100vw);
+    height: 100vh;
+    background: var(--navy);
+    z-index: 200;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.35s cubic-bezier(0.77,0,0.175,1);
+  }
+  #mobile-menu.open { right: 0; }
+  #mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  #mobile-menu-overlay.open { opacity: 1; pointer-events: all; }
+
+  .mobile-nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 2rem;
+  }
+  .mobile-nav-links li { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .mobile-nav-links a {
+    display: block;
+    padding: 1rem 0;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    transition: color 0.2s, padding-left 0.2s;
+  }
+  .mobile-nav-links a:hover { color: white; padding-left: 0.5rem; }
+
+  /* ─── HERO ─── */
+  #hero {
+    position: relative;
+    height: 100vh;
+    min-height: 640px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--navy);
+  }
+
+  /* Photo layer */
+  #hero-bg {
+    position: absolute;
+    inset: 0;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    transform: scale(1.08);
+    animation: heroZoom 9s ease-out forwards;
+    filter: saturate(0.7) brightness(0.55);
+  }
+  @keyframes heroZoom { to { transform: scale(1); } }
+
+  /* Deep gradient over photo */
+  #hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(4,16,31,0.95) 0%, rgba(4,16,31,0.55) 60%, rgba(4,16,31,0.1) 100%),
+      linear-gradient(to top,   rgba(4,16,31,1)    0%, transparent 55%);
+  }
+
+  /* Diagonal accent stripe */
+  #hero-stripe {
+    position: absolute;
+    top: 0; right: 15%;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.6;
+    transform: skewX(-8deg);
+  }
+  #hero-stripe::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -14px;
+    width: 2px;
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+
+  /* Geometric pattern overlay */
+  #hero-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.8) 40px,
+        rgba(255,255,255,0.8) 41px
+      );
+    pointer-events: none;
+  }
+
+  /* Glowing accent dot bottom-right */
+  #hero-glow {
+    position: absolute;
+    bottom: -80px; right: 5%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem 5.5rem;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.85rem;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.2s both;
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(4.5rem, 12vw, 10rem);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.3), 0 8px 40px rgba(0,0,0,0.6);
+    animation: fadeUp 0.8s 0.35s both;
+    max-width: 850px;
+  }
+  .hero-title em {
+    color: var(--accent-bright);
+    font-style: normal;
+    display: block;
+    text-shadow: 0 0 60px rgba(30,110,245,0.5), 0 2px 0 rgba(0,0,0,0.3);
+  }
+
+  .hero-rule {
+    width: 5rem;
+    height: 3px;
+    background: var(--accent);
+    margin: 1.75rem 0;
+    animation: fadeUp 0.8s 0.45s both;
+    box-shadow: 0 0 16px var(--accent-glow);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: rgba(210, 228, 255, 0.85);
+    margin-bottom: 2.5rem;
+    max-width: 480px;
+    line-height: 1.65;
+    animation: fadeUp 0.8s 0.5s both;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+    font-weight: 500;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.65s both;
+  }
+
+  .btn-primary {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.9rem 2rem;
+    background: var(--accent);
+    color: white;
+    border: 2px solid var(--accent);
+    transition: background 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--accent-bright); transform: translateY(-2px); }
+
+  .btn-outline {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.9rem 2rem;
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hero scroll indicator */
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 10;
+    animation: fadeUp 1s 1s both;
+  }
+  .hero-scroll span {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    writing-mode: vertical-rl;
+  }
+  .hero-scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+    animation: scrollLine 2s 1.5s infinite;
+  }
+  @keyframes scrollLine {
+    0%  { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100%{ transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ─── FIXTURE BANNER ─── */
+  #fixture-banner {
+    background: var(--accent);
+    color: white;
+  }
+  html:not(.dark) #fixture-banner { background: var(--accent); }
+
+  .fixture-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .fixture-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .fixture-match {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.1rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .fixture-meta {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .fixture-meta i { width: 14px; height: 14px; }
+  .fixture-ticket {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: white;
+    border: 1.5px solid rgba(255,255,255,0.6);
+    padding: 0.4rem 1rem;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .fixture-ticket:hover { background: rgba(255,255,255,0.15); }
+
+  /* ─── SECTION LAYOUT ─── */
+  .section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .section-eyebrow {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+  }
+  html.dark .section-title { color: var(--white); }
+
+  .section-link {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    transition: gap 0.2s;
+  }
+  .section-link:hover { gap: 0.8rem; }
+
+  /* ─── NEWS CARDS ─── */
+  #news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5px;
+    background: rgba(0,0,0,0.1);
+  }
+  html.dark #news-grid { background: rgba(255,255,255,0.06); }
+
+  .news-card {
+    background: white;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3/2;
+    display: flex;
+    align-items: flex-end;
+    text-decoration: none;
+    cursor: pointer;
+    group: true;
+  }
+  html.dark .news-card { background: var(--navy-mid); }
+
+  .news-card-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .news-card:hover .news-card-img { transform: scale(1.06); }
+
+  .news-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(7,18,34,0.92) 0%, rgba(7,18,34,0.3) 50%, transparent 100%);
+  }
+
+  .news-card-body {
+    position: relative;
+    z-index: 2;
+    padding: 1.5rem;
+    width: 100%;
+  }
+
+  .news-card-cat {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .news-card-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.2rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: white;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .news-card-date {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.5rem;
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
+  }
+
+  /* Featured card (first) */
+  .news-card.featured {
+    grid-column: span 2;
+    aspect-ratio: 16/7;
+  }
+  .news-card.featured .news-card-title { font-size: 1.8rem; }
+  @media(max-width: 768px) {
+    .news-card.featured { grid-column: span 1; aspect-ratio: 3/2; }
+    .news-card.featured .news-card-title { font-size: 1.2rem; }
+  }
+
+  /* Placeholder cards */
+  .news-placeholder {
+    background: var(--navy-mid);
+    aspect-ratio: 3/2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .news-placeholder-text {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.08);
+  }
+
+  /* ─── STATS SECTION ─── */
+  #stats-section {
+    background: var(--navy);
+    color: white;
+  }
+  html:not(.dark) #stats-section { background: var(--navy); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0;
+  }
+
+  .stat-item {
+    padding: 3rem 2rem;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  @media(max-width: 640px) {
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 1;
+    color: white;
+  }
+  .stat-number span { color: var(--accent); }
+
+  .stat-label {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-top: 0.5rem;
+  }
+
+  /* ─── INSTAGRAM SECTION ─── */
+  #instagram-section {
+    background: #f0ede6;
+  }
+  html.dark #instagram-section { background: var(--navy-mid); }
+
+  .insta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 3px;
+  }
+
+  .insta-tile {
+    aspect-ratio: 1;
+    background: var(--navy-light);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .insta-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .insta-tile:hover img { transform: scale(1.1); }
+  .insta-tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(192,41,43,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .insta-tile:hover .insta-tile-overlay { opacity: 1; }
+  .insta-tile-overlay i { color: white; }
+
+  /* placeholder tiles */
+  .insta-placeholder {
+    aspect-ratio: 1;
+    background: var(--navy-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.12);
+  }
+  html:not(.dark) .insta-placeholder {
+    background: #ddd9d0;
+    color: rgba(0,0,0,0.08);
+  }
+
+  .insta-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .insta-follow-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.85rem 2rem;
+    background: var(--navy);
+    color: white;
+    transition: background 0.2s, transform 0.2s;
+  }
+  html:not(.dark) .insta-follow-btn { background: var(--navy); }
+  .insta-follow-btn:hover { background: var(--accent); transform: translateY(-2px); }
+
+  /* ─── PARTNERS / PATROCINADORES ─── */
+  #partners-section {
+    border-top: 1px solid rgba(0,0,0,0.07);
+  }
+  html.dark #partners-section { border-top-color: rgba(255,255,255,0.05); }
+
+  .partners-track {
+    overflow: hidden;
+    position: relative;
+  }
+  .partners-row {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    animation: scroll 25s linear infinite;
+    width: max-content;
+  }
+  .partners-row:hover { animation-play-state: paused; }
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .partner-slot {
+    flex: 0 0 auto;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.35;
+    transition: opacity 0.2s;
+    filter: grayscale(1);
+  }
+  .partner-slot:hover { opacity: 0.8; filter: none; }
+  .partner-slot-text {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--navy);
+    white-space: nowrap;
+  }
+  html.dark .partner-slot-text { color: rgba(255,255,255,0.6); }
+
+  /* ─── FOOTER ─── */
+  #footer {
+    background: var(--navy);
+    color: rgba(255,255,255,0.6);
+  }
+  html:not(.dark) #footer { background: var(--navy); }
+
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4rem 2rem 2rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  @media(max-width: 900px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-col:first-child { grid-column: span 2; }
+  }
+  @media(max-width: 500px) {
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-col:first-child { grid-column: span 1; }
+  }
+
+  .footer-logo { height: 60px; margin-bottom: 1.25rem; }
+  .footer-about {
+    font-size: 0.875rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.45);
+    max-width: 280px;
+  }
+
+  .footer-heading {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: white;
+    margin-bottom: 1.25rem;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .footer-links a {
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  .footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 0.75rem;
+  }
+  .footer-contact-item i { flex-shrink: 0; margin-top: 2px; color: var(--accent); }
+
+  .social-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .social-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .social-btn:hover { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .footer-bottom {
+    padding-top: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-copy {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.25);
+  }
+  .footer-legal {
+    display: flex;
+    gap: 1.25rem;
+  }
+  .footer-legal a {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.25);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-legal a:hover { color: rgba(255,255,255,0.7); }
+
+  /* ─── MISC ─── */
+  .divider-line {
+    width: 3rem;
+    height: 3px;
+    background: var(--accent);
+    margin-top: 0.75rem;
+  }
+
+  @media(max-width: 768px) {
+    .section { padding: 3rem 1.25rem; }
+    .hero-content { padding: 0 1.25rem 4rem; }
+    .stat-item { padding: 2rem 1rem; }
+  }
+</style>
+
+<script>
+  (function () {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+</script>
 </head>
+<body>
 
-<body
-    class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
-
-    <!-- Navigation -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-6 text-white">
-        <div class="container mx-auto px-6 flex justify-between items-center text-inherit">
-            <div class="flex items-center space-x-4">
-                <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png"
-                    alt="Escudo Tolosa CF" class="h-12 w-auto border-white border-2 rounded-full p-0.5">
-                <span data-edit="text" class="font-black text-2xl tracking-tighter uppercase hidden xl:block">Tolosa CF
-                    <span class="text-highlight dark:text-white">Eskubaloia</span></span>
-            </div>
-
-            <div class="hidden lg:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base">
-                <a href="index.html"
-                    class="font-bold hover:text-highlight transition-colors border-b-2 border-current">INICIO</a>
-                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
-                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
-                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors">1. EQUIPO</a>
-                <a href="patrocinadores.html"
-                    class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
-                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
-
-                <button id="theme-toggle"
-                    class="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:text-primary-900 transition-all shadow-lg ml-4">
-                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
-                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
-                </button>
-            </div>
-
-            <button class="lg:hidden flex items-center" id="menu-toggle">
-                <i data-feather="menu" class="w-8 h-8"></i>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu-overlay" class="lg:hidden"></div>
-    <div id="mobile-menu" class="lg:hidden p-8 flex flex-col">
-        <div class="flex justify-between items-center mb-12">
-            <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png"
-                alt="Logo" class="h-10 dark:grayscale dark:brightness-200">
-            <button id="close-menu" class="text-primary-500 dark:text-white">
-                <i data-feather="x" class="w-8 h-8"></i>
-            </button>
-        </div>
-        <nav class="flex flex-col space-y-6 text-xl font-black uppercase text-primary-500 dark:text-white">
-            <a href="index.html" class="text-highlight">Inicio</a>
-            <a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a>
-            <a href="club.html" class="hover:text-highlight transition-colors">El Club</a>
-            <a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a>
-            <a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a>
-            <a href="contacto.html" class="hover:text-highlight transition-colors">Contacto</a>
-        </nav>
-        <div class="mt-auto pt-8 border-t border-primary-100 dark:border-primary-800">
-            <button id="mobile-theme-toggle"
-                class="flex items-center space-x-4 font-bold text-primary-500 dark:text-white">
-                <span class="dark:hidden flex items-center"><i data-feather="sun" class="mr-3"></i> Modo Claro</span>
-                <span class="hidden dark:flex items-center"><i data-feather="moon" class="mr-3"></i> Modo Oscuro</span>
-            </button>
-        </div>
+<!-- ═══════════════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF">
+      <span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span>
     </div>
 
-    <!-- Hero Section -->
-    <section class="relative h-screen flex items-center overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <img data-edit="image" src="hero-bg.png" alt="Handball Action" class="w-full h-full object-cover">
-            <div class="hero-gradient-overlay"></div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Inicio</a></li>
+      <li><a href="noticias.html">Noticias</a></li>
+      <li><a href="club.html">El Club</a></li>
+      <li><a href="equipo1.html">1. Equipo</a></li>
+      <li><a href="patrocinadores.html">Patrocinadores</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li>
+        <button id="theme-toggle" aria-label="Cambiar tema">
+          <i data-feather="sun" style="width:16px;height:16px;" class="dark:hidden"></i>
+          <i data-feather="moon" style="width:16px;height:16px;" class="hidden dark:block"></i>
+        </button>
+      </li>
+    </ul>
+
+    <button id="menu-toggle" aria-label="Abrir menú">
+      <i data-feather="menu" style="width:28px;height:28px;"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu-overlay"></div>
+<div id="mobile-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" style="height:44px;">
+    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;">
+      <i data-feather="x" style="width:28px;height:28px;"></i>
+    </button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="noticias.html">Noticias</a></li>
+    <li><a href="club.html">El Club</a></li>
+    <li><a href="equipo1.html">1. Equipo</a></li>
+    <li><a href="patrocinadores.html">Patrocinadores</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+  </ul>
+  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.08);">
+    <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;display:flex;align-items:center;gap:0.75rem;font-family:var(--font-display);font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;">
+      <i data-feather="sun" style="width:18px;height:18px;" class="dark:hidden"></i>
+      <i data-feather="moon" style="width:18px;height:18px;" class="hidden dark:block"></i>
+      <span class="dark:hidden">Modo claro</span>
+      <span class="hidden dark:block">Modo oscuro</span>
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════ -->
+<section id="hero">
+  <img id="hero-bg" src="hero-bg.png" alt="Tolosa CF Eskubaloia" data-edit="image">
+  <div id="hero-overlay"></div>
+  <div id="hero-stripe"></div>
+  <div id="hero-pattern"></div>
+  <div id="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">
+      <i data-feather="zap" style="width:12px;height:12px;"></i>
+      Club oficial · Tolosa, Gipuzkoa
+    </div>
+    <h1 class="hero-title" data-edit="text">
+      Pasión,<br>fuerza y<br><em>orgullo</em>
+    </h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub" data-edit="text">
+      Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la emoción del balonmano vasco.
+    </p>
+    <div class="hero-ctas">
+      <a href="noticias.html" class="btn-primary" data-edit="text">Últimas noticias</a>
+      <a href="club.html" class="btn-outline" data-edit="text">Conoce el club</a>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════
+     FIXTURE BANNER — Próximo Partido
+══════════════════════════════════════════════════ -->
+<div id="fixture-banner">
+  <div class="fixture-inner">
+    <div>
+      <div class="fixture-label">Próximo partido</div>
+      <div class="fixture-match">Tolosa CF vs <span id="fixture-rival">—</span></div>
+    </div>
+    <div class="fixture-meta">
+      <span style="display:flex;align-items:center;gap:0.3rem;">
+        <i data-feather="calendar" style="width:14px;height:14px;"></i>
+        <span id="fixture-date">—</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:0.3rem;">
+        <i data-feather="map-pin" style="width:14px;height:14px;"></i>
+        <span id="fixture-venue">Usabal Kiroldegia</span>
+      </span>
+    </div>
+    <a href="equipo1.html" class="fixture-ticket">Ver equipo →</a>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     NOTICIAS
+══════════════════════════════════════════════════ -->
+<div style="background: white;" class="dark:bg-primary-900">
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Actualidad</div>
+        <h2 class="section-title" data-edit="text">Últimas<br>Noticias</h2>
+        <div class="divider-line"></div>
+      </div>
+      <a href="noticias.html" class="section-link">
+        Ver todas <i data-feather="arrow-right" style="width:16px;height:16px;"></i>
+      </a>
+    </div>
+
+    <div id="news-grid">
+      <!-- Placeholder cards mostradas hasta que Firebase cargue -->
+      <div class="news-placeholder featured">
+        <span class="news-placeholder-text">Cargando noticia destacada…</span>
+      </div>
+      <div class="news-placeholder">
+        <span class="news-placeholder-text">Cargando…</span>
+      </div>
+      <div class="news-placeholder">
+        <span class="news-placeholder-text">Cargando…</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     STATS
+══════════════════════════════════════════════════ -->
+<div id="stats-section">
+  <div style="max-width:1400px;margin:0 auto;">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">100<span>+</span></div>
+        <div class="stat-label">Años de historia</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">12</div>
+        <div class="stat-label">Equipos activos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">300<span>+</span></div>
+        <div class="stat-label">Jugadores</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1<span>ª</span></div>
+        <div class="stat-label">División nacional</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     INSTAGRAM
+══════════════════════════════════════════════════ -->
+<div id="instagram-section">
+  <div class="section">
+    <div class="section-header">
+      <div>
+        <div class="section-eyebrow">Redes sociales</div>
+        <h2 class="section-title">Síguenos en<br>Instagram</h2>
+        <div class="divider-line"></div>
+      </div>
+      <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="section-link">
+        @tolosacfeskubaloia <i data-feather="instagram" style="width:16px;height:16px;"></i>
+      </a>
+    </div>
+
+    <div class="insta-grid">
+      <!-- 8 placeholder tiles — reemplaza los src por imágenes reales si quieres -->
+      <div class="insta-placeholder"><i data-feather="instagram" style="width:28px;height:28px;"></i></div>
+      <div class="insta-placeholder"><i data-feather="instagram" style="width:28px;height:28px;"></i></div>
+      <div class="insta-placeholder"><i data-feather="instagram" style="width:28px;height:28px;"></i></div>
+      <div class="insta-placeholder"><i data-feather="instagram" style="width:28px;height:28px;"></i></div>
+      <div class="insta-placeholder"><i data-feather="instagram" style="width:28px;height:28px;"></i></div>
+      <div class="insta-placeholder"><i data-feather="instagram" style="width:28px;height:28px;"></i></div>
+    </div>
+
+    <div class="insta-cta">
+      <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="insta-follow-btn">
+        <i data-feather="instagram" style="width:18px;height:18px;"></i>
+        Seguir en Instagram
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     PATROCINADORES (scroll automático)
+══════════════════════════════════════════════════ -->
+<div id="partners-section" style="background:white;overflow:hidden;padding:2.5rem 0;">
+  <div style="max-width:1400px;margin:0 auto 1.5rem;padding:0 2rem;">
+    <div class="section-eyebrow" style="text-align:center;">Nuestros patrocinadores</div>
+  </div>
+  <div class="partners-track">
+    <div class="partners-row" id="partners-row">
+      <!-- Añade logos reales; de momento texto placeholder -->
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador A</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador B</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador C</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador D</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador E</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador F</span></div>
+      <!-- duplicado para loop sin corte -->
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador A</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador B</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador C</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador D</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador E</span></div>
+      <div class="partner-slot"><span class="partner-slot-text">Patrocinador F</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════ -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <!-- Brand -->
+      <div class="footer-col">
+        <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="footer-logo">
+        <p class="footer-about" data-edit="text">
+          Tolosa CF Eskubaloia. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
+        </p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="social-btn" aria-label="Instagram">
+            <i data-feather="instagram" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="social-btn" aria-label="Twitter">
+            <i data-feather="twitter" style="width:16px;height:16px;"></i>
+          </a>
+          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="social-btn" aria-label="Facebook">
+            <i data-feather="facebook" style="width:16px;height:16px;"></i>
+          </a>
         </div>
+      </div>
 
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-3xl animate-fade-in">
-                <h1 data-edit="text"
-                    class="text-4xl sm:text-6xl md:text-8xl font-black mb-6 leading-tight uppercase text-white">
-                    Pasión, Fuerza y <br> <span class="text-highlight">Orgullo Blau-grana</span>
-                </h1>
-                <p data-edit="text" class="text-xl md:text-2xl text-primary-100 mb-10 leading-relaxed max-w-2xl">
-                    Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la emoción del
-                    balonmano.
-                </p>
-                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-                    <a data-edit="text" href="noticias.html"
-                        class="inline-block px-10 py-5 bg-white text-primary-900 font-bold rounded-lg transition-transform hover:-translate-y-1 text-center shadow-xl">
-                        ÚLTIMAS NOTICIAS
-                    </a>
-                    <a data-edit="text" href="club.html"
-                        class="inline-block px-10 py-5 bg-transparent border-2 border-white text-white font-bold rounded-lg transition-all hover:bg-white/10 text-center">
-                        CONOCE EL CLUB
-                    </a>
-                </div>
-            </div>
+      <!-- Nav -->
+      <div class="footer-col">
+        <h4 class="footer-heading" data-edit="text">Secciones</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="noticias.html">Noticias</a></li>
+          <li><a href="club.html">El Club</a></li>
+          <li><a href="equipo1.html">1. Equipo</a></li>
+          <li><a href="patrocinadores.html">Patrocinadores</a></li>
+        </ul>
+      </div>
+
+      <!-- Club -->
+      <div class="footer-col">
+        <h4 class="footer-heading" data-edit="text">El Club</h4>
+        <ul class="footer-links">
+          <li><a href="club.html">Historia</a></li>
+          <li><a href="equipo1.html">Primer equipo</a></li>
+          <li><a href="patrocinadores.html">Colabora</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-col">
+        <h4 class="footer-heading" data-edit="text">Contacto</h4>
+        <div class="footer-contact-item">
+          <i data-feather="map-pin" style="width:15px;height:15px;"></i>
+          <span>Usabal Kiroldegia, 20400 Tolosa</span>
         </div>
-    </section>
-
-    <!-- Latest News Overview -->
-    <section class="py-24 bg-white dark:bg-primary-900">
-        <div class="container mx-auto px-6">
-            <div class="flex justify-between items-end mb-16">
-                <div>
-                    <h2 class="text-4xl md:text-5xl font-black uppercase mb-4 text-primary-500 dark:text-white"
-                        data-edit="text">Actualidad <span class="text-highlight">Azul y Blanca</span></h2>
-                    <div class="w-24 h-2 bg-highlight"></div>
-                </div>
-                <a href="noticias.html"
-                    class="hidden md:flex items-center text-primary-500 dark:text-white font-bold hover:text-highlight transition-colors group">
-                    VER TODAS <i data-feather="arrow-right"
-                        class="ml-2 w-5 h-5 transition-transform group-hover:translate-x-2"></i>
-                </a>
-            </div>
-
-            <div id="news-home-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Noticias inyectadas dinámicamente -->
-                <div class="col-span-full py-10 text-center">
-                    <p class="text-primary-500/10 dark:text-white/10 uppercase font-bold tracking-widest text-[10px]">Actualizando noticias...</p>
-                </div>
-            </div>
+        <div class="footer-contact-item">
+          <i data-feather="mail" style="width:15px;height:15px;"></i>
+          <span>eskubaloia.tolosacf@gmail.com</span>
         </div>
-    </section>
+      </div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="theme-aware-footer py-20">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div>
-                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png"
-                        alt="Escudo" class="h-20 mb-8">
-                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed" data-edit="text">
-                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100
-                        años.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">
-                        Navegación</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
-                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
-                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
-                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
-                        <li><a href="patrocinadores.html"
-                                class="hover:text-highlight transition-colors">Patrocinadores</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">
-                        Contacto</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i>
-                            Usabal Kiroldegia, 20400 Tolosa</li>
-                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i>
-                            eskubaloia.tolosacf@gmail.com</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">
-                        Síguenos</h4>
-                    <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank"
-                            class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="instagram" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank"
-                            class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="twitter" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank"
-                            class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="facebook" class="w-6 h-6"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div
-                class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
-                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
-                <div class="flex justify-center space-x-4">
-                    <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
-                    <span>|</span>
-                    <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
-                    <span>|</span>
-                    <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2025 Tolosa CF Eskubaloia. Todos los derechos reservados.</p>
+      <div class="footer-legal">
+        <a href="privacidad.html">Privacidad</a>
+        <a href="cookies.html">Cookies</a>
+        <a href="terminos.html">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/noticias-data.js"></script>
-    <script src="js/common.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            renderNewsCards('news-home-container', 3);
-        });
-    </script>
-    <script src="editor.js"></script>
+
+<!-- ═══════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/noticias-data.js"></script>
+<script src="js/common.js"></script>
+
+<script>
+// ── Navbar scroll ──────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// ── Feather icons ──────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  feather.replace();
+
+  // ── Theme toggle ───────────────────────────────
+  function applyTheme(isDark) {
+    document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    feather.replace();
+  }
+
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    applyTheme(!document.documentElement.classList.contains('dark'));
+  });
+  const mobileTheme = document.getElementById('mobile-theme-toggle');
+  if (mobileTheme) {
+    mobileTheme.addEventListener('click', () => {
+      applyTheme(!document.documentElement.classList.contains('dark'));
+    });
+  }
+
+  // ── Mobile menu ────────────────────────────────
+  const overlay = document.getElementById('mobile-menu-overlay');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('menu-toggle').addEventListener('click', openMenu);
+  document.getElementById('close-menu').addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+
+  // ── News cards ─────────────────────────────────
+  // La función renderNewsCards viene de js/noticias-data.js
+  // Espera el mismo contrato: renderNewsCards(containerId, count)
+  // Pero ahora el container espera cards con imagen, así que
+  // aquí ofrecemos una función de fallback que crea cards bonitas
+  // si la función original no existe o no llama con imagen.
+
+  if (typeof renderNewsCards === 'function') {
+    // Limpiar placeholders y renderizar
+    const grid = document.getElementById('news-grid');
+    grid.innerHTML = '';
+    renderNewsCards('news-grid', 5);
+  }
+
+  // ── Fixture placeholder ────────────────────────
+  // Rellena con datos reales desde Firebase si tienes la colección
+  // Por ahora deja texto visible
+  const rival = document.getElementById('fixture-rival');
+  const date  = document.getElementById('fixture-date');
+  if (rival && !rival.textContent.trim()) rival.textContent = 'Por confirmar';
+  if (date  && !date.textContent.trim())  date.textContent  = 'Próximamente';
+
+  // ── Counter animation ─────────────────────────
+  const counters = document.querySelectorAll('.stat-number');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const raw = el.textContent.replace(/[^0-9]/g, '');
+        const target = parseInt(raw, 10);
+        if (!target) return;
+        let current = 0;
+        const step = Math.ceil(target / 50);
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.innerHTML = el.innerHTML.replace(/\d+/, current);
+          if (current >= target) clearInterval(timer);
+        }, 30);
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => observer.observe(c));
+});
+</script>
+
+<script src="editor.js"></script>
 </body>
-
 </html>
