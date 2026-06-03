@@ -243,8 +243,7 @@
     object-fit: cover;
     object-position: center top;
     width: 100%;
-    height: calc(100% - 90px);
-    margin-top: 90px;
+    height: 100%;
     transform: scale(1.08);
     animation: heroZoom 9s ease-out forwards;
     filter: saturate(0.7) brightness(0.55);
@@ -257,23 +256,62 @@
   /* Deep gradient over photo — dark mode */
   #hero-overlay {
     position: absolute;
-    top: 90px; left: 0; right: 0; bottom: 0;
+    inset: 0;
     background:
       linear-gradient(to right, rgba(4,16,31,0.88) 0%, rgba(4,16,31,0.45) 55%, rgba(4,16,31,0.1) 100%),
       linear-gradient(to top, rgba(4,16,31,0.98) 0%, rgba(4,16,31,0.3) 50%, transparent 100%);
     transition: background 0.5s;
   }
 
-  /* Light mode: capa blanca-azulada encima de la foto */
   html:not(.dark) #hero-overlay {
     background:
       linear-gradient(to right, rgba(255,255,255,0.88) 0%, rgba(210,228,255,0.55) 55%, rgba(180,210,255,0.15) 100%),
       linear-gradient(to top, rgba(240,248,255,0.95) 0%, rgba(210,228,255,0.4) 50%, transparent 100%);
   }
 
-  /* Light mode: foto más clara y desaturada */
-  html:not(.dark) #hero-bg {
-    filter: saturate(0.4) brightness(0.9);
+  /* Diagonal accent stripe */
+  #hero-stripe {
+    position: absolute;
+    top: 0; right: 15%;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.6;
+    transform: skewX(-8deg);
+  }
+  #hero-stripe::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -14px;
+    width: 2px;
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.3;
+  }
+
+  /* Geometric pattern overlay */
+  #hero-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.8) 40px,
+        rgba(255,255,255,0.8) 41px
+      );
+    pointer-events: none;
+  }
+
+  /* Glowing accent dot bottom-right */
+  #hero-glow {
+    position: absolute;
+    bottom: -80px; right: 5%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
   }
 
   /* Diagonal accent stripe */
@@ -327,7 +365,7 @@
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 2rem 4rem;
+    padding: 0 2rem 5rem;
   }
 
   .hero-tag {
