@@ -50,28 +50,39 @@
     width: 100%;
     z-index: 100;
     transition: background 0.35s, padding 0.35s, backdrop-filter 0.35s;
-    padding: 1.5rem 0;
-  }
-  /* Always a subtle glass on hero so links are legible */
-  #navbar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(4,16,31,0.7) 0%, transparent 100%);
-    pointer-events: none;
-  }
-  #navbar.scrolled {
-    background: rgba(4,16,31,0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    padding: 0.75rem 0;
+    padding: 1.25rem 0;
+    background: rgba(4, 16, 31, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(255,255,255,0.06);
   }
-  html:not(.dark) #navbar.scrolled {
-    background: rgba(240,244,255,0.95);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+
+  /* Dark mode navbar */
+  html.dark #navbar {
+    background: rgba(4, 16, 31, 0.45);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
+  html.dark #navbar.scrolled {
+    background: rgba(4, 16, 31, 0.92);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* Light mode navbar */
+  html:not(.dark) #navbar {
+    background: rgba(220, 232, 255, 0.35);
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+  }
+  html:not(.dark) #navbar.scrolled {
+    background: rgba(240, 246, 255, 0.92);
+    border-bottom: 1px solid rgba(18, 85, 201, 0.12);
+  }
+
+  #navbar.scrolled {
+    padding: 0.75rem 0;
+  }
+
+  /* Remove the old ::before gradient — blur handles contrast now */
+  #navbar::before { display: none; }
 
   .nav-inner {
     max-width: 1400px;
@@ -139,8 +150,11 @@
   .nav-links a:hover::after { width: 100%; }
   .nav-links a.active::after { width: 100%; }
 
-  html:not(.dark) #navbar.scrolled .nav-links a { color: var(--navy-mid); }
+  html:not(.dark) #navbar.scrolled .nav-links a { color: var(--navy-mid); text-shadow: none; }
   html:not(.dark) #navbar.scrolled .nav-links a:hover { color: var(--accent); }
+  html:not(.dark) #navbar:not(.scrolled) .nav-links a { color: white; }
+  html:not(.dark) #navbar.scrolled #theme-toggle { color: var(--navy); border-color: rgba(0,0,0,0.2); background: transparent; }
+  html:not(.dark) #navbar.scrolled #menu-toggle { color: var(--navy); }
 
   #theme-toggle {
     background: rgba(255,255,255,0.1);
@@ -299,7 +313,7 @@
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 2rem 5.5rem;
+    padding: 140px 2rem 5.5rem;
   }
 
   .hero-tag {
