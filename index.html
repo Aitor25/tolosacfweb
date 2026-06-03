@@ -30,7 +30,7 @@
 
   body {
     font-family: var(--font-body);
-    background: #f5f3ee;
+    background: #f0f4ff;
     color: var(--navy);
     overflow-x: hidden;
   }
@@ -231,7 +231,7 @@
     min-height: 560px;
     margin-top: 72px;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     overflow: hidden;
     background: var(--navy);
   }
@@ -255,16 +255,21 @@
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(to right, rgba(4,16,31,0.92) 0%, rgba(4,16,31,0.5) 60%, rgba(4,16,31,0.15) 100%),
-      linear-gradient(to top, rgba(4,16,31,0.95) 0%, transparent 55%);
-    transition: background 0.35s;
+      linear-gradient(to right, rgba(4,16,31,0.88) 0%, rgba(4,16,31,0.45) 55%, rgba(4,16,31,0.1) 100%),
+      linear-gradient(to top, rgba(4,16,31,0.98) 0%, rgba(4,16,31,0.3) 50%, transparent 100%);
+    transition: background 0.5s;
   }
 
-  /* Light mode: capa azul claro */
+  /* Light mode: capa blanca-azulada encima de la foto */
   html:not(.dark) #hero-overlay {
     background:
-      linear-gradient(to right, rgba(180,210,255,0.82) 0%, rgba(180,210,255,0.45) 60%, rgba(180,210,255,0.1) 100%),
-      linear-gradient(to top, rgba(200,225,255,0.9) 0%, transparent 55%);
+      linear-gradient(to right, rgba(255,255,255,0.88) 0%, rgba(210,228,255,0.55) 55%, rgba(180,210,255,0.15) 100%),
+      linear-gradient(to top, rgba(240,248,255,0.95) 0%, rgba(210,228,255,0.4) 50%, transparent 100%);
+  }
+
+  /* Light mode: foto más clara y desaturada */
+  html:not(.dark) #hero-bg {
+    filter: saturate(0.4) brightness(0.9);
   }
 
   /* Diagonal accent stripe */
@@ -318,7 +323,7 @@
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 2rem 4rem;
   }
 
   .hero-tag {
@@ -566,6 +571,19 @@
     letter-spacing: -0.01em;
   }
   html.dark .section-title { color: var(--white); }
+  html.dark .section-eyebrow { color: var(--accent-bright); }
+
+  /* News section bg */
+  .news-section-bg { background: white; }
+  html.dark .news-section-bg { background: var(--navy-mid); }
+
+  /* Instagram section */
+  #instagram-section { background: #e8f0ff; }
+  html.dark #instagram-section { background: var(--navy-mid); }
+
+  /* Partners section */
+  #partners-bg { background: white; }
+  html.dark #partners-bg { background: var(--navy); }
 
   .section-link {
     font-family: var(--font-display);
@@ -731,10 +749,7 @@
   }
 
   /* ─── INSTAGRAM SECTION ─── */
-  #instagram-section {
-    background: #f0ede6;
-  }
-  html.dark #instagram-section { background: var(--navy-mid); }
+  /* instagram section handled in dark mode block above */
 
   .insta-grid {
     display: grid;
@@ -852,7 +867,7 @@
     color: var(--navy);
     white-space: nowrap;
   }
-  html.dark .partner-slot-text { color: rgba(255,255,255,0.6); }
+  html.dark .partner-slot-text { color: rgba(255,255,255,0.5); }
 
   /* ─── FOOTER ─── */
   #footer {
@@ -1063,10 +1078,6 @@
   <div id="hero-glow"></div>
 
   <div class="hero-content">
-    <div class="hero-tag">
-      <i data-feather="zap" style="width:12px;height:12px;"></i>
-      Club oficial · Tolosa, Gipuzkoa
-    </div>
     <h1 class="hero-title" data-edit="text">
       Pasión,<br>fuerza y<br><em>orgullo</em>
     </h1>
@@ -1114,7 +1125,7 @@
 <!-- ═══════════════════════════════════════════════
      NOTICIAS
 ══════════════════════════════════════════════════ -->
-<div style="background: white;" class="dark:bg-primary-900">
+<div style="background: white;" class="news-section-bg">
   <div class="section">
     <div class="section-header">
       <div>
@@ -1209,7 +1220,7 @@
 <!-- ═══════════════════════════════════════════════
      PATROCINADORES (scroll automático)
 ══════════════════════════════════════════════════ -->
-<div id="partners-section" style="background:white;overflow:hidden;padding:2.5rem 0;">
+<div id="partners-section" class="news-section-bg" style="overflow:hidden;padding:2.5rem 0;">
   <div style="max-width:1400px;margin:0 auto 1.5rem;padding:0 2rem;">
     <div class="section-eyebrow" style="text-align:center;">Nuestros patrocinadores</div>
   </div>
