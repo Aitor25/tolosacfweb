@@ -1,212 +1,131 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Política de Privacidad - TOLOSA CF ESKUBALOIA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <link rel="stylesheet" href="styles.css">
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#0E1A3D',
-                            600: '#0a1430',
-                            700: '#070c1e',
-                            800: '#04060f',
-                            900: '#020308',
-                        },
-                        highlight: '#3B82F6',
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidad - TOLOSA CF ESKUBALOIA</title>
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root{--navy:#04101f;--navy-mid:#081829;--navy-light:#0e2340;--accent:#1255c9;--accent-bright:#1e6ef5;--accent-glow:rgba(18,85,201,0.4);--white:#f0f4ff;--font-display:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-out:cubic-bezier(0.16,1,0.3,1)}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+  body{font-family:var(--font-body);background:#f0f4ff;color:var(--navy);overflow-x:hidden}html.dark body{background:var(--navy);color:var(--white)}
+  #navbar{position:fixed;top:0;width:100%;z-index:500;padding:1.1rem 0;transition:padding .4s var(--ease-out),background .4s,border-color .4s;border-bottom:1px solid transparent}
+  html.dark #navbar{background:rgba(4,16,31,.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(255,255,255,.05)}
+  html:not(.dark) #navbar{background:rgba(220,235,255,.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(18,85,201,.08)}
+  #navbar.scrolled{padding:.65rem 0}html.dark #navbar.scrolled{background:rgba(4,16,31,.95)}html:not(.dark) #navbar.scrolled{background:rgba(240,246,255,.97);border-bottom-color:rgba(18,85,201,.12)}
+  .nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem}
+  .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}.nav-brand img{height:44px;width:auto}
+  .nav-brand-text{font-family:var(--font-display);font-weight:900;font-size:1.35rem;letter-spacing:.03em;text-transform:uppercase;color:white;line-height:1.1}.nav-brand-text span{color:var(--accent-bright)}
+  html:not(.dark) #navbar .nav-brand-text{color:var(--navy)}html:not(.dark) #navbar .nav-brand-text span{color:var(--accent)}
+  .nav-links{display:none;gap:.25rem;align-items:center;list-style:none}@media(min-width:1024px){.nav-links{display:flex}}
+  .nav-links a{font-family:var(--font-display);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,.85);padding:.4rem .75rem;border-radius:6px;transition:color .2s,background .2s;position:relative}
+  .nav-links a::after{content:'';position:absolute;bottom:2px;left:50%;width:0;height:2px;background:var(--accent-bright);border-radius:2px;transition:width .3s var(--ease-out),left .3s var(--ease-out)}
+  .nav-links a:hover{color:white;background:rgba(255,255,255,.07)}.nav-links a:hover::after{width:calc(100% - 1.5rem);left:.75rem}
+  html:not(.dark) .nav-links a{color:rgba(4,16,31,.75)}html:not(.dark) .nav-links a:hover{color:var(--navy);background:rgba(18,85,201,.07)}
+  #theme-toggle{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);border-radius:8px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s var(--ease-spring);margin-left:.5rem}
+  #theme-toggle:hover{background:var(--accent);border-color:var(--accent);color:white;transform:rotate(15deg) scale(1.1)}
+  html:not(.dark) #navbar #theme-toggle{color:var(--navy);border-color:rgba(0,0,0,.12);background:rgba(0,0,0,.04)}
+  #menu-toggle{display:flex;background:none;border:none;color:rgba(255,255,255,.9);cursor:pointer;padding:.4rem;border-radius:6px}@media(min-width:1024px){#menu-toggle{display:none}}html:not(.dark) #navbar #menu-toggle{color:var(--navy)}
+  #mobile-menu{position:fixed;top:0;right:-100%;width:min(340px,100vw);height:100vh;background:var(--navy);z-index:600;padding:2rem;display:flex;flex-direction:column;transition:right .4s cubic-bezier(.77,0,.175,1);box-shadow:-20px 0 60px rgba(0,0,0,.4)}
+  #mobile-menu.open{right:0}#mobile-menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:550;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}#mobile-menu-overlay.open{opacity:1;pointer-events:all}
+  .mobile-nav-links{list-style:none;display:flex;flex-direction:column;margin-top:2rem}.mobile-nav-links li{border-bottom:1px solid rgba(255,255,255,.06)}.mobile-nav-links a{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;font-family:var(--font-display);font-weight:900;font-size:1.4rem;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s,padding-left .25s var(--ease-spring)}.mobile-nav-links a:hover{color:white;padding-left:.75rem}
+  .page-header{padding-top:calc(70px + 4rem);padding-bottom:4rem;background:var(--navy);position:relative;overflow:hidden}
+  .page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 50%,rgba(18,85,201,.15) 0%,transparent 60%);pointer-events:none}
+  .page-header-inner{max-width:900px;margin:0 auto;padding:0 2rem;position:relative;z-index:2}
+  .page-breadcrumb{font-family:var(--font-display);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-bright);margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+  .page-breadcrumb a{color:rgba(255,255,255,.4);text-decoration:none;transition:color .2s}.page-breadcrumb a:hover{color:white}
+  .page-title{font-family:var(--font-display);font-weight:900;font-size:clamp(2.5rem,6vw,5rem);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;color:white}
+  .page-rule{width:3rem;height:3px;background:var(--accent);margin-top:1.25rem;border-radius:2px}
+  .legal-body{max-width:900px;margin:0 auto;padding:4rem 2rem 6rem;background:#f8faff}html.dark .legal-body{background:var(--navy-mid)}
+  .legal-body h2{font-family:var(--font-display);font-weight:900;font-size:1.5rem;text-transform:uppercase;letter-spacing:.03em;margin:2.5rem 0 .75rem;color:var(--navy)}html.dark .legal-body h2{color:var(--white)}
+  .legal-body h3{font-family:var(--font-display);font-weight:700;font-size:1.1rem;text-transform:uppercase;letter-spacing:.05em;margin:1.75rem 0 .5rem;color:var(--accent)}
+  .legal-body p,.legal-body li{font-size:.95rem;line-height:1.8;color:#4a5568;margin-bottom:.75rem}html.dark .legal-body p,html.dark .legal-body li{color:rgba(210,228,255,.65)}
+  .legal-body ul{padding-left:1.25rem;list-style:disc}.legal-body a{color:var(--accent-bright);text-decoration:none}.legal-body a:hover{text-decoration:underline}
+  .last-updated{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);padding:.3rem .75rem;border-radius:20px;margin-bottom:2rem}
+  html:not(.dark) .last-updated{color:#64748b;background:rgba(18,85,201,.07)}
+  #footer{background:#020d1a;color:rgba(255,255,255,.5)}.footer-inner{max-width:1400px;margin:0 auto;padding:4rem 2rem 2rem}
+  .footer-bottom{padding-top:2rem;border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+  .footer-copy{font-size:.78rem;color:rgba(255,255,255,.2)}.footer-legal{display:flex;gap:1.5rem}.footer-legal a{font-size:.78rem;color:rgba(255,255,255,.2);text-decoration:none;transition:color .2s}.footer-legal a:hover{color:rgba(255,255,255,.6)}
+  :focus-visible{outline:2px solid var(--accent-bright);outline-offset:3px;border-radius:4px}
+</style>
+<script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
 </head>
-<body class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
-    
-    <!-- Navigation -->
-    <nav id="navbar" class="w-full z-50 bg-primary-500 dark:bg-primary-800 py-4 shadow-xl">
-        <div class="container mx-auto px-6 flex justify-between items-center text-white">
-            <div class="flex items-center space-x-4">
-                <a href="index.html" class="flex items-center space-x-4">
-                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
-                    <span class="font-black text-xl tracking-tighter uppercase hidden md:block">Tolosa CF <span class="text-highlight">Eskubaloia</span></span>
-                </a>
-            </div>
-            
-            <div class="hidden lg:flex items-center space-x-8 text-sm">
-                <a href="index.html" class="font-bold hover:text-highlight transition-colors">INICIO</a>
-                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
-                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
-                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors">1. EQUIPO</a>
-                <a href="patrocinadores.html" class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
-                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
-                
-                <button id="theme-toggle" class="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all">
-                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
-                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
-                </button>
-            </div>
-            
-            <button class="lg:hidden flex items-center" id="menu-toggle">
-                <i data-feather="menu" class="w-8 h-8"></i>
-            </button>
-        </div>
-    </nav>
+<body>
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand"><img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" width="44" height="44"><span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span></a>
+    <ul class="nav-links"><li><a href="index.html">Inicio</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="club.html">El Club</a></li><li><a href="equipo1.html">1. Equipo</a></li><li><a href="patrocinadores.html">Patrocinadores</a></li><li><a href="contacto.html">Contacto</a></li><li><button id="theme-toggle" aria-label="Cambiar tema"><i data-feather="sun" style="width:15px;height:15px;"></i></button></li></ul>
+    <button id="menu-toggle" aria-label="Abrir menú" aria-expanded="false"><i data-feather="menu" style="width:26px;height:26px;"></i></button>
+  </div>
+</nav>
+<div id="mobile-menu-overlay"></div>
+<div id="mobile-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;"><img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" style="height:42px;"><button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;"><i data-feather="x" style="width:26px;height:26px;"></i></button></div>
+  <ul class="mobile-nav-links"><li><a href="index.html">Inicio <span>→</span></a></li><li><a href="noticias.html">Noticias <span>→</span></a></li><li><a href="club.html">El Club <span>→</span></a></li><li><a href="equipo1.html">1. Equipo <span>→</span></a></li><li><a href="patrocinadores.html">Patrocinadores <span>→</span></a></li><li><a href="contacto.html">Contacto <span>→</span></a></li></ul>
+  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);"><button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:0.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;"><i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span></button></div>
+</div>
 
-    <!-- Content -->
-    <main class="py-24">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <h1 class="text-4xl md:text-6xl font-black uppercase mb-12 text-primary-500 dark:text-white">Política de <span class="text-highlight">Privacidad</span></h1>
-            
-            <div class="prose prose-lg dark:prose-invert max-w-none space-y-10 text-primary-400 dark:text-primary-100">
-                <section>
-                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">1. Identificación del Responsable</h2>
-                    <p>En cumplimiento del Reglamento (UE) 2016/679 (RGPD) y la Ley Orgánica 3/2018 (LOPDGDD), le informamos que el Responsable del tratamiento de sus datos es:</p>
-                    <ul class="list-none space-y-2 mt-4 bg-primary-50 dark:bg-primary-800/50 p-6 rounded-2xl border border-primary-100 dark:border-primary-700">
-                        <li><strong>Entidad:</strong> Tolosa Club de Fútbol Eskubaloia (en adelante, "El Club")</li>
-                        <li><strong>CIF:</strong> [Añadir CIF si se dispone]</li>
-                        <li><strong>Dirección:</strong> Usabal Kiroldegia, 20400 Tolosa, Gipuzkoa</li>
-                        <li><strong>Email:</strong> <a href="mailto:eskubaloia.tolosacf@gmail.com" class="text-highlight font-bold">eskubaloia.tolosacf@gmail.com</a></li>
-                    </ul>
-                </section>
+<header class="page-header">
+  <div class="page-header-inner">
+    <div class="page-breadcrumb"><a href="index.html">Inicio</a><span>→</span><span>Privacidad</span></div>
+    <h1 class="page-title">Política de<br>Privacidad</h1>
+    <div class="page-rule"></div>
+  </div>
+</header>
 
-                <section>
-                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">2. ¿Qué datos recopilamos?</h2>
-                    <p>El Club únicamente solicita los datos estrictamente necesarios para llevar a cabo su actividad deportiva y administrativa. Estos pueden incluir:</p>
-                    <ul class="list-disc pl-6 space-y-2">
-                        <li><strong>Datos identificativos:</strong> Nombre, apellidos, DNI/NIE.</li>
-                        <li><strong>Datos de contacto:</strong> Correo electrónico, teléfono, dirección postal.</li>
-                        <li><strong>Datos de navegación:</strong> Dirección IP, cookies (ver Política de Cookies).</li>
-                        <li><strong>Imagen:</strong> Fotografías o vídeos de eventos deportivos (siempre bajo consentimiento o interés legítimo).</li>
-                    </ul>
-                </section>
+<div class="legal-body">
+  <span class="last-updated"><i data-feather="clock" style="width:12px;height:12px;"></i>Última actualización: enero 2025</span>
+  <p>En Tolosa CF Eskubaloia nos comprometemos a proteger tu privacidad. Esta política describe cómo recopilamos, usamos y protegemos tu información personal.</p>
+  <h2>Responsable del tratamiento</h2>
+  <p>Tolosa CF Eskubaloia, con dirección en Usabal Kiroldegia, 20400 Tolosa, Gipuzkoa. Contacto: <a href="mailto:eskubaloia.tolosacf@gmail.com">eskubaloia.tolosacf@gmail.com</a></p>
+  <h2>Datos que recopilamos</h2>
+  <p>Recopilamos únicamente los datos necesarios para el funcionamiento del sitio web:</p>
+  <ul>
+    <li>Preferencias de configuración (tema claro/oscuro)</li>
+    <li>Datos de formulario de contacto cuando los envías voluntariamente</li>
+    <li>Datos de uso anónimos a través de Firebase Analytics</li>
+  </ul>
+  <h2>Finalidad del tratamiento</h2>
+  <ul>
+    <li>Gestionar y responder solicitudes de contacto</li>
+    <li>Mejorar la experiencia de navegación</li>
+    <li>Mantener el funcionamiento técnico del sitio</li>
+  </ul>
+  <h2>Base legal</h2>
+  <p>El tratamiento se basa en tu consentimiento y en el interés legítimo del club para gestionar sus comunicaciones digitales.</p>
+  <h2>Conservación de datos</h2>
+  <p>Los datos de contacto se conservan el tiempo necesario para atender tu solicitud. Los datos de análisis son anónimos y se conservan según la política de Firebase/Google.</p>
+  <h2>Tus derechos</h2>
+  <p>Tienes derecho a acceder, rectificar, suprimir y oponerte al tratamiento de tus datos. Puedes ejercer estos derechos contactando con nosotros en <a href="mailto:eskubaloia.tolosacf@gmail.com">eskubaloia.tolosacf@gmail.com</a>.</p>
+  <h2>Servicios de terceros</h2>
+  <p>Utilizamos Firebase (Google) para gestión de contenidos. Consulta la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">política de privacidad de Google</a> para más información.</p>
+</div>
 
-                <section>
-                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">3. Finalidad y Legitimación</h2>
-                    <p>Tratamos sus datos personales con las siguientes bases legales:</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
-                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Gestión Deportiva</h4>
-                            <p class="text-sm italic">Tramitación de licencias federativas, seguros deportivos y organización de entrenamientos y partidos.</p>
-                        </div>
-                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
-                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Comunicación</h4>
-                            <p class="text-sm italic">Envío de circulares, avisos de partidos y noticias relevantes del club vía email o WhatsApp.</p>
-                        </div>
-                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
-                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Atención al Usuario</h4>
-                            <p class="text-sm italic">Resolución de dudas o solicitudes enviadas a través de nuestros formularios de contacto.</p>
-                        </div>
-                        <div class="bg-primary-50 dark:bg-primary-800/30 p-6 rounded-2xl">
-                            <h4 class="font-black text-highlight uppercase text-sm mb-3">Obligación Legal</h4>
-                            <p class="text-sm italic">Cumplimiento de normativas tributarias, administrativas y deportivas vigentes.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">4. Conservación de los Datos</h2>
-                    <p>Los datos personales se conservarán mientras se mantenga la relación con El Club (socios, jugadores, abonados) o durante los años necesarios para cumplir con las obligaciones legales correspondientes.</p>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-black uppercase text-primary-500 dark:text-white mb-6 border-l-4 border-highlight pl-4">5. Derechos del Interesado</h2>
-                    <p>Usted puede ejercer sus derechos enviando un correo a <span class="text-highlight font-bold">eskubaloia.tolosacf@gmail.com</span> adjuntando copia de su DNI:</p>
-                    <div class="flex flex-wrap gap-3 mt-4">
-                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Acceso</span>
-                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Rectificación</span>
-                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Suprimición (Olvido)</span>
-                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Oposición</span>
-                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Limitación</span>
-                        <span class="px-3 py-1 bg-highlight/10 text-highlight text-xs font-bold rounded-full">Portabilidad</span>
-                    </div>
-                </section>
-
-                <section class="bg-highlight/5 p-8 rounded-3xl border border-highlight/10">
-                    <h2 class="text-xl font-black uppercase text-primary-500 dark:text-white mb-4">Información adicional</h2>
-                    <p class="text-sm">Si considera que no hemos tratado sus datos correctamente, tiene derecho a presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).</p>
-                </section>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="theme-aware-footer py-20">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div>
-                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="h-20 mb-8">
-                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed">
-                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Navegación</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
-                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
-                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
-                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
-                        <li><a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Contacto</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i> Usabal Kiroldegia, 20400 Tolosa</li>
-                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i> eskubaloia.tolosacf@gmail.com</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Síguenos</h4>
-                    <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="instagram" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="twitter" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="facebook" class="w-6 h-6"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
-                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
-                <div class="flex justify-center space-x-4">
-                    <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
-                    <span>|</span>
-                    <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
-                    <span>|</span>
-                    <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="js/common.js"></script>
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2025 Tolosa CF Eskubaloia. Todos los derechos reservados.</p>
+      <nav class="footer-legal"><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="terminos.html">Términos</a></nav>
+    </div>
+  </div>
+</footer>
+<script src="js/common.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  feather.replace();
+  const navbar=document.getElementById('navbar');window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50),{passive:true});
+  function applyTheme(isDark){document.documentElement.classList.toggle('dark',isDark);localStorage.setItem('theme',isDark?'dark':'light');const l=document.getElementById('mobile-theme-label');if(l)l.textContent=isDark?'Modo claro':'Modo oscuro';feather.replace();}
+  document.getElementById('theme-toggle').addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
+  const mt=document.getElementById('mobile-theme-toggle');if(mt)mt.addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
+  const overlay=document.getElementById('mobile-menu-overlay'),mobileMenu=document.getElementById('mobile-menu'),menuToggle=document.getElementById('menu-toggle');
+  function openMenu(){mobileMenu.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';menuToggle.setAttribute('aria-expanded','true');}
+  function closeMenu(){mobileMenu.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow='';menuToggle.setAttribute('aria-expanded','false');}
+  menuToggle.addEventListener('click',openMenu);document.getElementById('close-menu').addEventListener('click',closeMenu);overlay.addEventListener('click',closeMenu);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+});
+</script>
 </body>
 </html>
