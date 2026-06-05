@@ -66,7 +66,7 @@
   html:not(.dark) #navbar.scrolled { background: rgba(240,246,255,0.97); border-bottom-color: rgba(18,85,201,0.12); }
 
   .nav-inner { max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
-  .nav-brand { display: flex; align-items: center; gap: 0.75rem; transition: opacity 0.2s; }
+  .nav-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; transition: opacity 0.2s; }
   .nav-brand:hover { opacity: 0.85; }
   .nav-brand img { height: 44px; width: auto; transition: transform 0.3s var(--ease-spring); }
   .nav-brand:hover img { transform: rotate(-3deg) scale(1.05); }
@@ -293,10 +293,10 @@
 
 <nav id="navbar" role="navigation" aria-label="Navegación principal">
   <div class="nav-inner">
-    <div class="nav-brand">
+    <a href="index.html" class="nav-brand" aria-label="Tolosa CF Eskubaloia - Inicio">
       <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" width="44" height="44">
       <span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span>
-    </div>
+    </a>
     <ul class="nav-links" role="list">
       <li><a href="index.html" class="active" aria-current="page">Inicio</a></li>
       <li><a href="noticias.html">Noticias</a></li>
@@ -527,7 +527,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   feather.replace();
 
-  // Ripple
   document.querySelectorAll('[data-ripple]').forEach(btn => {
     btn.addEventListener('click', function(e) {
       const rect = this.getBoundingClientRect();
@@ -542,7 +541,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Scroll reveal
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); }
@@ -550,11 +548,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => revealObserver.observe(el));
 
-  // Navbar
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); }, { passive: true });
 
-  // Theme
   function applyTheme(isDark) {
     document.documentElement.classList.toggle('dark', isDark);
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -566,7 +562,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileTheme = document.getElementById('mobile-theme-toggle');
   if (mobileTheme) mobileTheme.addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));
 
-  // Mobile menu
   const overlay = document.getElementById('mobile-menu-overlay');
   const mobileMenu = document.getElementById('mobile-menu');
   const menuToggle = document.getElementById('menu-toggle');
@@ -577,16 +572,13 @@ document.addEventListener('DOMContentLoaded', () => {
   overlay.addEventListener('click', closeMenu);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
-  // News
   if (typeof renderNewsCards === 'function') { document.getElementById('news-grid').innerHTML = ''; renderNewsCards('news-grid', 5); }
 
-  // Fixture
   const rival = document.getElementById('fixture-rival');
   const date = document.getElementById('fixture-date');
   if (rival && !rival.textContent.trim()) rival.textContent = 'Por confirmar';
   if (date && !date.textContent.trim()) date.textContent = 'Próximamente';
 
-  // Stats counter
   const statObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
