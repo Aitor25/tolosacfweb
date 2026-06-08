@@ -1,435 +1,403 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1. Equipo Masculino - TOLOSA CF ESKUBALOIA</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Firebase SDK (Compat v9) -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Firebase Config -->
-    <script src="js/firebase-config.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1. Equipo Masculino - TOLOSA CF ESKUBALOIA</title>
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="styles.css">
+<style>
+  :root{--navy:#04101f;--navy-mid:#081829;--navy-light:#0e2340;--accent:#1255c9;--accent-bright:#1e6ef5;--accent-glow:rgba(18,85,201,0.4);--white:#f0f4ff;--font-display:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-out:cubic-bezier(0.16,1,0.3,1);}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--font-body);background:#f0f4ff;color:var(--navy);overflow-x:hidden;}
+  html.dark body{background:var(--navy);color:var(--white);}
+  .reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s var(--ease-out),transform 0.7s var(--ease-out);}
+  .reveal.visible{opacity:1;transform:none;}
+  .delay-1{transition-delay:.1s;}.delay-2{transition-delay:.2s;}.delay-3{transition-delay:.3s;}.delay-4{transition-delay:.4s;}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}*{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}}
+  #navbar{position:fixed;top:0;width:100%;z-index:500;padding:1.1rem 0;transition:padding 0.4s var(--ease-out),background 0.4s,border-color 0.4s;border-bottom:1px solid transparent;}
+  html.dark #navbar{background:rgba(4,16,31,0.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(255,255,255,0.05);}
+  html:not(.dark) #navbar{background:rgba(220,235,255,0.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(18,85,201,0.08);}
+  #navbar.scrolled{padding:.65rem 0;}
+  html.dark #navbar.scrolled{background:rgba(4,16,31,0.95);border-bottom-color:rgba(255,255,255,0.07);}
+  html:not(.dark) #navbar.scrolled{background:rgba(240,246,255,0.97);border-bottom-color:rgba(18,85,201,0.12);}
+  .nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;}
+  .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none;transition:opacity .2s;}
+  .nav-brand:hover{opacity:.85;}
+  .nav-brand img{height:44px;width:auto;transition:transform .3s var(--ease-spring);}
+  .nav-brand:hover img{transform:rotate(-3deg) scale(1.05);}
+  .nav-brand-text{font-family:var(--font-display);font-weight:900;font-size:1.35rem;letter-spacing:.03em;text-transform:uppercase;color:white;line-height:1.1;}
+  .nav-brand-text span{color:var(--accent-bright);}
+  html:not(.dark) #navbar .nav-brand-text{color:var(--navy);}
+  html:not(.dark) #navbar .nav-brand-text span{color:var(--accent);}
+  .nav-links{display:none;gap:.25rem;align-items:center;list-style:none;}
+  @media(min-width:1024px){.nav-links{display:flex;}}
+  .nav-links a{font-family:var(--font-display);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:rgba(255,255,255,0.85);padding:.4rem .75rem;border-radius:6px;transition:color .2s,background .2s;position:relative;}
+  .nav-links a::after{content:'';position:absolute;bottom:2px;left:50%;width:0;height:2px;background:var(--accent-bright);border-radius:2px;transition:width .3s var(--ease-out),left .3s var(--ease-out);}
+  .nav-links a:hover{color:white;background:rgba(255,255,255,0.07);}
+  .nav-links a:hover::after{width:calc(100% - 1.5rem);left:.75rem;}
+  .nav-links a.active{color:white;}
+  .nav-links a.active::after{width:calc(100% - 1.5rem);left:.75rem;background:var(--accent-bright);}
+  html:not(.dark) .nav-links a{color:rgba(4,16,31,0.75);}
+  html:not(.dark) .nav-links a:hover{color:var(--navy);background:rgba(18,85,201,0.07);}
+  html:not(.dark) .nav-links a.active{color:var(--navy);}
+  #theme-toggle{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);border-radius:8px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s var(--ease-spring);margin-left:.5rem;}
+  #theme-toggle:hover{background:var(--accent);border-color:var(--accent);color:white;transform:rotate(15deg) scale(1.1);}
+  html:not(.dark) #navbar #theme-toggle{color:var(--navy);border-color:rgba(0,0,0,0.12);background:rgba(0,0,0,0.04);}
+  #menu-toggle{display:flex;background:none;border:none;color:rgba(255,255,255,0.9);cursor:pointer;padding:.4rem;border-radius:6px;transition:background .2s;}
+  #menu-toggle:hover{background:rgba(255,255,255,0.1);}
+  @media(min-width:1024px){#menu-toggle{display:none;}}
+  html:not(.dark) #navbar #menu-toggle{color:var(--navy);}
+  #mobile-menu{position:fixed;top:0;right:-100%;width:min(340px,100vw);height:100vh;background:var(--navy);z-index:600;padding:2rem;display:flex;flex-direction:column;transition:right .4s cubic-bezier(0.77,0,0.175,1);box-shadow:-20px 0 60px rgba(0,0,0,0.4);}
+  #mobile-menu.open{right:0;}
+  #mobile-menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:550;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);}
+  #mobile-menu-overlay.open{opacity:1;pointer-events:all;}
+  .mobile-nav-links{list-style:none;display:flex;flex-direction:column;margin-top:2rem;}
+  .mobile-nav-links li{border-bottom:1px solid rgba(255,255,255,0.06);}
+  .mobile-nav-links a{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;font-family:var(--font-display);font-weight:900;font-size:1.4rem;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,0.6);text-decoration:none;transition:color .2s,padding-left .25s var(--ease-spring);}
+  .mobile-nav-links a:hover{color:white;padding-left:.75rem;}
 
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#0E1A3D',
-                            600: '#0a1430',
-                            700: '#070c1e',
-                            800: '#04060f',
-                            900: '#020308',
-                        },
-                        highlight: '#3B82F6',
-                    }
-                }
-            }
-        }
-    </script>
+  /* PAGE HEADER */
+  .page-header{margin-top:70px;background:var(--navy);padding:4rem 2rem 3rem;position:relative;overflow:hidden;}
+  html:not(.dark) .page-header{background:var(--navy);}
+  .page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(18,85,201,0.25) 0%,transparent 70%);pointer-events:none;}
+  .page-header-inner{max-width:1400px;margin:0 auto;position:relative;}
+  .page-eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-bright);margin-bottom:.75rem;}
+  .page-eyebrow::before{content:'';width:1.5rem;height:2px;background:var(--accent-bright);border-radius:2px;}
+  .page-title{font-family:var(--font-display);font-weight:900;font-style:italic;font-size:clamp(2.5rem,7vw,5rem);line-height:.9;text-transform:uppercase;color:white;margin-bottom:.75rem;}
+  .page-subtitle{font-size:1rem;color:rgba(255,255,255,0.5);font-weight:500;}
+
+  /* TABS */
+  .tabs-wrapper{background:#f8faff;border-bottom:1px solid rgba(0,0,0,0.06);position:sticky;top:70px;z-index:40;}
+  html.dark .tabs-wrapper{background:var(--navy-mid);border-bottom-color:rgba(255,255,255,0.06);}
+  .tabs-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:0;}
+  .tab-btn{font-family:var(--font-display);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;padding:1rem 1.5rem;border:none;background:none;cursor:pointer;color:rgba(4,16,31,0.45);border-bottom:3px solid transparent;transition:all .2s;}
+  html.dark .tab-btn{color:rgba(255,255,255,0.4);}
+  .tab-btn:hover{color:var(--accent);}
+  html.dark .tab-btn:hover{color:var(--accent-bright);}
+  .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent-bright);}
+  html.dark .tab-btn.active{color:var(--accent-bright);border-bottom-color:var(--accent-bright);}
+
+  /* CONTENT */
+  #page-content{max-width:1400px;margin:0 auto;padding:3rem 2rem;}
+
+  /* STANDINGS TABLE */
+  .standings-table{width:100%;border-collapse:collapse;}
+  .standings-table th{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(4,16,31,0.4);padding:.75rem 1rem;border-bottom:2px solid rgba(0,0,0,0.08);text-align:left;background:#f8faff;}
+  html.dark .standings-table th{color:rgba(255,255,255,0.35);background:var(--navy-mid);border-bottom-color:rgba(255,255,255,0.07);}
+  .standings-table td{padding:.875rem 1rem;border-bottom:1px solid rgba(0,0,0,0.05);font-size:.9rem;vertical-align:middle;}
+  html.dark .standings-table td{border-bottom-color:rgba(255,255,255,0.04);color:rgba(255,255,255,0.8);}
+  .standings-table tr:hover td{background:rgba(18,85,201,0.04);}
+  html.dark .standings-table tr:hover td{background:rgba(255,255,255,0.03);}
+  .standings-table tr.is-tolosa td{background:rgba(18,85,201,0.08);}
+  html.dark .standings-table tr.is-tolosa td{background:rgba(18,85,201,0.15);}
+  .pos-medal{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:.8rem;}
+  .pos-1{background:rgba(234,179,8,0.2);color:#d97706;}
+  .pos-2{background:rgba(148,163,184,0.2);color:#64748b;}
+  .pos-3{background:rgba(180,83,9,0.2);color:#b45309;}
+
+  /* RESULTS */
+  .match-card{background:white;border:1px solid rgba(0,0,0,0.07);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:transform .2s var(--ease-spring),box-shadow .2s;}
+  html.dark .match-card{background:var(--navy-mid);border-color:rgba(255,255,255,0.07);}
+  .match-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+  html.dark .match-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .match-team{font-family:var(--font-display);font-weight:900;font-size:1.1rem;text-transform:uppercase;flex:1;}
+  .match-score{font-family:var(--font-display);font-weight:900;font-size:1.4rem;padding:.5rem 1.25rem;background:var(--navy);color:white;border-radius:8px;min-width:90px;text-align:center;border-bottom:3px solid var(--accent-bright);}
+  html:not(.dark) .match-score{background:var(--navy);}
+  .match-meta{font-size:.72rem;color:rgba(4,16,31,0.4);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
+  html.dark .match-meta{color:rgba(255,255,255,0.35);}
+  .is-tolosa-match .match-team{color:var(--accent);}
+  html.dark .is-tolosa-match .match-team{color:var(--accent-bright);}
+
+  /* JOURNEY SELECTOR */
+  .journey-selector{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;}
+  .journey-btn{font-family:var(--font-display);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .875rem;border-radius:6px;border:1px solid rgba(0,0,0,0.12);background:white;color:rgba(4,16,31,0.5);cursor:pointer;transition:all .2s;}
+  html.dark .journey-btn{background:var(--navy-light);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);}
+  .journey-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .journey-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
+
+  /* FOOTER */
+  #footer{background:#020d1a;color:rgba(255,255,255,0.5);}
+  .footer-inner{max-width:1400px;margin:0 auto;padding:4.5rem 2rem 2.5rem;}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.05);}
+  @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}.footer-col:first-child{grid-column:span 2;}}
+  @media(max-width:500px){.footer-grid{grid-template-columns:1fr;}.footer-col:first-child{grid-column:span 1;}}
+  .footer-logo{height:56px;margin-bottom:1.25rem;opacity:.9;}
+  .footer-about{font-size:.875rem;line-height:1.75;color:rgba(255,255,255,0.38);max-width:260px;}
+  .footer-heading{font-family:var(--font-display);font-weight:900;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;}
+  .footer-links{list-style:none;display:flex;flex-direction:column;gap:.55rem;}
+  .footer-links a{font-size:.875rem;color:rgba(255,255,255,0.35);text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;}
+  .footer-links a:hover{color:rgba(255,255,255,0.85);padding-left:4px;}
+  .social-row{display:flex;gap:.6rem;margin-top:1.5rem;}
+  .social-btn{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);text-decoration:none;transition:all .25s var(--ease-spring);}
+  .social-btn:hover{background:var(--accent);border-color:var(--accent);color:white;transform:translateY(-3px) scale(1.1);}
+  .footer-bottom{padding-top:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+  .footer-copy{font-size:.78rem;color:rgba(255,255,255,0.2);}
+  .footer-legal{display:flex;gap:1.5rem;}
+  .footer-legal a{font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;transition:color .2s;}
+  .footer-legal a:hover{color:rgba(255,255,255,0.6);}
+
+  @media(max-width:768px){
+    #page-content{padding:2rem 1.25rem;}
+    .match-card{flex-direction:column;text-align:center;}
+    .match-team{text-align:center;}
+    .footer-grid{grid-template-columns:1fr;}
+    .footer-col:first-child{grid-column:span 1;}
+  }
+</style>
+<script>
+  (function(){
+    const t=localStorage.getItem('theme');
+    if(t==='light')document.documentElement.classList.remove('dark');
+    else document.documentElement.classList.add('dark');
+  })();
+</script>
 </head>
-<body class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
-    
-    <!-- Navigation -->
-    <nav class="sticky top-0 w-full z-50 py-4 shadow-xl theme-aware-header">
-        <div class="container mx-auto px-6 flex justify-between items-center text-inherit">
-            <div class="flex items-center space-x-4">
-                <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
-                <span class="font-black text-xl tracking-tighter uppercase hidden xl:block">Tolosa CF <span class="text-highlight dark:text-white">Eskubaloia</span></span>
-            </div>
-            
-            <div class="hidden lg:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base">
-                <a href="index.html" class="font-bold hover:text-highlight transition-colors">INICIO</a>
-                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
-                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
-                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors border-b-2 border-current">1. EQUIPO</a>
-                <a href="patrocinadores.html" class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
-                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
-                
-                <button id="theme-toggle" class="p-2 rounded-full bg-primary-50 dark:bg-primary-800 hover:bg-highlight hover:text-white transition-all ml-4">
-                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
-                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
-                </button>
-            </div>
-            
-            <button class="lg:hidden flex items-center" id="menu-toggle">
-                <i data-feather="menu" class="w-8 h-8"></i>
-            </button>
-        </div>
-    </nav>
+<body>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu-overlay" class="lg:hidden"></div>
-    <div id="mobile-menu" class="lg:hidden p-8 flex flex-col">
-        <div class="flex justify-between items-center mb-12">
-            <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" class="h-10 dark:grayscale dark:brightness-200">
-            <button id="close-menu" class="text-primary-500 dark:text-white">
-                <i data-feather="x" class="w-8 h-8"></i>
-            </button>
+<nav id="navbar" role="navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand" aria-label="Tolosa CF - Inicio">
+      <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" width="44" height="44">
+      <span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="noticias.html">Noticias</a></li>
+      <li><a href="club.html">El Club</a></li>
+      <li><a href="equipo1.html" class="active" aria-current="page">1. Equipo</a></li>
+      <li><a href="patrocinadores.html">Patrocinadores</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><button id="theme-toggle" aria-label="Cambiar tema"><i data-feather="sun" style="width:15px;height:15px;"></i></button></li>
+    </ul>
+    <button id="menu-toggle" aria-label="Abrir menu" aria-expanded="false"><i data-feather="menu" style="width:26px;height:26px;"></i></button>
+  </div>
+</nav>
+
+<div id="mobile-menu-overlay"></div>
+<div id="mobile-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" style="height:42px;">
+    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="noticias.html">Noticias</a></li>
+    <li><a href="club.html">El Club</a></li>
+    <li><a href="equipo1.html">1. Equipo</a></li>
+    <li><a href="patrocinadores.html">Patrocinadores</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+  </ul>
+  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);">
+    <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
+      <i data-feather="sun" style="width:17px;height:17px;"></i>
+      <span id="mobile-theme-label">Modo claro</span>
+    </button>
+  </div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-eyebrow reveal">Competicion</div>
+    <h1 class="page-title reveal delay-1" id="category-name">Primer Equipo</h1>
+    <p class="page-subtitle reveal delay-2" id="competition-name">Cargando...</p>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="switchTab('standings')"><i data-feather="list" style="width:14px;height:14px;display:inline;margin-right:.3rem;"></i> Clasificacion</button>
+    <button class="tab-btn" onclick="switchTab('results')"><i data-feather="activity" style="width:14px;height:14px;display:inline;margin-right:.3rem;"></i> Resultados</button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div id="page-content">
+  <div id="loading" style="text-align:center;padding:4rem;">
+    <div style="width:40px;height:40px;border:3px solid rgba(18,85,201,0.2);border-top-color:var(--accent-bright);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem;"></div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(4,16,31,0.3);">Cargando datos...</div>
+  </div>
+  <div id="tab-content" style="display:none;"></div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="footer-logo">
+        <p class="footer-about">Tolosa CF Eskubaloia. Mas que un club, una familia unida por el balonmano.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
+          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
+          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a>
         </div>
-        <nav class="flex flex-col space-y-6 text-xl font-black uppercase text-primary-500 dark:text-white">
-            <a href="index.html" class="hover:text-highlight transition-colors">Inicio</a>
-            <a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a>
-            <a href="club.html" class="hover:text-highlight transition-colors">El Club</a>
-            <a href="equipo1.html" class="text-highlight">1. Equipo</a>
-            <a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a>
-            <a href="contacto.html" class="hover:text-highlight transition-colors">Contacto</a>
-        </nav>
-        <div class="mt-auto pt-8 border-t border-primary-100 dark:border-primary-800">
-            <button id="mobile-theme-toggle" class="flex items-center space-x-4 font-bold text-primary-500 dark:text-white">
-                <span class="dark:hidden flex items-center"><i data-feather="sun" class="mr-3"></i> Modo Claro</span>
-                <span class="hidden dark:flex items-center"><i data-feather="moon" class="mr-3"></i> Modo Oscuro</span>
-            </button>
-        </div>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-heading">Secciones</h3>
+        <ul class="footer-links"><li><a href="index.html">Inicio</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="club.html">El Club</a></li><li><a href="equipo1.html">1. Equipo</a></li><li><a href="patrocinadores.html">Patrocinadores</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-heading">El Club</h3>
+        <ul class="footer-links"><li><a href="club.html">Historia</a></li><li><a href="equipo1.html">Primer equipo</a></li><li><a href="patrocinadores.html">Colabora</a></li><li><a href="contacto.html">Contacto</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-heading">Contacto</h3>
+        <div style="font-size:.85rem;color:rgba(255,255,255,0.35);"><div style="margin-bottom:.6rem;">Usabal Kiroldegia, 20400 Tolosa</div><div>eskubaloia.tolosacf@gmail.com</div></div>
+      </div>
     </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
+      <nav class="footer-legal"><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="terminos.html">Terminos</a></nav>
     </div>
+  </div>
+</footer>
 
-    <header class="py-20 bg-primary-500 text-white relative overflow-hidden dark:bg-primary-800">
-        <div class="container mx-auto px-6 relative z-10">
-            <h1 data-edit="text" id="category-name" class="text-4xl sm:text-6xl font-black uppercase mb-4 animate-fade-in">Primer Equipo</h1>
-            <p data-edit="text" id="competition-name" class="text-xl text-primary-100 opacity-90 max-w-2xl">Cargando competición...</p>
-        </div>
-        <div class="absolute right-0 bottom-0 opacity-10 translate-x-1/4 translate-y-1/4">
-            <img data-edit="image" src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="" class="w-96 text-primary-500">
-        </div>
-    </header>
+<style>@keyframes spin{to{transform:rotate(360deg);}}</style>
 
-    <!-- Dashboard Main Content -->
-    <main class="py-12 bg-white dark:bg-primary-900 min-h-[60vh]">
-        <div class="container mx-auto px-6">
-            
-            <!-- Tab Navigation -->
-            <div class="flex flex-wrap justify-center gap-4 mb-12">
-                <button onclick="switchTab('standings')" class="tab-btn active px-8 py-3 rounded-full font-black uppercase text-sm border-2 border-primary-500 dark:border-white transition-all hover:bg-primary-500 hover:text-white dark:hover:bg-white dark:hover:text-primary-900 shadow-lg">
-                    Clasificación
-                </button>
-                <button onclick="switchTab('results')" class="tab-btn px-8 py-3 rounded-full font-black uppercase text-sm border-2 border-primary-500 dark:border-white transition-all hover:bg-primary-500 hover:text-white dark:hover:bg-white dark:hover:text-primary-900 shadow-lg">
-                    Resultados
-                </button>
-                <button onclick="switchTab('calendar')" class="tab-btn px-8 py-3 rounded-full font-black uppercase text-sm border-2 border-primary-500 dark:border-white transition-all hover:bg-primary-500 hover:text-white dark:hover:bg-white dark:hover:text-primary-900 shadow-lg">
-                    Calendario
-                </button>
-            </div>
+<script>
+// Firebase inline
+const firebaseConfig={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomain:"tolosa-cf-eskubaloia.firebaseapp.com",projectId:"tolosa-cf-eskubaloia",storageBucket:"tolosa-cf-eskubaloia.firebasestorage.app",messagingSenderId:"243368570014",appId:"1:243368570014:web:181d7f5f5990014fbf9f8f"};
+if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
+const db=firebase.firestore();
 
-            <!-- Content Area -->
-            <div id="dashboard-content" class="animate-fade-in">
-                <!-- Data will be injected here -->
-                <div class="flex justify-center items-center py-20">
-                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-highlight"></div>
-                </div>
-            </div>
+let currentData=null,activeTab='standings',selectedJourney=null;
+const competitionId='senior-masculino';
 
-        </div>
-    </main>
+function loadData(){
+  db.collection('competitions').doc(competitionId).onSnapshot(doc=>{
+    document.getElementById('loading').style.display='none';
+    document.getElementById('tab-content').style.display='block';
+    if(doc.exists){
+      currentData=doc.data();
+      document.getElementById('category-name').textContent=currentData.name||'Primer Equipo';
+      document.getElementById('competition-name').textContent=`${currentData.competition||''} | ${currentData.season||''}`;
+      renderActiveTab();
+    }else{
+      document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;color:rgba(4,16,31,0.4);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin datos disponibles todavia</p><p style="font-size:.85rem;margin-top:.5rem;">El administrador aun no ha subido datos para esta categoria.</p></div>';
+    }
+  },err=>{
+    document.getElementById('loading').style.display='none';
+    document.getElementById('tab-content').style.display='block';
+    document.getElementById('tab-content').innerHTML=`<div style="text-align:center;padding:4rem;color:#f87171;"><p style="font-weight:700;">Error de conexion: ${err.message}</p></div>`;
+  });
+}
 
-    <!-- Footer -->
-    <footer class="theme-aware-footer py-20">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div>
-                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="h-20 mb-8">
-                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed" data-edit="text">
-                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">Navegación</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
-                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
-                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
-                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
-                        <li><a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">Contacto</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i> Usabal Kiroldegia, 20400 Tolosa</li>
-                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i> eskubaloia.tolosacf@gmail.com</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white" data-edit="text">Síguenos</h4>
-                    <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="instagram" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="twitter" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="facebook" class="w-6 h-6"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
-                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
-                <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-4">
-                    <div class="flex justify-center space-x-4">
-                        <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
-                        <span>|</span>
-                        <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
-                        <span>|</span>
-                        <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
-                    </div>
-                </div>
-                <a href="admin.html" class="opacity-30 hover:opacity-100 transition-opacity inline-block" title="Administración">
-                    <i data-feather="lock" class="w-4 h-4"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderActiveTab();
+}
 
-    <!-- Custom Logic -->
-    <script>
-        let currentData = null;
-        let activeTab = 'standings';
-        let selectedJourney = null; // Jornada actualmente visualizada
-        const competitionId = 'senior-masculino'; // Podría sacarse de la URL en el futuro
+function renderActiveTab(){
+  if(!currentData)return;
+  if(activeTab==='standings')renderStandings();
+  else renderResults();
+  feather.replace();
+}
 
-        function loadData() {
-            // Escucha en tiempo real de Firestore
-            db.collection('competitions').doc(competitionId)
-                .onSnapshot((doc) => {
-                    if (doc.exists) {
-                        currentData = doc.data();
-                        console.log("Datos recibidos de Firestore:", currentData);
-                        
-                        document.getElementById('category-name').textContent = currentData.name;
-                        document.getElementById('competition-name').textContent = `${currentData.competition} | ${currentData.season}`;
-                        
-                        renderActiveTab();
-                    } else {
-                        console.warn("El documento no existe en Firestore. Comprueba el ID.");
-                        handleLoadError("No hay datos disponibles en la nube para esta categoría.");
-                    }
-                }, (error) => {
-                    console.error("Error Firestore:", error);
-                    handleLoadError("Error de conexión con la base de datos.");
-                });
-        }
+function renderStandings(){
+  const standings=currentData.standings||[];
+  if(!standings.length){
+    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin clasificacion disponible</p></div>';
+    return;
+  }
+  let html=`<div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(0,0,0,0.08);" class="dark-border">
+  <table class="standings-table">
+  <thead><tr><th style="text-align:center;">Pos</th><th>Equipo</th><th style="text-align:center;">PJ</th><th style="text-align:center;">PG</th><th style="text-align:center;">PE</th><th style="text-align:center;">PP</th><th style="text-align:center;">GF</th><th style="text-align:center;">GC</th><th style="text-align:center;">DG</th><th style="text-align:center;color:var(--accent-bright);">PTS</th></tr></thead>
+  <tbody>`;
+  standings.forEach(item=>{
+    const isTolosa=item.team?.toLowerCase().includes('tolosa');
+    const dg=(item.gf||0)-(item.gc||0);
+    let posEl=`<span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;">${item.pos}</span>`;
+    if(item.pos===1)posEl=`<span class="pos-medal pos-1">${item.pos}</span>`;
+    if(item.pos===2)posEl=`<span class="pos-medal pos-2">${item.pos}</span>`;
+    if(item.pos===3)posEl=`<span class="pos-medal pos-3">${item.pos}</span>`;
+    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};">${item.team}${isTolosa?' <span style="color:var(--accent-bright);font-size:.7rem;">&#9679;</span>':''}</td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td style="text-align:center;">${item.gf||0}</td><td style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  document.getElementById('tab-content').innerHTML=html;
+}
 
-        function handleLoadError(msg) {
-            document.getElementById('dashboard-content').innerHTML = `
-                <div class="text-center py-20">
-                    <i data-feather="alert-circle" class="w-16 h-16 mx-auto mb-4 text-red-500"></i>
-                    <p class="text-xl font-bold">${msg}</p>
-                    <p class="text-primary-400">Si eres el administrador, inicia sesión para configurar la base de datos.</p>
-                </div>
-            `;
-            feather.replace();
-        }
+function renderResults(){
+  const results=currentData.results||[];
+  if(!results.length){
+    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin resultados disponibles</p></div>';
+    return;
+  }
+  const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>b-a);
+  if(selectedJourney===null)selectedJourney=journeys[0];
 
-        function switchTab(tab) {
-            activeTab = tab;
-            
-            // UI Update
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-primary-500', 'text-white', 'dark:bg-white', 'dark:text-primary-900');
-            });
-            
-            const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => 
-                btn.onclick.toString().includes(tab)
-            );
-            
-            if (activeBtn) {
-                activeBtn.classList.add('active', 'bg-primary-500', 'text-white', 'dark:bg-white', 'dark:text-primary-900');
-            }
-            
-            renderActiveTab();
-        }
+  let html=`<div class="journey-selector">`;
+  journeys.forEach(j=>{
+    html+=`<button class="journey-btn ${j==selectedJourney?'active':''}" onclick="selectJourney(${j})">J${j}</button>`;
+  });
+  html+=`</div><div style="display:flex;flex-direction:column;gap:.75rem;">`;
 
-        function renderActiveTab() {
-            if (!currentData) return;
-            
-            const content = document.getElementById('dashboard-content');
-            content.classList.remove('animate-fade-in');
-            void content.offsetWidth; // Trigger reflow
-            content.classList.add('animate-fade-in');
+  const filtered=results.filter(m=>(m.journey||1)==selectedJourney);
+  filtered.forEach(m=>{
+    const isTolosa=m.home?.toLowerCase().includes('tolosa')||m.away?.toLowerCase().includes('tolosa');
+    html+=`<div class="match-card ${isTolosa?'is-tolosa-match':''}">
+      <div><div class="match-team" style="text-align:right;">${m.home}</div><div class="match-meta" style="text-align:right;">${m.date||''}</div></div>
+      <div class="match-score">${m.score}</div>
+      <div><div class="match-team">${m.away}</div><div class="match-meta">${m.venue||''}</div></div>
+    </div>`;
+  });
 
-            if (activeTab === 'standings') {
-                renderStandings();
-            } else if (activeTab === 'results') {
-                renderResults();
-            } else if (activeTab === 'calendar') {
-                renderCalendar();
-            }
-            
-            feather.replace();
-        }
+  if(!filtered.length)html+=`<div style="text-align:center;padding:3rem;opacity:.5;">Sin partidos en esta jornada</div>`;
+  html+=`</div>`;
+  document.getElementById('tab-content').innerHTML=html;
+}
 
-        function renderStandings() {
-            const standings = currentData.standings;
-            let html = `
-                <div class="overflow-x-auto rounded-2xl shadow-2xl border border-primary-100 dark:border-primary-800">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-primary-500 text-white uppercase text-xs font-black tracking-widest">
-                                <th class="p-4 text-center">Pos</th>
-                                <th class="p-4">Equipo</th>
-                                <th class="p-4 text-center">PJ</th>
-                                <th class="p-4 text-center hidden sm:table-cell">PG</th>
-                                <th class="p-4 text-center hidden sm:table-cell">PE</th>
-                                <th class="p-4 text-center hidden sm:table-cell">PP</th>
-                                <th class="p-4 text-center font-bold text-highlight bg-white/10">PTS</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-primary-100 dark:divide-primary-800">
-            `;
+function selectJourney(j){
+  selectedJourney=j;
+  renderResults();
+}
 
-            standings.forEach(item => {
-                const isTolosa = item.team.toLowerCase().includes('tolosa');
-                html += `
-                    <tr class="${isTolosa ? 'bg-highlight/10 font-bold' : 'hover:bg-primary-50 dark:hover:bg-primary-800/50'} transition-colors">
-                        <td class="p-4 text-center font-black">${item.pos}</td>
-                        <td class="p-4 flex items-center">
-                            <span class="w-1 h-6 mr-3 ${isTolosa ? 'bg-highlight' : 'bg-transparent'} rounded-full"></span>
-                            ${item.team}
-                        </td>
-                        <td class="p-4 text-center">${item.pj}</td>
-                        <td class="p-4 text-center hidden sm:table-cell">${item.pg}</td>
-                        <td class="p-4 text-center hidden sm:table-cell">${item.pe}</td>
-                        <td class="p-4 text-center hidden sm:table-cell">${item.pp}</td>
-                        <td class="p-4 text-center font-black text-highlight">${item.pts}</td>
-                    </tr>
-                `;
-            });
+document.addEventListener('DOMContentLoaded',()=>{
+  feather.replace();
+  loadData();
 
-            html += `</tbody></table></div>`;
-            document.getElementById('dashboard-content').innerHTML = html;
-        }
+  // Reveal
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-        function renderResults() {
-            const results = currentData.results || [];
-            
-            // 1. Obtener jornadas únicas disponibles
-            const journeys = [...new Set(results.map(m => m.journey || 1))].sort((a, b) => b - a);
-            
-            // 2. Si no hay jornada seleccionada, coger la última
-            if (selectedJourney === null && journeys.length > 0) {
-                selectedJourney = journeys[0];
-            }
+  // Navbar
+  const navbar=document.getElementById('navbar');
+  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50),{passive:true});
 
-            let html = `
-                <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                    <h2 class="text-2xl font-black uppercase tracking-tighter">Resultados <span class="text-highlight">Temporada</span></h2>
-                    
-                    <div class="flex items-center bg-primary-50 dark:bg-primary-800 p-2 rounded-xl border border-primary-100 dark:border-primary-700">
-                        <label class="text-[10px] font-black uppercase text-primary-400 mr-3 px-2">Filtrar por:</label>
-                        <select onchange="changeJourney(this.value)" class="bg-transparent font-bold outline-none text-sm pr-4 cursor-pointer">
-                            ${journeys.map(j => `<option value="${j}" ${j == selectedJourney ? 'selected' : ''}>Jornada ${j}</option>`).join('')}
-                            ${journeys.length === 0 ? '<option>Sin jornadas</option>' : ''}
-                        </select>
-                    </div>
-                </div>
-            `;
+  // Theme
+  function applyTheme(isDark){
+    document.documentElement.classList.toggle('dark',isDark);
+    localStorage.setItem('theme',isDark?'dark':'light');
+    const label=document.getElementById('mobile-theme-label');
+    if(label)label.textContent=isDark?'Modo claro':'Modo oscuro';
+    feather.replace();
+  }
+  document.getElementById('theme-toggle').addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
+  const mobileTheme=document.getElementById('mobile-theme-toggle');
+  if(mobileTheme)mobileTheme.addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
 
-            // 3. Filtrar resultados por la jornada seleccionada
-            const filteredResults = results.filter(m => (m.journey || 1) == selectedJourney);
-
-            html += `<div class="grid grid-cols-1 gap-6">`;
-            
-            filteredResults.forEach(item => {
-                html += `
-                    <div class="bg-white dark:bg-primary-800 p-6 rounded-2xl border border-primary-100 dark:border-primary-700 shadow-lg hover-lift flex flex-col md:flex-row justify-between items-center text-center md:text-left transition-all">
-                        <div class="mb-4 md:mb-0">
-                            <div class="text-[10px] uppercase font-black text-highlight mb-1">Jornada ${item.journey || 1}</div>
-                            <div class="text-xs uppercase font-black text-primary-400 opacity-60">${item.date}</div>
-                        </div>
-                        <div class="flex items-center space-x-6 md:space-x-12">
-                            <div class="text-base md:text-lg font-black w-24 md:w-48 text-right uppercase leading-tight">${item.home}</div>
-                            <div class="bg-primary-500 text-white px-5 py-2 rounded-xl font-black text-xl md:text-2xl shadow-lg min-w-[100px] md:min-w-[140px] text-center border-b-4 border-highlight">${item.score}</div>
-                            <div class="text-base md:text-lg font-black w-24 md:w-48 text-left uppercase leading-tight">${item.away}</div>
-                        </div>
-                        <div class="mt-4 md:mt-0 text-[10px] font-black text-primary-400 uppercase tracking-widest hidden lg:block">
-                            Finalizado
-                        </div>
-                    </div>
-                `;
-            });
-
-            if (filteredResults.length === 0) {
-                html += `<div class="text-center py-20 text-primary-400 italic">No hay partidos registrados en esta jornada.</div>`;
-            }
-
-            html += `</div>`;
-            document.getElementById('dashboard-content').innerHTML = html;
-        }
-
-        function changeJourney(j) {
-            selectedJourney = j;
-            renderResults();
-        }
-
-        function renderCalendar() {
-            const calendar = currentData.calendar;
-            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">`;
-            
-            calendar.forEach(item => {
-                html += `
-                    <div class="bg-primary-50 dark:bg-primary-800 p-8 rounded-2xl border-l-8 border-highlight shadow-xl hover-lift">
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <div class="text-sm font-black text-primary-400 flex items-center">
-                                    <i data-feather="calendar" class="w-4 h-4 mr-2"></i> ${item.date}
-                                </div>
-                                <div class="text-sm font-black text-primary-400 flex items-center mt-1">
-                                    <i data-feather="clock" class="w-4 h-4 mr-2"></i> ${item.time}
-                                </div>
-                            </div>
-                            <div class="bg-highlight/20 text-highlight px-3 py-1 rounded text-xs font-black uppercase">Próximo</div>
-                        </div>
-                        <div class="text-2xl font-black mb-6 uppercase flex flex-col">
-                            <span class="text-primary-400 text-sm">Local</span>
-                            <span>${item.home}</span>
-                            <span class="text-highlight my-2 italic text-sm">vs</span>
-                            <span class="text-primary-400 text-sm">Visitante</span>
-                            <span>${item.away}</span>
-                        </div>
-                        <div class="flex items-center text-sm text-primary-500 dark:text-white opacity-70">
-                            <i data-feather="map-pin" class="w-4 h-4 mr-2 text-highlight"></i> ${item.venue}
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
-            document.getElementById('dashboard-content').innerHTML = html;
-        }
-
-        // Init
-        window.addEventListener('DOMContentLoaded', () => {
-            loadData();
-        });
-    </script>
-    <script src="js/common.js"></script>
-    <script src="editor.js"></script>
+  // Mobile menu
+  const overlay=document.getElementById('mobile-menu-overlay');
+  const mobileMenu=document.getElementById('mobile-menu');
+  const menuToggle=document.getElementById('menu-toggle');
+  function openMenu(){mobileMenu.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';menuToggle.setAttribute('aria-expanded','true');}
+  function closeMenuFn(){mobileMenu.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow='';menuToggle.setAttribute('aria-expanded','false');}
+  menuToggle.addEventListener('click',openMenu);
+  document.getElementById('close-menu').addEventListener('click',closeMenuFn);
+  overlay.addEventListener('click',closeMenuFn);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenuFn();});
+});
+</script>
 </body>
 </html>
