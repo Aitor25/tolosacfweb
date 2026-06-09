@@ -1,22 +1,23 @@
-// Configuración de Firebase para Tolosa CF Eskubaloia.
-// Rellena estos valores con los de tu consola de Firebase
-// (Project settings > General > Your apps > SDK setup).
-window.firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+/**
+ * TOLOSA CF ESKUBALOIA - Firebase Configuration
+ * Claves reales inline para que funcione en GitHub Pages sin archivos externos.
+ */
+const _fbConfig = {
+  apiKey: "AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",
+  authDomain: "tolosa-cf-eskubaloia.firebaseapp.com",
+  projectId: "tolosa-cf-eskubaloia",
+  storageBucket: "tolosa-cf-eskubaloia.firebasestorage.app",
+  messagingSenderId: "243368570014",
+  appId: "1:243368570014:web:181d7f5f5990014fbf9f8f"
 };
 
-// Inicializa Firebase solo si la librería está disponible y no se ha
-// inicializado ya. Esto evita el error "Firebase: No Firebase App
-// '[DEFAULT]' has been created" en páginas que no lo necesitan.
 try {
-  if (typeof firebase !== "undefined" && !firebase.apps.length) {
-    firebase.initializeApp(window.firebaseConfig);
+  if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+    firebase.initializeApp(_fbConfig);
+    window.db = firebase.firestore();
+    if (typeof firebase.auth !== 'undefined') window.auth = firebase.auth();
+    console.log('Firebase inicializado correctamente.');
   }
-} catch (e) {
-  console.warn("[firebase-config] No se pudo inicializar Firebase:", e);
+} catch(e) {
+  console.warn('Firebase init error:', e);
 }
