@@ -10,7 +10,7 @@
     editorUI.innerHTML = `
         <div class="editor-controls">
             <div class="editor-header">
-                <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" class="h-6 mr-2">
+                <img src="escudo.png" class="h-6 mr-2">
                 <span>Modo Editor</span>
             </div>
             <div class="editor-body">
