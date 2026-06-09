@@ -1,210 +1,234 @@
 <!DOCTYPE html>
 <html lang="es" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noticia - TOLOSA CF ESKUBALOIA</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <link rel="stylesheet" href="styles.css">
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
-                document.documentElement.classList.add('dark');
-            }
-        })();
-    </script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            300: '#cbd5e1',
-                            400: '#94a3b8',
-                            500: '#0E1A3D',
-                            600: '#0a1430',
-                            700: '#070c1e',
-                            800: '#04060f',
-                            900: '#020308',
-                        },
-                        highlight: '#3B82F6',
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noticia - TOLOSA CF ESKUBALOIA</title>
+<link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body{font-family:'Barlow',sans-serif;}
+  html:not(.dark) body{background:#f8faff;color:#04101f;}
+  html.dark body{background:#04101f;color:#f0f4ff;}
+
+  /* Contenido de noticia */
+  .article-body{font-size:1.05rem;line-height:1.8;}
+  html:not(.dark) .article-body{color:rgba(4,16,31,0.8);}
+  html.dark .article-body{color:rgba(240,244,255,0.75);}
+  .article-body h2,.article-body h3{font-family:'Barlow Condensed',sans-serif;font-weight:900;text-transform:uppercase;margin:2rem 0 .75rem;}
+  html:not(.dark) .article-body h2,.article-body h3{color:#04101f;}
+  html.dark .article-body h2,html.dark .article-body h3{color:#f0f4ff;}
+  .article-body p{margin-bottom:1.25rem;}
+  .article-body a{color:#1e6ef5;text-decoration:underline;}
+  .article-body strong{font-weight:700;}
+  html:not(.dark) .article-body strong{color:#04101f;}
+  html.dark .article-body strong{color:white;}
+  .article-body ul,.article-body ol{padding-left:1.5rem;margin-bottom:1.25rem;}
+  .article-body li{margin-bottom:.5rem;}
+  .article-body blockquote{border-left:4px solid #1255c9;padding:1rem 1.25rem;margin:1.5rem 0;font-style:italic;}
+  html:not(.dark) .article-body blockquote{background:#eef3ff;color:rgba(4,16,31,0.7);}
+  html.dark .article-body blockquote{background:rgba(18,85,201,0.1);color:rgba(240,244,255,0.7);}
+
+  /* Main content area */
+  html:not(.dark) .article-wrap{background:white;}
+  html.dark .article-wrap{background:#081829;}
+
+  /* Back link */
+  .back-link{display:inline-flex;align-items:center;gap:.5rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.5rem 0;transition:gap .2s;}
+  html:not(.dark) .back-link{color:rgba(4,16,31,0.5);}
+  html.dark .back-link{color:rgba(255,255,255,0.4);}
+  .back-link:hover{gap:.75rem;}
+  html:not(.dark) .back-link:hover{color:#1255c9;}
+  html.dark .back-link:hover{color:#1e6ef5;}
+
+  /* Tags */
+  .news-tag{display:inline-block;background:#1255c9;color:white;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;padding:.2rem .6rem;border-radius:3px;}
+
+  /* Footer */
+  #footer{background:#020d1a;color:rgba(255,255,255,0.5);}
+  .footer-inner{max-width:1400px;margin:0 auto;padding:4rem 2rem 2rem;}
+  .footer-bottom{padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid rgba(255,255,255,0.05);margin-top:3rem;}
+  .footer-copy{font-size:.78rem;color:rgba(255,255,255,0.2);}
+  .footer-legal{display:flex;gap:1.5rem;}
+  .footer-legal a{font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;transition:color .2s;}
+  .footer-legal a:hover{color:rgba(255,255,255,0.6);}
+  .social-row{display:flex;gap:.6rem;margin-top:1.5rem;}
+  .social-btn{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);text-decoration:none;transition:all .25s;}
+  .social-btn:hover{background:#1255c9;border-color:#1255c9;color:white;transform:translateY(-2px);}
+</style>
+<script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
 </head>
-<body class="bg-white dark:bg-primary-900 text-primary-500 dark:text-white min-h-screen transition-colors duration-300 font-sans">
-    
-    <!-- Navigation -->
-    <nav class="sticky top-0 w-full z-50 py-4 shadow-xl theme-aware-header">
-        <div class="container mx-auto px-6 flex justify-between items-center text-inherit">
-            <div class="flex items-center space-x-4">
-                <a href="index.html" class="flex items-center space-x-4">
-                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo Tolosa CF" class="h-10 w-auto border-white border-2 rounded-full p-0.5">
-                    <span class="font-black text-xl tracking-tighter uppercase hidden xl:block">Tolosa CF <span class="text-highlight dark:text-white">Eskubaloia</span></span>
-                </a>
-            </div>
-            
-            <div class="hidden lg:flex items-center space-x-4 xl:space-x-8 text-sm xl:text-base">
-                <a href="index.html" class="font-bold hover:text-highlight transition-colors">INICIO</a>
-                <a href="noticias.html" class="font-bold hover:text-highlight transition-colors">NOTICIAS</a>
-                <a href="club.html" class="font-bold hover:text-highlight transition-colors">EL CLUB</a>
-                <a href="equipo1.html" class="font-bold hover:text-highlight transition-colors">1. EQUIPO</a>
-                <a href="patrocinadores.html" class="font-bold hover:text-highlight transition-colors">PATROCINADORES</a>
-                <a href="contacto.html" class="font-bold hover:text-highlight transition-colors">CONTACTO</a>
-                
-                <button id="theme-toggle" class="p-2 rounded-full bg-primary-50 dark:bg-primary-800 hover:bg-highlight hover:text-white transition-all ml-4">
-                    <i data-feather="sun" class="w-5 h-5 block dark:hidden"></i>
-                    <i data-feather="moon" class="w-5 h-5 hidden dark:block"></i>
-                </button>
-            </div>
-            
-            <button class="lg:hidden flex items-center" id="menu-toggle">
-                <i data-feather="menu" class="w-8 h-8"></i>
-            </button>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" width="44" height="44">
+      <span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Inicio</a></li>
+      <li><a href="noticias.html" class="active">Noticias</a></li>
+      <li><a href="club.html">El Club</a></li>
+      <li><a href="equipo1.html">1. Equipo</a></li>
+      <li><a href="patrocinadores.html">Patrocinadores</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+      <li><button id="theme-toggle" aria-label="Cambiar tema"><i data-feather="sun" style="width:15px;height:15px;"></i></button></li>
+    </ul>
+    <button id="menu-toggle" aria-label="Abrir menu"><i data-feather="menu" style="width:26px;height:26px;"></i></button>
+  </div>
+</nav>
+
+<div id="mobile-menu-overlay"></div>
+<div id="mobile-menu">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" style="height:42px;">
+    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
+  </div>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html">Inicio</a></li>
+    <li><a href="noticias.html">Noticias</a></li>
+    <li><a href="club.html">El Club</a></li>
+    <li><a href="equipo1.html">1. Equipo</a></li>
+    <li><a href="patrocinadores.html">Patrocinadores</a></li>
+    <li><a href="contacto.html">Contacto</a></li>
+  </ul>
+  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);">
+    <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
+      <i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span>
+    </button>
+  </div>
+</div>
+
+<!-- ARTICLE -->
+<main style="padding-top:70px;">
+  <!-- Hero image -->
+  <div id="article-hero" style="height:55vh;min-height:320px;position:relative;overflow:hidden;background:#04101f;">
+    <img id="news-image" src="" alt="" style="width:100%;height:100%;object-fit:cover;filter:brightness(.6) saturate(.7);">
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(4,16,31,.9) 0%,rgba(4,16,31,.3) 60%,transparent 100%);"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;max-width:860px;margin:0 auto;padding:0 2rem 2.5rem;">
+      <a href="noticias.html" class="back-link" style="color:rgba(255,255,255,.5);margin-bottom:1rem;display:inline-flex;">
+        <i data-feather="arrow-left" style="width:14px;height:14px;"></i> Volver a noticias
+      </a>
+      <div id="news-tag" style="margin-bottom:.75rem;"></div>
+      <h1 id="news-title" style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-style:italic;font-size:clamp(2rem,6vw,4rem);line-height:.9;text-transform:uppercase;color:white;text-shadow:0 2px 20px rgba(0,0,0,.5);">Cargando...</h1>
+      <div id="news-date" style="font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.75rem;"></div>
+    </div>
+  </div>
+
+  <!-- Article body -->
+  <div style="max-width:860px;margin:0 auto;padding:3rem 2rem 5rem;">
+    <div class="article-wrap" style="border-radius:12px;padding:2.5rem;">
+      <div id="news-body" class="article-body"><p style="opacity:.4;">Cargando contenido...</p></div>
+    </div>
+    <div style="margin-top:2rem;">
+      <a href="noticias.html" class="back-link">
+        <i data-feather="arrow-left" style="width:14px;height:14px;"></i> Volver a todas las noticias
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer id="footer">
+  <div class="footer-inner">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;padding-bottom:2rem;">
+      <div>
+        <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Logo" style="height:50px;margin-bottom:1rem;opacity:.9;">
+        <p style="font-size:.875rem;line-height:1.7;color:rgba(255,255,255,.35);max-width:240px;">Tolosa CF Eskubaloia. Mas que un club, una familia unida por el balonmano.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
+          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
+          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a>
         </div>
-    </nav>
-
-    <!-- Content -->
-    <main class="py-12 md:py-20">
-        <div class="container mx-auto px-6 max-w-4xl">
-            <!-- Back Button -->
-            <a href="noticias.html" class="inline-flex items-center text-sm font-bold text-highlight hover:underline mb-8 uppercase tracking-widest">
-                <i data-feather="arrow-left" class="mr-2 w-4 h-4"></i> Volver a noticias
-            </a>
-
-            <!-- News Header -->
-            <div id="news-content-loader" class="animate-fade-in">
-                <div class="flex items-center text-sm text-primary-400 dark:text-primary-300 mb-6 font-bold uppercase tracking-widest">
-                    <i data-feather="calendar" class="w-4 h-4 mr-2"></i> <span id="news-date">Cargando...</span>
-                </div>
-                <h1 id="news-title" class="text-4xl md:text-6xl font-black uppercase mb-8 leading-tight text-primary-500 dark:text-white">Cargando noticia...</h1>
-                
-                <!-- Image -->
-                <div class="rounded-3xl overflow-hidden shadow-2xl mb-12 relative group">
-                    <img id="news-image" src="https://images.unsplash.com/photo-1543351611-58f69d7c1781?auto=format&fit=crop&w=1200&q=80" alt="Noticia" class="w-full h-[400px] md:h-[500px] object-cover transition-transform duration-700 group-hover:scale-105">
-                    <div class="absolute inset-0 bg-gradient-to-t from-primary-900/60 to-transparent"></div>
-                </div>
-
-                <!-- Body Text -->
-                <div id="news-body" class="prose prose-lg dark:prose-invert max-w-none space-y-6 text-primary-400 dark:text-primary-100 leading-relaxed font-medium">
-                    <p>Por favor, espera mientras cargamos el contenido de la noticia.</p>
-                </div>
-
-            </div>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;">Secciones</div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;font-size:.875rem;">
+          <a href="index.html" style="color:rgba(255,255,255,.3);text-decoration:none;">Inicio</a>
+          <a href="noticias.html" style="color:rgba(255,255,255,.3);text-decoration:none;">Noticias</a>
+          <a href="club.html" style="color:rgba(255,255,255,.3);text-decoration:none;">El Club</a>
+          <a href="equipo1.html" style="color:rgba(255,255,255,.3);text-decoration:none;">1. Equipo</a>
         </div>
-    </main>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;">Contacto</div>
+        <div style="font-size:.85rem;color:rgba(255,255,255,.3);line-height:1.8;">Usabal Kiroldegia<br>20400 Tolosa<br>eskubaloia.tolosacf@gmail.com</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
+      <nav class="footer-legal"><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="terminos.html">Terminos</a></nav>
+    </div>
+  </div>
+</footer>
 
-    <!-- Footer -->
-    <footer class="theme-aware-footer py-20">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-                <div>
-                    <img src="https://huggingface.co/spaces/xizaie/tolosa-handball-thunder/resolve/main/images/escudo%20tolosa.png" alt="Escudo" class="h-20 mb-8">
-                    <p class="text-primary-500 dark:text-white opacity-70 leading-relaxed">
-                        TOLOSA CF ESKUBALOIA. Más que un club, una familia unida por el balonmano desde hace más de 100 años.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Navegación</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li><a href="index.html" class="hover:text-highlight transition-colors">Inicio</a></li>
-                        <li><a href="noticias.html" class="hover:text-highlight transition-colors">Noticias</a></li>
-                        <li><a href="club.html" class="hover:text-highlight transition-colors">El Club</a></li>
-                        <li><a href="equipo1.html" class="hover:text-highlight transition-colors">1. Equipo</a></li>
-                        <li><a href="patrocinadores.html" class="hover:text-highlight transition-colors">Patrocinadores</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Contacto</h4>
-                    <ul class="space-y-4 text-primary-500 dark:text-white opacity-70">
-                        <li class="flex items-center"><i data-feather="map-pin" class="w-5 h-5 mr-3 text-highlight"></i> Usabal Kiroldegia, 20400 Tolosa</li>
-                        <li class="flex items-center"><i data-feather="mail" class="w-5 h-5 mr-3 text-highlight"></i> eskubaloia.tolosacf@gmail.com</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xl font-black uppercase mb-8 text-primary-500 dark:text-white">Síguenos</h4>
-                    <div class="flex space-x-4">
-                        <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="instagram" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="twitter" class="w-6 h-6"></i>
-                        </a>
-                        <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="w-12 h-12 rounded-full border border-primary-200 dark:border-primary-700 dark:bg-primary-800 flex items-center justify-center hover:bg-highlight hover:text-white transition-all text-primary-500 dark:text-white">
-                            <i data-feather="facebook" class="w-6 h-6"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="pt-12 border-t border-primary-200 dark:border-white/5 text-center text-primary-400 dark:text-white/50 text-sm">
-                <p class="mb-4">&copy; 2023 TOLOSA CF ESKUBALOIA. Todos los derechos reservados.</p>
-                <div class="flex justify-center space-x-4">
-                    <a href="privacidad.html" class="hover:text-highlight transition-colors">Privacidad</a>
-                    <span>|</span>
-                    <a href="cookies.html" class="hover:text-highlight transition-colors">Cookies</a>
-                    <span>|</span>
-                    <a href="terminos.html" class="hover:text-highlight transition-colors">Términos</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+<script>
+const _fbCfg={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomain:"tolosa-cf-eskubaloia.firebaseapp.com",projectId:"tolosa-cf-eskubaloia",storageBucket:"tolosa-cf-eskubaloia.firebasestorage.app",messagingSenderId:"243368570014",appId:"1:243368570014:web:181d7f5f5990014fbf9f8f"};
+if(!firebase.apps.length){firebase.initializeApp(_fbCfg);}
+const db=firebase.firestore();
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="js/firebase-config.js"></script>
-    <script src="js/common.js"></script>
-    <script src="js/noticias-data.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const noticiaId = urlParams.get('id');
-            
-            if (!noticiaId) return window.location.href = 'noticias.html';
+document.addEventListener('DOMContentLoaded', async () => {
+  feather.replace();
 
-            // 1. Intentar cargar desde el archivo local (estático)
-            if (typeof noticiasData !== 'undefined' && noticiasData[noticiaId]) {
-                const data = noticiasData[noticiaId];
-                renderNoticia(data);
-                return;
-            }
+  // navbar
+  const navbar=document.getElementById('navbar');
+  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50),{passive:true});
 
-            // 2. Intentar cargar desde Firebase (dinámico)
-            if (typeof db !== 'undefined') {
-                try {
-                    const doc = await db.collection('news').doc(noticiaId).get();
-                    if (doc.exists) {
-                        renderNoticia(doc.data());
-                        return;
-                    }
-                } catch (e) {
-                    console.error("Error fetching Cloud news:", e);
-                }
-            }
+  // theme
+  function applyTheme(isDark){document.documentElement.classList.toggle('dark',isDark);localStorage.setItem('theme',isDark?'dark':'light');const l=document.getElementById('mobile-theme-label');if(l)l.textContent=isDark?'Modo claro':'Modo oscuro';feather.replace();}
+  document.getElementById('theme-toggle').addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
+  const mt=document.getElementById('mobile-theme-toggle');if(mt)mt.addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
 
-            // Si no hay nada, volver al listado
-            // window.location.href = 'noticias.html';
-        });
+  // mobile menu
+  const overlay=document.getElementById('mobile-menu-overlay'),mob=document.getElementById('mobile-menu'),tog=document.getElementById('menu-toggle');
+  if(tog&&mob&&overlay){
+    function openM(){mob.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';}
+    function closeM(){mob.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow='';}
+    tog.addEventListener('click',openM);document.getElementById('close-menu').addEventListener('click',closeM);overlay.addEventListener('click',closeM);
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
+  }
 
-        function renderNoticia(data) {
-            document.getElementById('news-title').textContent = data.title;
-            document.getElementById('news-date').textContent = data.date;
-            document.getElementById('news-image').src = data.image;
-            document.getElementById('news-body').innerHTML = data.content;
-            document.title = `${data.title} - TOLOSA CF ESKUBALOIA`;
-            feather.replace();
-        }
-    </script>
+  // load article
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) { window.location.href='noticias.html'; return; }
+
+  try {
+    const doc = await db.collection('news').doc(id).get();
+    if (doc.exists) {
+      renderArticle(doc.data());
+      return;
+    }
+  } catch(e) { console.warn('Firestore error:', e); }
+
+  // Fallback: datos estaticos
+  const fallback = (window.NOTICIAS_FALLBACK || []).find(n => n.id == id);
+  if (fallback) { renderArticle(fallback); return; }
+
+  document.getElementById('news-title').textContent = 'Noticia no encontrada';
+  document.getElementById('news-body').innerHTML = '<p>Lo sentimos, no hemos podido encontrar esta noticia.</p>';
+});
+
+function renderArticle(data) {
+  const title = data.title || data.titulo || '';
+  const date = data.date || data.fecha || '';
+  const tag = data.tag || data.categoria || 'Club';
+  const image = data.image || data.imagen || '';
+  const content = data.content || data.summary || data.resumen || '';
+
+  document.title = title + ' - TOLOSA CF ESKUBALOIA';
+  document.getElementById('news-title').textContent = title;
+  document.getElementById('news-date').textContent = date;
+  document.getElementById('news-tag').innerHTML = `<span class="news-tag">${tag}</span>`;
+  if (image) document.getElementById('news-image').src = image;
+  document.getElementById('news-body').innerHTML = content || '<p>Sin contenido disponible.</p>';
+  feather.replace();
+}
+</script>
+<script src="js/noticias-data.js"></script>
 </body>
 </html>
