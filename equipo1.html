@@ -105,17 +105,35 @@
   .pos-3{background:rgba(180,83,9,0.2);color:#b45309;}
 
   /* RESULTS */
-  .match-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:transform .2s var(--ease-spring),box-shadow .2s;}
+  .match-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;transition:transform .2s var(--ease-spring),box-shadow .2s;display:flex;flex-direction:column;}
   html.dark .match-card{background:var(--navy-mid);border-color:rgba(255,255,255,0.07);}
   .match-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
   html.dark .match-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-  .match-team{font-family:var(--font-display);font-weight:900;font-size:1.1rem;text-transform:uppercase;flex:1;}
-  .match-score{font-family:var(--font-display);font-weight:900;font-size:1.4rem;padding:.5rem 1.25rem;background:var(--surface-3);color:var(--text-primary);border-radius:8px;min-width:90px;text-align:center;border-bottom:3px solid var(--accent-bright);}
-  html.dark .match-score{background:var(--navy);color:white;}
-  .match-meta{font-size:.72rem;color:rgba(4,16,31,0.4);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
-  html.dark .match-meta{color:rgba(255,255,255,0.35);}
+  .match-header{padding:.75rem 1.5rem;background:rgba(18,85,201,0.08);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;color:rgba(4,16,31,0.5);text-transform:uppercase;}
+  html.dark .match-header{background:rgba(18,85,201,0.12);border-bottom-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);}
+  .match-journey{color:var(--accent-bright);font-weight:900;font-size:.8rem;}
+  .match-header-separator{opacity:.4;}
+  .match-date{color:rgba(4,16,31,0.6);}
+  html.dark .match-date{color:rgba(255,255,255,0.45);}
+  .match-body{padding:1.5rem;display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;align-items:center;justify-items:center;}
+  @media(max-width:600px){.match-body{grid-template-columns:1fr;gap:.75rem;}}
+  .match-team{font-family:var(--font-display);font-weight:900;font-size:1rem;text-transform:uppercase;color:rgba(4,16,31,0.8);text-align:center;line-height:1.2;word-break:break-word;}
+  html.dark .match-team{color:rgba(255,255,255,0.8);}
+  .match-home{justify-self:end;}
+  @media(max-width:600px){.match-home{justify-self:start;}}
+  .match-away{justify-self:start;}
+  @media(max-width:600px){.match-away{justify-self:end;}}
+  .match-score{font-family:var(--font-display);font-weight:900;font-size:1.8rem;padding:.75rem 1.5rem;background:var(--accent-bright);color:white;border-radius:10px;min-width:110px;text-align:center;letter-spacing:.05em;box-shadow:0 4px 12px rgba(18,85,201,0.2);}
+  html.dark .match-score{box-shadow:0 4px 16px rgba(18,85,201,0.3);}
+  @media(max-width:600px){.match-score{font-size:1.4rem;padding:.6rem 1.25rem;min-width:90px;}}
+  .match-footer{padding:.75rem 1.5rem;background:rgba(4,16,31,0.02);border-top:1px solid var(--border);font-size:.75rem;color:rgba(4,16,31,0.45);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
+  html.dark .match-footer{background:rgba(255,255,255,0.02);border-top-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);}
   .is-tolosa-match .match-team{color:var(--accent);}
   html.dark .is-tolosa-match .match-team{color:var(--accent-bright);}
+  .is-tolosa-match .match-header{background:rgba(18,85,201,0.15);}
+  html.dark .is-tolosa-match .match-header{background:rgba(18,85,201,0.2);}
+  .is-tolosa-match .match-score{box-shadow:0 4px 16px rgba(18,85,201,0.4);}
+  html.dark .is-tolosa-match .match-score{box-shadow:0 4px 20px rgba(18,85,201,0.5);}
 
   /* JOURNEY SELECTOR */
   .journey-selector{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;}
@@ -343,15 +361,19 @@ function renderResults(){
   journeys.forEach(j=>{
     html+=`<button class="journey-btn ${j==selectedJourney?'active':''}" onclick="selectJourney(${j})">J${j}</button>`;
   });
-  html+=`</div><div style="display:flex;flex-direction:column;gap:.75rem;">`;
+  html+=`</div><div style="display:flex;flex-direction:column;gap:1rem;">`;
 
   const filtered=results.filter(m=>(m.journey||1)==selectedJourney);
   filtered.forEach(m=>{
     const isTolosa=m.home?.toLowerCase().includes('tolosa')||m.away?.toLowerCase().includes('tolosa');
     html+=`<div class="match-card ${isTolosa?'is-tolosa-match':''}">
-      <div><div class="match-team" style="text-align:right;">${m.home}</div><div class="match-meta" style="text-align:right;">${m.date||''}</div></div>
-      <div class="match-score">${m.score}</div>
-      <div><div class="match-team">${m.away}</div><div class="match-meta">${m.venue||''}</div></div>
+      <div class="match-header"><span class="match-journey">J${m.journey||1}</span><span class="match-header-separator">•</span><span class="match-date">${m.date||''}</span></div>
+      <div class="match-body">
+        <div class="match-team match-home">${m.home}</div>
+        <div class="match-score">${m.score}</div>
+        <div class="match-team match-away">${m.away}</div>
+      </div>
+      <div class="match-footer">${m.venue||''}</div>
     </div>`;
   });
 
