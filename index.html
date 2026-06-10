@@ -54,11 +54,11 @@
   .mobile-nav-links a{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;font-family:var(--font-display);font-weight:900;font-size:1.4rem;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,0.6);text-decoration:none;transition:color .2s,padding-left .25s var(--ease-spring);}
   .mobile-nav-links a:hover{color:white;padding-left:.75rem;}
   #hero{position:relative;height:calc(100vh - 70px);min-height:520px;margin-top:70px;display:flex;align-items:flex-end;overflow:hidden;background:var(--navy);}
-  #hero-bg{position:absolute;inset:0;object-fit:cover;object-position:center top;width:100%;height:100%;transform:scale(1.08);animation:heroZoom 10s var(--ease-out) forwards;filter:saturate(0.65) brightness(0.5);will-change:transform;}
-  html:not(.dark) #hero-bg{filter:saturate(0.35) brightness(0.88);}
+  #hero-bg{position:absolute;inset:0;width:100%;height:100%;background-image:url('images/hero/hero-bg.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;transform:scale(1.08);animation:heroZoom 10s var(--ease-out) forwards;filter:saturate(0.65) brightness(0.65);will-change:transform;}
+  html:not(.dark) #hero-bg{filter:saturate(0.35) brightness(0.95);}
   @keyframes heroZoom{to{transform:scale(1);}}
-  #hero-overlay{position:absolute;inset:0;background:linear-gradient(105deg,rgba(4,16,31,0.92) 0%,rgba(4,16,31,0.5) 50%,rgba(4,16,31,0.05) 100%),linear-gradient(to top,rgba(4,16,31,1) 0%,rgba(4,16,31,0.4) 45%,transparent 100%);transition:background .6s;}
-  html:not(.dark) #hero-overlay{background:linear-gradient(105deg,rgba(240,246,255,0.92) 0%,rgba(210,228,255,0.55) 50%,rgba(180,210,255,0.1) 100%),linear-gradient(to top,rgba(240,248,255,0.98) 0%,rgba(210,228,255,0.5) 45%,transparent 100%);}
+  #hero-overlay{position:absolute;inset:0;background:linear-gradient(105deg,rgba(4,16,31,0.65) 0%,rgba(4,16,31,0.35) 50%,rgba(4,16,31,0.02) 100%),linear-gradient(to top,rgba(4,16,31,0.9) 0%,rgba(4,16,31,0.25) 45%,transparent 100%);transition:background .6s;}
+  html:not(.dark) #hero-overlay{background:linear-gradient(105deg,rgba(255,255,255,0.65) 0%,rgba(235,240,255,0.45) 50%,rgba(210,225,255,0.06) 100%),linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(235,240,255,0.35) 45%,transparent 100%);}
   #hero-grain{position:absolute;inset:0;opacity:0.03;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:200px;animation:grain .8s steps(1) infinite;}
   @keyframes grain{0%,100%{transform:translate(0,0)}10%{transform:translate(-2%,-2%)}20%{transform:translate(2%,2%)}30%{transform:translate(-1%,1%)}40%{transform:translate(1%,-1%)}50%{transform:translate(-2%,0)}60%{transform:translate(2%,0)}70%{transform:translate(0,2%)}80%{transform:translate(0,-2%)}90%{transform:translate(1%,1%)}}
   #hero-stripe{position:absolute;top:0;right:15%;width:3px;height:100%;background:linear-gradient(to bottom,transparent,var(--accent),transparent);opacity:0.5;transform:skewX(-8deg);}
@@ -245,7 +245,7 @@
 </div>
 
 <section id="hero">
-  <img id="hero-bg" src="hero-bg.png" alt="Tolosa CF Eskubaloia">
+  <div id="hero-bg" aria-hidden="true"></div>
   <div id="hero-overlay"></div>
   <div id="hero-grain"></div>
   <div id="hero-stripe"></div>
