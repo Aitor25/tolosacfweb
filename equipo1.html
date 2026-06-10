@@ -15,7 +15,7 @@
   :root{--navy:#04101f;--navy-mid:#081829;--navy-light:#0e2340;--accent:#1255c9;--accent-bright:#1e6ef5;--accent-glow:rgba(18,85,201,0.4);--white:#f0f4ff;--font-display:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-out:cubic-bezier(0.16,1,0.3,1);}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
-  body{font-family:var(--font-body);background:#f0f4ff;color:var(--navy);overflow-x:hidden;}
+  body{font-family:var(--font-body);background:var(--surface);color:var(--text-primary);overflow-x:hidden;}
   html.dark body{background:var(--navy);color:var(--white);}
   .reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s var(--ease-out),transform 0.7s var(--ease-out);}
   .reveal.visible{opacity:1;transform:none;}
@@ -64,17 +64,19 @@
   .mobile-nav-links a:hover{color:white;padding-left:.75rem;}
 
   /* PAGE HEADER */
-  .page-header{margin-top:70px;background:var(--navy);padding:4rem 2rem 3rem;position:relative;overflow:hidden;}
-  html:not(.dark) .page-header{background:var(--navy);}
-  .page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(18,85,201,0.25) 0%,transparent 70%);pointer-events:none;}
+  .page-header{margin-top:70px;background:var(--header-bg);color:var(--header-text);padding:4rem 2rem 3rem;position:relative;overflow:hidden;}
+  html:not(.dark) .page-header{background:var(--header-bg);}
+  .page-header::before{content:'';position:absolute;inset:0;pointer-events:none;}
+  html.dark .page-header::before{background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(18,85,201,0.25) 0%,transparent 70%);}
+  html:not(.dark) .page-header::before{background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(18,85,201,0.08) 0%,transparent 70%);}
   .page-header-inner{max-width:1400px;margin:0 auto;position:relative;}
   .page-eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-bright);margin-bottom:.75rem;}
   .page-eyebrow::before{content:'';width:1.5rem;height:2px;background:var(--accent-bright);border-radius:2px;}
-  .page-title{font-family:var(--font-display);font-weight:900;font-style:italic;font-size:clamp(2.5rem,7vw,5rem);line-height:.9;text-transform:uppercase;color:white;margin-bottom:.75rem;}
-  .page-subtitle{font-size:1rem;color:rgba(255,255,255,0.5);font-weight:500;}
+  .page-title{font-family:var(--font-display);font-weight:900;font-style:italic;font-size:clamp(2.5rem,7vw,5rem);line-height:.9;text-transform:uppercase;color:var(--header-text);margin-bottom:.75rem;}
+  .page-subtitle{font-size:1rem;color:var(--header-sub);font-weight:500;}
 
   /* TABS */
-  .tabs-wrapper{background:#f8faff;border-bottom:1px solid rgba(0,0,0,0.06);position:sticky;top:70px;z-index:40;}
+  .tabs-wrapper{background:var(--surface-2);border-bottom:1px solid var(--border);position:sticky;top:70px;z-index:40;}
   html.dark .tabs-wrapper{background:var(--navy-mid);border-bottom-color:rgba(255,255,255,0.06);}
   .tabs-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:0;}
   .tab-btn{font-family:var(--font-display);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;padding:1rem 1.5rem;border:none;background:none;cursor:pointer;color:rgba(4,16,31,0.45);border-bottom:3px solid transparent;transition:all .2s;}
@@ -89,9 +91,9 @@
 
   /* STANDINGS TABLE */
   .standings-table{width:100%;border-collapse:collapse;}
-  .standings-table th{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(4,16,31,0.4);padding:.75rem 1rem;border-bottom:2px solid rgba(0,0,0,0.08);text-align:left;background:#f8faff;}
+  .standings-table th{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(4,16,31,0.4);padding:.75rem 1rem;border-bottom:2px solid var(--border);text-align:left;background:var(--surface-2);}
   html.dark .standings-table th{color:rgba(255,255,255,0.35);background:var(--navy-mid);border-bottom-color:rgba(255,255,255,0.07);}
-  .standings-table td{padding:.875rem 1rem;border-bottom:1px solid rgba(0,0,0,0.05);font-size:.9rem;vertical-align:middle;}
+  .standings-table td{padding:.875rem 1rem;border-bottom:1px solid var(--border);font-size:.9rem;vertical-align:middle;}
   html.dark .standings-table td{border-bottom-color:rgba(255,255,255,0.04);color:rgba(255,255,255,0.8);}
   .standings-table tr:hover td{background:rgba(18,85,201,0.04);}
   html.dark .standings-table tr:hover td{background:rgba(255,255,255,0.03);}
@@ -103,13 +105,13 @@
   .pos-3{background:rgba(180,83,9,0.2);color:#b45309;}
 
   /* RESULTS */
-  .match-card{background:white;border:1px solid rgba(0,0,0,0.07);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:transform .2s var(--ease-spring),box-shadow .2s;}
+  .match-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:transform .2s var(--ease-spring),box-shadow .2s;}
   html.dark .match-card{background:var(--navy-mid);border-color:rgba(255,255,255,0.07);}
   .match-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
   html.dark .match-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.3);}
   .match-team{font-family:var(--font-display);font-weight:900;font-size:1.1rem;text-transform:uppercase;flex:1;}
-  .match-score{font-family:var(--font-display);font-weight:900;font-size:1.4rem;padding:.5rem 1.25rem;background:var(--navy);color:white;border-radius:8px;min-width:90px;text-align:center;border-bottom:3px solid var(--accent-bright);}
-  html:not(.dark) .match-score{background:var(--navy);}
+  .match-score{font-family:var(--font-display);font-weight:900;font-size:1.4rem;padding:.5rem 1.25rem;background:var(--surface-3);color:var(--text-primary);border-radius:8px;min-width:90px;text-align:center;border-bottom:3px solid var(--accent-bright);}
+  html.dark .match-score{background:var(--navy);color:white;}
   .match-meta{font-size:.72rem;color:rgba(4,16,31,0.4);text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
   html.dark .match-meta{color:rgba(255,255,255,0.35);}
   .is-tolosa-match .match-team{color:var(--accent);}
@@ -123,25 +125,25 @@
   .journey-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
 
   /* FOOTER */
-  #footer{background:#020d1a;color:rgba(255,255,255,0.5);}
+  #footer{background:var(--footer-bg);color:var(--footer-text);}
   .footer-inner{max-width:1400px;margin:0 auto;padding:4.5rem 2rem 2.5rem;}
-  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.05);}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid var(--footer-border);}
   @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}.footer-col:first-child{grid-column:span 2;}}
   @media(max-width:500px){.footer-grid{grid-template-columns:1fr;}.footer-col:first-child{grid-column:span 1;}}
   .footer-logo{height:56px;margin-bottom:1.25rem;opacity:.9;}
-  .footer-about{font-size:.875rem;line-height:1.75;color:rgba(255,255,255,0.38);max-width:260px;}
-  .footer-heading{font-family:var(--font-display);font-weight:900;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;}
+  .footer-about{font-size:.875rem;line-height:1.75;color:var(--footer-text-dim);max-width:260px;}
+  .footer-heading{font-family:var(--font-display);font-weight:900;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--footer-heading);margin-bottom:1.25rem;}
   .footer-links{list-style:none;display:flex;flex-direction:column;gap:.55rem;}
-  .footer-links a{font-size:.875rem;color:rgba(255,255,255,0.35);text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;}
-  .footer-links a:hover{color:rgba(255,255,255,0.85);padding-left:4px;}
+  .footer-links a{font-size:.875rem;color:var(--footer-text);text-decoration:none;transition:color .2s,padding-left .2s;display:inline-block;}
+  .footer-links a:hover{color:var(--accent);padding-left:4px;}
   .social-row{display:flex;gap:.6rem;margin-top:1.5rem;}
-  .social-btn{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);text-decoration:none;transition:all .25s var(--ease-spring);}
+  .social-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--footer-text);text-decoration:none;transition:all .25s var(--ease-spring);}
   .social-btn:hover{background:var(--accent);border-color:var(--accent);color:white;transform:translateY(-3px) scale(1.1);}
   .footer-bottom{padding-top:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
-  .footer-copy{font-size:.78rem;color:rgba(255,255,255,0.2);}
+  .footer-copy{font-size:.78rem;color:var(--footer-text-dim);}
   .footer-legal{display:flex;gap:1.5rem;}
-  .footer-legal a{font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;transition:color .2s;}
-  .footer-legal a:hover{color:rgba(255,255,255,0.6);}
+  .footer-legal a{font-size:.78rem;color:var(--footer-text-dim);text-decoration:none;transition:color .2s;}
+  .footer-legal a:hover{color:var(--footer-text);}
 
   @media(max-width:768px){
     #page-content{padding:2rem 1.25rem;}
@@ -223,7 +225,7 @@
 <div id="page-content">
   <div id="loading" style="text-align:center;padding:4rem;">
     <div style="width:40px;height:40px;border:3px solid rgba(18,85,201,0.2);border-top-color:var(--accent-bright);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem;"></div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(4,16,31,0.3);">Cargando datos...</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);">Cargando datos...</div>
   </div>
   <div id="tab-content" style="display:none;"></div>
 </div>
@@ -251,7 +253,7 @@
       </div>
       <div class="footer-col">
         <h3 class="footer-heading">Contacto</h3>
-        <div style="font-size:.85rem;color:rgba(255,255,255,0.35);"><div style="margin-bottom:.6rem;">Usabal Kiroldegia, 20400 Tolosa</div><div>eskubaloia.tolosacf@gmail.com</div></div>
+        <div style="font-size:.85rem;color:var(--footer-text-dim);"><div style="margin-bottom:.6rem;">Usabal Kiroldegia, 20400 Tolosa</div><div>eskubaloia.tolosacf@gmail.com</div></div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -282,7 +284,7 @@ function loadData(){
       document.getElementById('competition-name').textContent=`${currentData.competition||''} | ${currentData.season||''}`;
       renderActiveTab();
     }else{
-      document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;color:rgba(4,16,31,0.4);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin datos disponibles todavia</p><p style="font-size:.85rem;margin-top:.5rem;">El administrador aun no ha subido datos para esta categoria.</p></div>';
+      document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin datos disponibles todavia</p><p style="font-size:.85rem;margin-top:.5rem;">El administrador aun no ha subido datos para esta categoria.</p></div>';
     }
   },err=>{
     document.getElementById('loading').style.display='none';
@@ -308,10 +310,10 @@ function renderActiveTab(){
 function renderStandings(){
   const standings=currentData.standings||[];
   if(!standings.length){
-    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin clasificacion disponible</p></div>';
+    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin clasificacion disponible</p></div>';
     return;
   }
-  let html=`<div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(0,0,0,0.08);" class="dark-border">
+  let html=`<div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);" class="dark-border">
   <table class="standings-table">
   <thead><tr><th style="text-align:center;">Pos</th><th>Equipo</th><th style="text-align:center;">PJ</th><th style="text-align:center;">PG</th><th style="text-align:center;">PE</th><th style="text-align:center;">PP</th><th style="text-align:center;">GF</th><th style="text-align:center;">GC</th><th style="text-align:center;">DG</th><th style="text-align:center;color:var(--accent-bright);">PTS</th></tr></thead>
   <tbody>`;
@@ -331,7 +333,7 @@ function renderStandings(){
 function renderResults(){
   const results=currentData.results||[];
   if(!results.length){
-    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin resultados disponibles</p></div>';
+    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin resultados disponibles</p></div>';
     return;
   }
   const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>b-a);
