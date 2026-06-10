@@ -126,22 +126,25 @@
   .news-placeholder{background:var(--navy-light);aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;}
   html:not(.dark) .news-placeholder{background:#e8eef8;}
   .news-placeholder-text{font-family:var(--font-display);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.06);}
-  html:not(.dark) #stats-section{background:#f3f7ff;color:var(--navy);}
-  html:not(.dark) #stats-section::before{background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(18,85,201,0.08) 0%,transparent 70%);}
+  html:not(.dark) .news-placeholder-text{color:rgba(4,16,31,0.08);}
   #stats-section{background:var(--navy);color:white;position:relative;overflow:hidden;}
   html:not(.dark) #stats-section{background:#f3f7ff;color:var(--navy);}
   #stats-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(18,85,201,0.15) 0%,transparent 70%);pointer-events:none;}
+  html:not(.dark) #stats-section::before{background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(18,85,201,0.08) 0%,transparent 70%);}
   .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
   @media(max-width:640px){.stats-grid{grid-template-columns:1fr 1fr;}}
-  .stat-item{padding:3.5rem 2rem;border-right:1px solid rgba(255,255,255,0.06);text-align:center;position:relative;transition:background .3s;}.stat-item:last-child{border-right:none;}.stat-item:hover{background:rgba(255,255,255,0.02);}
-  html:not(.dark) .stat-item{border-right-color:rgba(4,16,31,0.06);}.stat-item:hover{background:rgba(255,255,255,0.02);}html:not(.dark) .stat-item:hover{background:rgba(4,16,31,0.02);}
+  .stat-item{padding:3.5rem 2rem;border-right:1px solid rgba(255,255,255,0.06);text-align:center;position:relative;transition:background .3s;}
+  html:not(.dark) .stat-item{border-right-color:rgba(4,16,31,0.08);}
+  .stat-item:last-child{border-right:none;}.stat-item:hover{background:rgba(255,255,255,0.02);}
+  html:not(.dark) .stat-item:hover{background:rgba(4,16,31,0.02);}
   @media(max-width:640px){.stat-item{border-right:none;border-bottom:1px solid rgba(255,255,255,0.06);}}
   .stat-number{font-family:var(--font-display);font-weight:900;font-size:clamp(3rem,6vw,5rem);line-height:1;background:linear-gradient(135deg,white 0%,rgba(210,228,255,0.8) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-  html:not(.dark) .stat-number{background:var(--navy);-webkit-background-clip:unset;-webkit-text-fill-color:unset;background-clip:unset;color:var(--navy);font-weight:900;}
+  html:not(.dark) .stat-number{background:none;-webkit-background-clip:unset;-webkit-text-fill-color:unset;background-clip:unset;color:var(--accent);text-shadow:none;}
   .stat-number span{-webkit-text-fill-color:var(--accent-bright);color:var(--accent-bright);}
-  html:not(.dark) .stat-number span{-webkit-text-fill-color:var(--accent);color:var(--accent);}
+  html:not(.dark) .stat-number span{color:var(--accent);}
   .stat-label{font-family:var(--font-display);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:.5rem;}
-  html:not(.dark) .stat-label{cowhite;}html.dark #instagram-section{background:var(--navy-mid);}
+  html:not(.dark) .stat-label{color:rgba(4,16,31,0.55);}
+  .stat-bar{width:2rem;height:2px;background:var(--accent);margin:.75rem auto 0;border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease-out);}.stat-item.counted .stat-bar{transform:scaleX(1);}html.dark #instagram-section{background:var(--navy-mid);}
   .insta-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;}@media(max-width:768px){.insta-grid{grid-template-columns:repeat(3,1fr);}}
   .insta-placeholder{aspect-ratio:1;background:var(--navy-light);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:rgba(255,255,255,0.1);position:relative;overflow:hidden;cursor:pointer;transition:transform .3s var(--ease-spring);}
   .insta-placeholder:hover{transform:scale(1.03);z-index:2;}
