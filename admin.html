@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tolosa CF Eskubaloia</title>
+<title>Admin — Tolosa CF Eskubaloia</title>
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -18,97 +18,84 @@
   #login-screen{position:fixed;inset:0;z-index:200;background:var(--navy);display:flex;align-items:center;justify-content:center;}
   .login-card{width:100%;max-width:420px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:2.5rem;}
   .login-card input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:.75rem 1rem;color:white;outline:none;font-size:.9rem;transition:border-color .2s;}
-  .login-card input:focus{border-color:var(--accent-bright);}
-  .login-card input::placeholder{color:rgba(255,255,255,0.3);}
-  #app{display:none;}
-  #app.visible{display:flex;min-height:100vh;}
+  .login-card input:focus{border-color:var(--accent-bright);} .login-card input::placeholder{color:rgba(255,255,255,0.3);}
+  #app{display:none;} #app.visible{display:flex;min-height:100vh;}
   #sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--navy);border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:100;transition:transform .3s;}
   .sidebar-logo{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:.75rem;}
-  .sidebar-logo img{height:36px;}
-  .sidebar-logo-text{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;text-transform:uppercase;line-height:1.1;}
-  .sidebar-logo-text span{color:var(--accent-bright);}
+  .sidebar-logo img{height:36px;} .sidebar-logo-text{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;text-transform:uppercase;line-height:1.1;} .sidebar-logo-text span{color:var(--accent-bright);}
   .sidebar-nav{flex:1;padding:1rem 0;overflow-y:auto;}
   .nav-section-label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,0.25);padding:1rem 1.25rem .4rem;font-weight:700;}
   .nav-item{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.25rem;cursor:pointer;color:rgba(255,255,255,0.55);font-size:.875rem;font-weight:600;border-left:3px solid transparent;text-decoration:none;transition:all .15s;}
-  .nav-item:hover{color:white;background:rgba(255,255,255,0.05);}
-  .nav-item.active{color:white;background:rgba(18,85,201,0.15);border-left-color:var(--accent-bright);}
-  .nav-item i{width:17px;height:17px;flex-shrink:0;}
+  .nav-item:hover{color:white;background:rgba(255,255,255,0.05);} .nav-item.active{color:white;background:rgba(18,85,201,0.15);border-left-color:var(--accent-bright);} .nav-item i{width:17px;height:17px;flex-shrink:0;}
   .sidebar-footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,0.06);}
   .user-avatar{width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;font-family:'Barlow Condensed',sans-serif;flex-shrink:0;}
   .user-email{font-size:.75rem;color:rgba(255,255,255,0.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px;}
   #main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
   #topbar{position:sticky;top:0;z-index:50;background:rgba(10,22,40,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);padding:.875rem 2rem;display:flex;align-items:center;justify-content:space-between;}
   .page-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.5rem;text-transform:uppercase;}
-  #content{padding:2rem;flex:1;}
-  .section{display:none;}
-  .section.active{display:block;}
+  #content{padding:2rem;flex:1;} .section{display:none;} .section.active{display:block;}
   .card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem;}
   .card-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:white;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;}
   .card-title i{color:var(--accent-bright);width:18px;height:18px;}
   .stat-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;}
-  .stat-icon{width:44px;height:44px;border-radius:10px;background:rgba(18,85,201,0.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--accent-bright);}
-  .stat-icon i{width:22px;height:22px;}
-  .stat-value{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;line-height:1;color:white;}
-  .stat-label{font-size:.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem;}
+  .stat-icon{width:44px;height:44px;border-radius:10px;background:rgba(18,85,201,0.2);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--accent-bright);} .stat-icon i{width:22px;height:22px;}
+  .stat-value{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;line-height:1;color:white;} .stat-label{font-size:.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:.1em;margin-top:.2rem;}
   .form-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.4);margin-bottom:.4rem;display:block;}
   .form-input,.form-select,.form-textarea{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:.7rem .875rem;color:white;outline:none;font-size:.875rem;font-family:'Barlow',sans-serif;transition:border-color .2s;}
   .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent-bright);}
-  .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,0.25);}
-  .form-select option{background:#0a1628;}
-  .form-textarea{resize:vertical;min-height:100px;}
-  .form-group{margin-bottom:1rem;}
+  .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,0.25);} .form-select option{background:#0a1628;} .form-textarea{resize:vertical;min-height:100px;} .form-group{margin-bottom:1rem;}
   .btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;padding:.65rem 1.25rem;border-radius:7px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem;transition:all .2s;}
   .btn i{width:14px;height:14px;}
-  .btn-primary{background:var(--accent);color:white;}
-  .btn-primary:hover{background:var(--accent-bright);transform:translateY(-1px);}
-  .btn-danger{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
-  .btn-danger:hover{background:#ef4444;color:white;}
-  .btn-ghost{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.1);}
-  .btn-ghost:hover{background:rgba(255,255,255,0.1);color:white;}
-  .btn-success{background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3);}
-  .btn-success:hover{background:#22c55e;color:white;}
+  .btn-primary{background:var(--accent);color:white;} .btn-primary:hover{background:var(--accent-bright);transform:translateY(-1px);}
+  .btn-danger{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);} .btn-danger:hover{background:#ef4444;color:white;}
+  .btn-ghost{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.1);} .btn-ghost:hover{background:rgba(255,255,255,0.1);color:white;}
+  .btn-success{background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3);} .btn-success:hover{background:#22c55e;color:white;}
+  .btn-warning{background:rgba(234,179,8,0.15);color:#facc15;border:1px solid rgba(234,179,8,0.3);} .btn-warning:hover{background:#ca8a04;color:white;}
   .btn-sm{padding:.4rem .75rem;font-size:.75rem;}
   .badge{display:inline-flex;align-items:center;padding:.2rem .6rem;border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
   .badge-blue{background:rgba(18,85,201,0.2);color:var(--accent-bright);border:1px solid rgba(18,85,201,0.3);}
   .badge-green{background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3);}
   .badge-red{background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);}
+  .badge-yellow{background:rgba(234,179,8,0.15);color:#facc15;border:1px solid rgba(234,179,8,0.3);}
   .badge-gray{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);}
   .data-table{width:100%;border-collapse:collapse;}
   .data-table th{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.35);padding:.6rem .875rem;border-bottom:1px solid rgba(255,255,255,0.07);text-align:left;}
   .data-table td{padding:.75rem .875rem;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.875rem;color:rgba(255,255,255,0.75);vertical-align:middle;}
-  .data-table tr:last-child td{border-bottom:none;}
-  .data-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .data-table tr:last-child td{border-bottom:none;} .data-table tr:hover td{background:rgba(255,255,255,0.02);}
   .news-preview-card{border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);}
   .news-preview-img{width:100%;height:160px;object-fit:cover;display:block;}
   .news-preview-img-placeholder{width:100%;height:160px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);}
-  .news-preview-body{padding:1rem;}
-  .news-preview-tag{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-bright);}
+  .news-preview-body{padding:1rem;} .news-preview-tag{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent-bright);}
   .news-preview-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;text-transform:uppercase;color:white;margin:.3rem 0 .5rem;line-height:1.1;}
   .news-preview-summary{font-size:.8rem;color:rgba(255,255,255,0.5);line-height:1.5;}
   #toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;}
   .toast{padding:.875rem 1.25rem;border-radius:8px;font-size:.875rem;font-weight:600;display:flex;align-items:center;gap:.6rem;min-width:280px;animation:slideIn .3s ease;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
-  .toast-success{background:#15803d;color:white;}
-  .toast-error{background:#b91c1c;color:white;}
-  .toast-info{background:var(--accent);color:white;}
+  .toast-success{background:#15803d;color:white;} .toast-error{background:#b91c1c;color:white;} .toast-info{background:var(--accent);color:white;} .toast-warning{background:#92400e;color:white;}
   @keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:none;opacity:1;}}
   .spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,0.2);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
-  #sidebar-toggle{display:none;}
-  #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;}
+  #sidebar-toggle{display:none;} #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:90;}
+
+  /* Modal */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .modal-box{background:#0e1e36;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:2rem;max-width:580px;width:calc(100% - 2rem);max-height:80vh;overflow-y:auto;}
+  .modal-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;text-transform:uppercase;color:white;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;}
+  .modal-title i{color:var(--accent-bright);}
+  .team-map-row{display:flex;align-items:center;gap:.75rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+  .team-map-detected{font-size:.85rem;color:#facc15;font-weight:600;flex:1;}
+  .team-map-arrow{color:rgba(255,255,255,0.3);font-size:.75rem;}
+  .team-map-select{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:.4rem .75rem;color:white;font-size:.82rem;flex:1.2;outline:none;}
+  .team-map-select option{background:#0a1628;}
+
   @media(max-width:1024px){
-    #sidebar{transform:translateX(-100%);}
-    #sidebar.open{transform:none;}
-    #sidebar-toggle{display:flex;}
-    #sidebar-overlay.visible{display:block;}
-    #main{margin-left:0;}
-    #content{padding:1.25rem;}
-    .grid-2col{grid-template-columns:1fr!important;}
-    .grid-sidebar{grid-template-columns:1fr!important;}
+    #sidebar{transform:translateX(-100%);} #sidebar.open{transform:none;} #sidebar-toggle{display:flex;} #sidebar-overlay.visible{display:block;} #main{margin-left:0;} #content{padding:1.25rem;}
+    .grid-2col{grid-template-columns:1fr!important;} .grid-sidebar{grid-template-columns:1fr!important;}
   }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div style="text-align:center;margin-bottom:1.75rem;">
@@ -120,13 +107,14 @@
     <div class="form-group"><label class="form-label">Contraseña</label><input type="password" id="login-pass" class="form-input" placeholder="••••••••" autocomplete="current-password"></div>
     <div style="display:flex;gap:.75rem;margin-top:1.5rem;">
       <button onclick="doLogin()" id="login-btn" class="btn btn-primary" style="flex:1;justify-content:center;"><i data-feather="log-in"></i> Entrar</button>
-      <button onclick="doRegister()" id="register-btn" class="btn btn-ghost" style="flex:1;justify-content:center;">Registrar</button>
+      <button onclick="doRegister()" class="btn btn-ghost" style="flex:1;justify-content:center;">Registrar</button>
     </div>
     <button onclick="doResetPassword()" style="width:100%;margin-top:.75rem;background:none;border:none;color:rgba(255,255,255,0.25);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;font-weight:700;font-family:'Barlow Condensed',sans-serif;">¿Olvidaste tu contraseña?</button>
     <div id="login-error" style="display:none;margin-top:1rem;padding:.75rem;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;font-size:.8rem;text-align:center;"></div>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
   <div id="sidebar-overlay" onclick="closeSidebar()"></div>
   <aside id="sidebar">
@@ -235,7 +223,6 @@
           <div style="padding:1.5rem;background:rgba(255,255,255,0.03);border-radius:8px;border:2px dashed rgba(255,255,255,0.1);text-align:center;margin-bottom:1.5rem;">
             <i data-feather="upload-cloud" style="width:40px;height:40px;color:rgba(255,255,255,0.2);margin:0 auto .75rem;display:block;"></i>
             <div style="font-size:.875rem;color:rgba(255,255,255,0.4);margin-bottom:.5rem;">Guarda URLs para usarlas en noticias</div>
-            <div style="font-size:.75rem;color:rgba(255,255,255,0.2);">Usa URLs de Unsplash, HuggingFace, Imgur, etc.</div>
           </div>
           <div class="form-group"><label class="form-label">Añadir URL</label>
             <div style="display:flex;gap:.75rem;"><input type="text" id="img-url-input" class="form-input" placeholder="https://..."><button onclick="addImageToGallery()" class="btn btn-primary"><i data-feather="plus"></i> Añadir</button></div>
@@ -247,6 +234,8 @@
       <!-- RESULTADOS -->
       <div id="section-resultados" class="section">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" class="grid-2col">
+
+          <!-- Panel importar -->
           <div class="card">
             <div class="card-title"><i data-feather="upload"></i> Importar Jornada</div>
             <div class="form-group"><label class="form-label">Categoría</label>
@@ -265,10 +254,11 @@
             <div class="form-group"><label class="form-label">Pega el texto aquí</label><textarea id="raw-input" class="form-textarea" style="min-height:180px;font-family:monospace;font-size:.8rem;" placeholder="Pega los partidos de la jornada..."></textarea></div>
             <div style="display:flex;gap:.75rem;">
               <button onclick="processInput()" class="btn btn-primary" style="flex:1;justify-content:center;"><i data-feather="cpu"></i> Procesar</button>
-              <button onclick="deleteJourney()" class="btn btn-danger"><i data-feather="trash-2"></i></button>
               <button onclick="repairDatabase()" class="btn btn-ghost" title="Reparar duplicados"><i data-feather="tool"></i></button>
             </div>
           </div>
+
+          <!-- Vista previa -->
           <div id="preview-area" style="display:none;">
             <div class="card">
               <div class="card-title" style="justify-content:space-between;"><span><i data-feather="eye"></i> Vista Previa</span><span id="match-count" class="badge badge-blue">0 partidos</span></div>
@@ -277,10 +267,38 @@
               <button onclick="saveToCloud()" id="save-btn" class="btn btn-success" style="width:100%;justify-content:center;"><i data-feather="cloud"></i> Guardar en Firebase</button>
             </div>
           </div>
+
+          <!-- Equipos maestros -->
           <div class="card" style="grid-column:1/-1;">
-            <div class="card-title" style="justify-content:space-between;"><span><i data-feather="calendar"></i> Resultados guardados</span><button onclick="loadCompetitionData()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button></div>
-            <div class="form-group" style="max-width:200px;"><select id="filter-journey" class="form-select" onchange="filterResults()"><option value="">Todas las jornadas</option></select></div>
-            <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Jornada</th><th>Local</th><th>Resultado</th><th>Visitante</th><th>Fecha</th></tr></thead><tbody id="results-tbody"><tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);">Selecciona una categoría</td></tr></tbody></table></div>
+            <div class="card-title" style="justify-content:space-between;">
+              <span><i data-feather="users"></i> Equipos de la competición</span>
+              <div style="display:flex;gap:.5rem;">
+                <button onclick="openAddTeamModal()" class="btn btn-ghost btn-sm"><i data-feather="plus"></i> Añadir</button>
+                <button onclick="loadCompetitionData()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button>
+              </div>
+            </div>
+            <p style="font-size:.78rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;">Lista maestra de nombres oficiales. Al importar jornadas, los nombres detectados se comparan con esta lista para evitar duplicados.</p>
+            <div id="master-teams-list" style="display:flex;flex-wrap:wrap;gap:.5rem;">
+              <span style="color:rgba(255,255,255,0.25);font-size:.8rem;">Cargando...</span>
+            </div>
+          </div>
+
+          <!-- Resultados guardados -->
+          <div class="card" style="grid-column:1/-1;">
+            <div class="card-title" style="justify-content:space-between;">
+              <span><i data-feather="calendar"></i> Resultados guardados</span>
+              <button onclick="loadCompetitionData()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;">
+              <select id="filter-journey" class="form-select" style="max-width:200px;" onchange="filterResults()"><option value="">Todas las jornadas</option></select>
+              <button onclick="deleteFilteredJourney()" class="btn btn-danger btn-sm" title="Borrar la jornada seleccionada en el filtro"><i data-feather="trash-2"></i> Borrar jornada</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="data-table">
+                <thead><tr><th>Jornada</th><th>Local</th><th>Resultado</th><th>Visitante</th><th>Fecha</th><th style="text-align:center;width:60px;">Borrar</th></tr></thead>
+                <tbody id="results-tbody"><tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Selecciona una categoría</td></tr></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -295,7 +313,13 @@
               <option value="juvenil-masculino">Juvenil Masculino</option><option value="juvenil-femenino">Juvenil Femenino</option>
             </select>
           </div>
-          <div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>Pos</th><th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th></tr></thead><tbody id="standings-tbody"><tr><td colspan="10" style="text-align:center;color:rgba(255,255,255,0.3);">Cargando...</td></tr></tbody></table></div>
+          <p style="font-size:.78rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;">Para borrar un equipo de la clasificación pulsa el botón ✕. Esto no borra sus partidos de resultados.</p>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr><th>Pos</th><th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th><th style="text-align:center;width:60px;">Borrar</th></tr></thead>
+              <tbody id="standings-tbody"><tr><td colspan="11" style="text-align:center;color:rgba(255,255,255,0.3);">Cargando...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -368,13 +392,54 @@
   </div>
 </div>
 
+<!-- MODAL duplicados -->
+<div id="dup-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-box">
+    <div class="modal-title"><i data-feather="alert-triangle"></i> Equipos similares detectados</div>
+    <p style="font-size:.82rem;color:rgba(255,255,255,0.5);margin-bottom:1.25rem;">Los siguientes nombres no existen en la lista maestra pero son muy parecidos a nombres ya registrados. Elige qué nombre usar o crea uno nuevo.</p>
+    <div id="dup-rows"></div>
+    <div style="display:flex;gap:.75rem;margin-top:1.5rem;justify-content:flex-end;">
+      <button onclick="closeDupModal()" class="btn btn-ghost">Cancelar</button>
+      <button onclick="applyDupMappings()" class="btn btn-primary"><i data-feather="check"></i> Aplicar y continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL añadir equipo maestro -->
+<div id="add-team-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-title"><i data-feather="plus-circle"></i> Añadir equipo oficial</div>
+    <div class="form-group"><label class="form-label">Nombre oficial del equipo</label><input type="text" id="new-master-team" class="form-input" placeholder="Ej: Trapagaran Eskubaloia"></div>
+    <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end;">
+      <button onclick="document.getElementById('add-team-modal').style.display='none'" class="btn btn-ghost">Cancelar</button>
+      <button onclick="addMasterTeam()" class="btn btn-primary"><i data-feather="save"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast-container"></div>
 
 <script>
+// ── FIREBASE ──
 const firebaseConfig={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomain:"tolosa-cf-eskubaloia.firebaseapp.com",projectId:"tolosa-cf-eskubaloia",storageBucket:"tolosa-cf-eskubaloia.firebasestorage.app",messagingSenderId:"243368570014",appId:"1:243368570014:web:181d7f5f5990014fbf9f8f"};
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(),db=firebase.firestore();
+const auth=firebase.auth(), db=firebase.firestore();
 
+// ── LEVENSHTEIN para detectar nombres similares ──
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+function similarity(a,b){
+  const maxLen=Math.max(a.length,b.length);
+  if(maxLen===0)return 1;
+  return(maxLen-levenshtein(a,b))/maxLen;
+}
+
+// ── ADMIN LOGIC (conservado íntegro) ──
 const AdminLogic={
   config:{pointsWin:2,pointsDraw:1,pointsLoss:0},
   parseJourneyText(text,journeyNumber=1){
@@ -406,7 +471,10 @@ const AdminLogic={
     });
     return standings.sort((a,b)=>a.pos-b.pos);
   },
-  normalizeTeamName(name){if(!name)return"";return name.toUpperCase().replace(/\./g,'').replace(/\b(CF|KE|ZKE|EK|ESKUBALOIA|BM|CLUB BALONMANO|BALONMANO)\b/g,'').replace(/\s+/g,' ').trim();},
+  normalizeTeamName(name){
+    if(!name)return'';
+    return name.toUpperCase().replace(/\./g,'').replace(/\b(CF|KE|ZKE|EK|ESKUBALOIA|BM|CLUB BALONMANO|BALONMANO)\b/g,'').replace(/\s+/g,' ').trim();
+  },
   getMatchKey(match){return`${match.journey}-${this.normalizeTeamName(match.home)}-${this.normalizeTeamName(match.away)}`;},
   calculateStandings(allResults){
     const teams={};
@@ -429,15 +497,18 @@ const AdminLogic={
     const filtered=(oldResults||[]).filter(m=>!journeysToReplace.has(Number(m.journey||1)));
     return[...filtered,...newResults].sort((a,b)=>a.journey-b.journey);
   },
-  generateCategoryData(name,competition,season,results,standings){return{name,competition,season,lastUpdate:new Date().toISOString(),results,standings};}
+  generateCategoryData(name,competition,season,results,standings,teams){
+    return{name,competition,season,lastUpdate:new Date().toISOString(),results,standings,teams:teams||[]};
+  }
 };
 
+// ── TOAST ──
 function toast(msg,type='info'){
   const el=document.createElement('div');el.className=`toast toast-${type}`;
-  const icons={success:'check-circle',error:'alert-circle',info:'info'};
-  el.innerHTML=`<i data-feather="${icons[type]}" style="width:16px;height:16px;flex-shrink:0;"></i> ${msg}`;
+  const icons={success:'check-circle',error:'alert-circle',info:'info',warning:'alert-triangle'};
+  el.innerHTML=`<i data-feather="${icons[type]||'info'}" style="width:16px;height:16px;flex-shrink:0;"></i> ${msg}`;
   document.getElementById('toast-container').appendChild(el);feather.replace();
-  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(100%)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},3500);
+  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(100%)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},4000);
 }
 
 const sectionTitles={dashboard:'Dashboard',noticias:'Noticias',imagenes:'Imagenes',resultados:'Resultados',clasificacion:'Clasificacion',equipos:'Equipos',jugadores:'Jugadores',patrocinadores:'Patrocinadores'};
@@ -461,6 +532,7 @@ function showSection(name){
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('visible');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('visible');}
 
+// ── AUTH ──
 auth.onAuthStateChanged(user=>{
   if(user){
     document.getElementById('login-screen').style.display='none';
@@ -475,35 +547,26 @@ auth.onAuthStateChanged(user=>{
 });
 
 async function doLogin(){
-  const email=document.getElementById('login-email').value;
-  const pass=document.getElementById('login-pass').value;
-  const btn=document.getElementById('login-btn');
-  const err=document.getElementById('login-error');
+  const email=document.getElementById('login-email').value,pass=document.getElementById('login-pass').value;
+  const btn=document.getElementById('login-btn'),err=document.getElementById('login-error');
   if(!email||!pass)return;
   btn.innerHTML='<div class="spinner"></div>';btn.disabled=true;err.style.display='none';
   try{await auth.signInWithEmailAndPassword(email,pass);}
   catch(e){
-    const msgs={'auth/user-not-found':'Usuario no encontrado. Usa Registrar para crear tu cuenta.','auth/wrong-password':'Contrasena incorrecta.','auth/invalid-email':'Email invalido.','auth/too-many-requests':'Demasiados intentos. Espera unos minutos.','auth/invalid-credential':'Email o contrasena incorrectos.'};
+    const msgs={'auth/user-not-found':'Usuario no encontrado.','auth/wrong-password':'Contraseña incorrecta.','auth/invalid-email':'Email inválido.','auth/too-many-requests':'Demasiados intentos.','auth/invalid-credential':'Email o contraseña incorrectos.'};
     err.textContent=msgs[e.code]||e.message;err.style.display='block';
   }finally{btn.innerHTML='<i data-feather="log-in"></i> Entrar';btn.disabled=false;feather.replace();}
 }
-
 async function doRegister(){
-  const email=document.getElementById('login-email').value;
-  const pass=document.getElementById('login-pass').value;
-  const err=document.getElementById('login-error');
-  if(!email||pass.length<6){err.textContent='Email valido y contrasena de al menos 6 caracteres.';err.style.display='block';return;}
-  try{await auth.createUserWithEmailAndPassword(email,pass);toast('Usuario creado. Ya puedes entrar.','success');}
-  catch(e){err.textContent=e.message;err.style.display='block';}
+  const email=document.getElementById('login-email').value,pass=document.getElementById('login-pass').value,err=document.getElementById('login-error');
+  if(!email||pass.length<6){err.textContent='Email válido y contraseña de al menos 6 caracteres.';err.style.display='block';return;}
+  try{await auth.createUserWithEmailAndPassword(email,pass);toast('Usuario creado.','success');}catch(e){err.textContent=e.message;err.style.display='block';}
 }
-
 async function doResetPassword(){
   const email=document.getElementById('login-email').value;
   if(!email){alert('Introduce tu email primero.');return;}
-  await auth.sendPasswordResetEmail(email);
-  toast('Email de recuperacion enviado a '+email,'success');
+  await auth.sendPasswordResetEmail(email);toast('Email de recuperación enviado.','success');
 }
-
 function doLogout(){auth.signOut();}
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -511,6 +574,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('login-pass')?.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 });
 
+// ── DASHBOARD ──
 async function loadDashboardStats(){
   try{
     const[news,players,sponsors]=await Promise.all([db.collection('news').get(),db.collection('players').get(),db.collection('sponsors').get()]);
@@ -523,25 +587,21 @@ async function loadDashboardStats(){
     const recentNews=news.docs.sort((a,b)=>(b.data().timestamp?.seconds||0)-(a.data().timestamp?.seconds||0)).slice(0,5);
     document.getElementById('dashboard-recent-news').innerHTML=recentNews.length
       ?recentNews.map(d=>`<div style="padding:.6rem 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,0.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;margin-right:.5rem;">${d.data().title}</span><span class="badge badge-blue">${d.data().tag||'CLUB'}</span></div>`).join('')
-      :'<div style="color:rgba(255,255,255,0.3);font-size:.82rem;text-align:center;padding:1rem;">Sin noticias todavia</div>';
+      :'<div style="color:rgba(255,255,255,0.3);font-size:.82rem;text-align:center;padding:1rem;">Sin noticias todavía</div>';
   }catch(e){console.error(e);}
 }
 
+// ── NOTICIAS ──
 function updateNewsPreview(){
-  const title=document.getElementById('news-title').value;
-  const tag=document.getElementById('news-tag').value;
-  const summary=document.getElementById('news-summary').value;
-  const image=document.getElementById('news-image').value;
-  document.getElementById('preview-title').textContent=title||'Titulo de la noticia';
-  document.getElementById('preview-tag').textContent=tag||'CLUB';
-  document.getElementById('preview-summary').textContent=summary||'El resumen aparecera aqui...';
-  const wrap=document.getElementById('preview-img-wrap');
+  document.getElementById('preview-title').textContent=document.getElementById('news-title').value||'Título de la noticia';
+  document.getElementById('preview-tag').textContent=document.getElementById('news-tag').value||'CLUB';
+  document.getElementById('preview-summary').textContent=document.getElementById('news-summary').value||'El resumen aparecerá aquí...';
+  const image=document.getElementById('news-image').value,wrap=document.getElementById('preview-img-wrap');
   if(image&&wrap){
     if(wrap.tagName==='IMG'){wrap.src=image;}
     else{const img=document.createElement('img');img.id='preview-img-wrap';img.className='news-preview-img';img.src=image;img.onerror=()=>{img.outerHTML='<div id="preview-img-wrap" class="news-preview-img-placeholder"><i data-feather="image" style="width:32px;height:32px;"></i></div>';feather.replace();};wrap.replaceWith(img);}
   }
 }
-
 async function loadNewsList(){
   const container=document.getElementById('news-list');
   container.innerHTML='<div style="text-align:center;padding:1.5rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
@@ -556,100 +616,309 @@ async function loadNewsList(){
       </div>`;
     }).join('');
     feather.replace();
-  }catch(e){container.innerHTML=`<div style="color:#f87171;font-size:.8rem;padding:1rem;background:rgba(239,68,68,0.1);border-radius:8px;">Error: ${e.message}</div>`;}
+  }catch(e){container.innerHTML=`<div style="color:#f87171;font-size:.8rem;padding:1rem;">Error: ${e.message}</div>`;}
 }
-
 async function saveNews(){
-  const title=document.getElementById('news-title').value?.trim();
-  const content=document.getElementById('news-content').value?.trim();
-  if(!title||!content){toast('Titulo y contenido son obligatorios','error');return;}
-  const btn=document.getElementById('news-save-btn');
-  btn.innerHTML='<div class="spinner"></div>';btn.disabled=true;
+  const title=document.getElementById('news-title').value?.trim(),content=document.getElementById('news-content').value?.trim();
+  if(!title||!content){toast('Título y contenido son obligatorios','error');return;}
+  const btn=document.getElementById('news-save-btn');btn.innerHTML='<div class="spinner"></div>';btn.disabled=true;
   const data={title,date:document.getElementById('news-date').value,tag:document.getElementById('news-tag').value,image:document.getElementById('news-image').value,summary:document.getElementById('news-summary').value,content,timestamp:firebase.firestore.FieldValue.serverTimestamp()};
   const editId=document.getElementById('news-edit-id').value;
   try{
-    if(editId)await db.collection('news').doc(editId).update(data);
-    else await db.collection('news').add(data);
-    toast(editId?'Noticia actualizada':'Noticia publicada','success');
-    clearNewsForm();loadNewsList();loadDashboardStats();
+    if(editId)await db.collection('news').doc(editId).update(data);else await db.collection('news').add(data);
+    toast(editId?'Noticia actualizada':'Noticia publicada','success');clearNewsForm();loadNewsList();loadDashboardStats();
   }catch(e){toast('Error: '+e.message,'error');}
   finally{btn.innerHTML='<i data-feather="send"></i> Publicar';btn.disabled=false;feather.replace();}
 }
-
 async function editNews(id){
   const doc=await db.collection('news').doc(id).get();if(!doc.exists)return;
   const n=doc.data();
-  document.getElementById('news-edit-id').value=id;
-  document.getElementById('news-title').value=n.title||'';
-  document.getElementById('news-date').value=n.date||'';
-  document.getElementById('news-tag').value=n.tag||'';
-  document.getElementById('news-image').value=n.image||'';
-  document.getElementById('news-summary').value=n.summary||'';
-  document.getElementById('news-content').value=n.content||'';
-  document.getElementById('news-form-title').textContent='Editar noticia';
-  document.getElementById('news-save-btn').innerHTML='<i data-feather="save"></i> Actualizar';
+  document.getElementById('news-edit-id').value=id;document.getElementById('news-title').value=n.title||'';document.getElementById('news-date').value=n.date||'';document.getElementById('news-tag').value=n.tag||'';document.getElementById('news-image').value=n.image||'';document.getElementById('news-summary').value=n.summary||'';document.getElementById('news-content').value=n.content||'';
+  document.getElementById('news-form-title').textContent='Editar noticia';document.getElementById('news-save-btn').innerHTML='<i data-feather="save"></i> Actualizar';
   feather.replace();updateNewsPreview();
 }
-
 async function deleteNews(id){
   if(!confirm('Eliminar esta noticia?'))return;
-  await db.collection('news').doc(id).delete();
-  toast('Noticia eliminada','success');loadNewsList();loadDashboardStats();
+  await db.collection('news').doc(id).delete();toast('Noticia eliminada','success');loadNewsList();loadDashboardStats();
 }
-
 function clearNewsForm(){
   ['news-edit-id','news-title','news-date','news-tag','news-image','news-summary','news-content'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('news-form-title').textContent='Nueva noticia';
-  document.getElementById('news-save-btn').innerHTML='<i data-feather="send"></i> Publicar';
+  document.getElementById('news-form-title').textContent='Nueva noticia';document.getElementById('news-save-btn').innerHTML='<i data-feather="send"></i> Publicar';
   feather.replace();updateNewsPreview();
 }
 
-let currentDBData=null,compMode='journey';
+// ── COMPETICIONES ──
+let currentDBData=null, compMode='journey', pendingProcessed=null;
 
 function setCompMode(mode){
   compMode=mode;
   const jBtn=document.getElementById('mode-journey'),sBtn=document.getElementById('mode-standings'),jGrp=document.getElementById('journey-num-group');
   if(mode==='journey'){jBtn.className='btn btn-primary btn-sm';sBtn.className='btn btn-ghost btn-sm';jGrp.style.display='block';document.getElementById('raw-input').placeholder='Pega los partidos de la jornada...';}
-  else{sBtn.className='btn btn-primary btn-sm';jBtn.className='btn btn-ghost btn-sm';jGrp.style.display='none';document.getElementById('raw-input').placeholder='Pega la tabla de clasificacion (Pos Equipo PJ PG PE PP GF GC Pts)...';}
+  else{sBtn.className='btn btn-primary btn-sm';jBtn.className='btn btn-ghost btn-sm';jGrp.style.display='none';document.getElementById('raw-input').placeholder='Pega la tabla de clasificación (Pos Equipo PJ PG PE PP GF GC Pts)...';}
 }
 
 async function loadCompetitionData(){
   const catId=document.getElementById('comp-category').value;
   try{
     const doc=await db.collection('competitions').doc(catId).get();
-    currentDBData=doc.exists?doc.data():{name:catId,competition:'Pendiente',season:'2025/26',results:[],standings:[]};
+    currentDBData=doc.exists?doc.data():{name:catId,competition:'Pendiente',season:'2025/26',results:[],standings:[],teams:[]};
+    if(!currentDBData.teams)currentDBData.teams=[];
     renderResultsTable(currentDBData.results||[]);
+    renderMasterTeams(currentDBData.teams||[]);
   }catch(e){toast('Error cargando datos: '+e.message,'error');}
 }
 
+// ── LISTA MAESTRA DE EQUIPOS ──
+function renderMasterTeams(teams){
+  const el=document.getElementById('master-teams-list');
+  if(!teams.length){
+    el.innerHTML='<span style="color:rgba(255,255,255,0.25);font-size:.8rem;">Sin equipos registrados. Añade los equipos de la competición.</span>';
+    return;
+  }
+  el.innerHTML=teams.map((t,i)=>`
+    <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(18,85,201,0.12);border:1px solid rgba(18,85,201,0.25);border-radius:20px;padding:.25rem .75rem .25rem .65rem;font-size:.8rem;color:rgba(255,255,255,0.8);">
+      ${t}
+      <button onclick="removeMasterTeam(${i})" style="background:none;border:none;color:rgba(255,255,255,0.35);cursor:pointer;padding:0;display:flex;align-items:center;" title="Eliminar"><i data-feather="x" style="width:12px;height:12px;"></i></button>
+    </div>
+  `).join('');
+  feather.replace();
+}
+
+function openAddTeamModal(){document.getElementById('new-master-team').value='';document.getElementById('add-team-modal').style.display='flex';setTimeout(()=>document.getElementById('new-master-team').focus(),100);}
+
+async function addMasterTeam(){
+  const name=document.getElementById('new-master-team').value.trim();
+  if(!name){toast('Introduce un nombre','error');return;}
+  if(!currentDBData){toast('Carga primero la categoría','error');return;}
+  const teams=[...(currentDBData.teams||[])];
+  if(teams.includes(name)){toast('Ese equipo ya existe','error');return;}
+  teams.push(name);
+  const catId=document.getElementById('comp-category').value;
+  try{
+    await db.collection('competitions').doc(catId).update({teams});
+    currentDBData.teams=teams;
+    renderMasterTeams(teams);
+    document.getElementById('add-team-modal').style.display='none';
+    toast(`Equipo "${name}" añadido`,'success');
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+async function removeMasterTeam(idx){
+  if(!currentDBData)return;
+  const name=currentDBData.teams[idx];
+  if(!confirm(`¿Eliminar "${name}" de la lista maestra? No borra sus resultados.`))return;
+  const teams=[...(currentDBData.teams||[])].filter((_,i)=>i!==idx);
+  const catId=document.getElementById('comp-category').value;
+  try{
+    await db.collection('competitions').doc(catId).update({teams});
+    currentDBData.teams=teams;
+    renderMasterTeams(teams);
+    toast(`"${name}" eliminado de la lista`,'success');
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+// ── DETECCIÓN DE DUPLICADOS ──
+// Umbral: si similitud > 0.75 con algún equipo maestro, avisar.
+const SIM_THRESHOLD = 0.75;
+
+function findSimilarMaster(name, masterTeams){
+  let best=null, bestSim=0;
+  for(const t of masterTeams){
+    const sim=similarity(name.toUpperCase(), t.toUpperCase());
+    if(sim>bestSim){bestSim=sim;best=t;}
+  }
+  return bestSim>=SIM_THRESHOLD && best!==name ? {match:best, sim:bestSim} : null;
+}
+
+let _dupPendingMatches=null, _dupPendingAllResults=null, _dupPendingStandings=null;
+
+function checkDuplicatesAndProceed(matches, allResults, standings){
+  const masterTeams=currentDBData.teams||[];
+  if(!masterTeams.length){
+    // Sin lista maestra: guardar directamente
+    _finalizeSave(matches, allResults, standings, []);
+    return;
+  }
+
+  // Recoger nombres únicos nuevos
+  const allNames=[...new Set(matches.flatMap(m=>[m.home,m.away]))];
+  const suspectRows=[];
+  for(const name of allNames){
+    if(masterTeams.includes(name))continue; // ya existe exacto
+    const found=findSimilarMaster(name, masterTeams);
+    if(found)suspectRows.push({detected:name, suggested:found.match, sim:found.sim});
+  }
+
+  if(!suspectRows.length){
+    _finalizeSave(matches, allResults, standings, []);
+    return;
+  }
+
+  // Mostrar modal
+  _dupPendingMatches=matches;
+  _dupPendingAllResults=allResults;
+  _dupPendingStandings=standings;
+  showDupModal(suspectRows, masterTeams);
+}
+
+function showDupModal(rows, masterTeams){
+  const container=document.getElementById('dup-rows');
+  container.innerHTML=rows.map((r,i)=>{
+    const opts=masterTeams.map(t=>`<option value="${t}" ${t===r.suggested?'selected':''}>${t}</option>`).join('');
+    return`<div class="team-map-row" data-detected="${r.detected}">
+      <span class="team-map-detected" title="${Math.round(r.sim*100)}% similar">⚠️ ${r.detected}</span>
+      <span class="team-map-arrow">→ usar:</span>
+      <select class="team-map-select" data-idx="${i}">${opts}<option value="__new__">[Crear nuevo]</option></select>
+    </div>`;
+  }).join('');
+  feather.replace();
+  document.getElementById('dup-modal').style.display='flex';
+}
+
+function closeDupModal(){
+  document.getElementById('dup-modal').style.display='none';
+  _dupPendingMatches=null;
+  toast('Importación cancelada','info');
+}
+
+function applyDupMappings(){
+  if(!_dupPendingMatches)return;
+  const selects=document.querySelectorAll('.team-map-select');
+  const mapping={};
+  selects.forEach(sel=>{
+    const detected=sel.closest('[data-detected]').dataset.detected;
+    const chosen=sel.value;
+    if(chosen!=='__new__')mapping[detected]=chosen;
+  });
+
+  // Aplicar mapeo a matches y allResults
+  function applyMap(name){return mapping[name]||name;}
+  const fixedMatches=_dupPendingMatches.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
+  const fixedAllResults=_dupPendingAllResults.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
+  const fixedStandings=AdminLogic.calculateStandings(fixedAllResults);
+
+  document.getElementById('dup-modal').style.display='none';
+  _finalizeSave(fixedMatches, fixedAllResults, fixedStandings, Object.values(mapping));
+}
+
+function _finalizeSave(matches, allResults, standings, mappingsApplied){
+  if(mappingsApplied.length) toast(`Mapeo aplicado para: ${mappingsApplied.join(', ')}`, 'success');
+  displayPreview(matches, standings, allResults);
+}
+
+// ── TABLA RESULTADOS ──
 function renderResultsTable(results){
   const tbody=document.getElementById('results-tbody');
-  if(!results.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);">Sin resultados</td></tr>';return;}
+  if(!results.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Sin resultados</td></tr>';
+    return;
+  }
   const journeys=[...new Set(results.map(r=>r.journey))].sort((a,b)=>a-b);
   const filterSelect=document.getElementById('filter-journey');
   const currentVal=filterSelect.value;
   filterSelect.innerHTML='<option value="">Todas las jornadas</option>'+journeys.map(j=>`<option value="${j}" ${currentVal==j?'selected':''}>Jornada ${j}</option>`).join('');
-  tbody.innerHTML=results.map(m=>`<tr><td><span class="badge badge-blue">J${m.journey}</span></td><td style="font-weight:600;color:white;">${m.home}</td><td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--accent-bright);">${m.score}</td><td style="font-weight:600;color:white;">${m.away}</td><td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''}</td></tr>`).join('');
+  tbody.innerHTML=results.map((m,idx)=>
+    `<tr>
+      <td><span class="badge badge-blue">J${m.journey}</span></td>
+      <td style="font-weight:600;color:white;">${m.home}</td>
+      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--accent-bright);">${m.score}</td>
+      <td style="font-weight:600;color:white;">${m.away}</td>
+      <td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''}</td>
+      <td style="text-align:center;">
+        <button onclick="deleteMatch(${idx})" class="btn btn-danger btn-sm" title="Borrar este partido"><i data-feather="trash-2"></i></button>
+      </td>
+    </tr>`
+  ).join('');
+  feather.replace();
 }
 
 function filterResults(){
   if(!currentDBData)return;
   const j=document.getElementById('filter-journey').value;
-  renderResultsTable(j?(currentDBData.results||[]).filter(r=>r.journey==j):(currentDBData.results||[]));
+  const results=j?(currentDBData.results||[]).filter(r=>r.journey==j):(currentDBData.results||[]);
+  // Renderizamos sólo la tabla, sin resetear el select
+  const tbody=document.getElementById('results-tbody');
+  if(!results.length){
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Sin resultados para esta jornada</td></tr>';
+    return;
+  }
+  // Reconstruir con índices reales en el array completo
+  const allResults=currentDBData.results||[];
+  tbody.innerHTML=results.map(m=>{
+    const realIdx=allResults.findIndex(r=>r===m);
+    return`<tr>
+      <td><span class="badge badge-blue">J${m.journey}</span></td>
+      <td style="font-weight:600;color:white;">${m.home}</td>
+      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--accent-bright);">${m.score}</td>
+      <td style="font-weight:600;color:white;">${m.away}</td>
+      <td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''}</td>
+      <td style="text-align:center;">
+        <button onclick="deleteMatch(${realIdx})" class="btn btn-danger btn-sm" title="Borrar este partido"><i data-feather="trash-2"></i></button>
+      </td>
+    </tr>`;
+  }).join('');
+  feather.replace();
 }
 
+// ── BORRAR PARTIDO INDIVIDUAL ──
+async function deleteMatch(idx){
+  if(!currentDBData)return;
+  const allResults=currentDBData.results||[];
+  const m=allResults[idx];
+  if(!m){toast('Partido no encontrado','error');return;}
+  if(!confirm(`¿Borrar el partido ${m.home} ${m.score} ${m.away} (J${m.journey})?\n\nSe recalculará la clasificación automáticamente.`))return;
+  const newResults=allResults.filter((_,i)=>i!==idx);
+  const newStandings=AdminLogic.calculateStandings(newResults);
+  const catId=document.getElementById('comp-category').value;
+  try{
+    await db.collection('competitions').doc(catId).set(
+      AdminLogic.generateCategoryData(currentDBData.name,currentDBData.competition,currentDBData.season,newResults,newStandings,currentDBData.teams)
+    );
+    currentDBData.results=newResults;
+    currentDBData.standings=newStandings;
+    toast(`Partido borrado. Clasificación recalculada.`,'success');
+    renderResultsTable(newResults);
+    // Reaplicar filtro si había uno activo
+    const j=document.getElementById('filter-journey').value;
+    if(j)filterResults();
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+// ── BORRAR JORNADA COMPLETA (desde filtro) ──
+async function deleteFilteredJourney(){
+  const j=document.getElementById('filter-journey').value;
+  if(!j){toast('Selecciona una jornada en el filtro primero','error');return;}
+  if(!currentDBData)return;
+  if(!confirm(`¿Borrar COMPLETAMENTE la Jornada ${j} y todos sus partidos?\n\nSe recalculará la clasificación.`))return;
+  const newResults=(currentDBData.results||[]).filter(m=>String(m.journey)!==String(j));
+  const newStandings=AdminLogic.calculateStandings(newResults);
+  const catId=document.getElementById('comp-category').value;
+  try{
+    await db.collection('competitions').doc(catId).set(
+      AdminLogic.generateCategoryData(currentDBData.name,currentDBData.competition,currentDBData.season,newResults,newStandings,currentDBData.teams)
+    );
+    currentDBData.results=newResults;
+    currentDBData.standings=newStandings;
+    toast(`Jornada ${j} eliminada. Clasificación recalculada.`,'success');
+    document.getElementById('filter-journey').value='';
+    renderResultsTable(newResults);
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+// ── PROCESAR INPUT ──
 function processInput(){
   const text=document.getElementById('raw-input').value;
   const journeyNum=parseInt(document.getElementById('journey-number').value);
   if(!text.trim())return;
-  if(!currentDBData){toast('Carga primero los datos de la categoria','error');return;}
+  if(!currentDBData){toast('Carga primero los datos de la categoría','error');return;}
   if(compMode==='journey'){
     const newMatches=AdminLogic.parseJourneyText(text,journeyNum);
     if(!newMatches.length){toast('No se detectaron partidos','error');return;}
     const hist=(currentDBData.results||[]).filter(m=>Number(m.journey||1)!==journeyNum);
     const allResults=AdminLogic.mergeResults(hist,newMatches);
     const newStandings=AdminLogic.calculateStandings(allResults);
-    displayPreview(newMatches,newStandings,allResults);
+    // Comprobación de duplicados antes de mostrar preview
+    checkDuplicatesAndProceed(newMatches, allResults, newStandings);
   }else{
     const newStandings=AdminLogic.parseStandingsTable(text);
     if(!newStandings.length){toast('No se pudo procesar la tabla','error');return;}
@@ -657,13 +926,19 @@ function processInput(){
   }
 }
 
-function displayPreview(matches,standings,allResults){
+function displayPreview(matches, standings, allResults){
   document.getElementById('preview-area').style.display='block';
   document.getElementById('match-count').textContent=`${matches.length} partidos`;
-  document.getElementById('parsed-results').innerHTML=matches.map(m=>`<div style="background:rgba(255,255,255,0.04);padding:.65rem .875rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.82rem;"><span style="color:rgba(255,255,255,0.5);">J${m.journey}</span><span style="font-weight:600;color:white;">${m.home}</span><span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--accent-bright);padding:.2rem .6rem;background:rgba(18,85,201,0.2);border-radius:4px;">${m.score}</span><span style="font-weight:600;color:white;">${m.away}</span></div>`).join('');
+  document.getElementById('parsed-results').innerHTML=matches.map(m=>`
+    <div style="background:rgba(255,255,255,0.04);padding:.65rem .875rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.82rem;">
+      <span style="color:rgba(255,255,255,0.5);">J${m.journey}</span>
+      <span style="font-weight:600;color:white;">${m.home}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--accent-bright);padding:.2rem .6rem;background:rgba(18,85,201,0.2);border-radius:4px;">${m.score}</span>
+      <span style="font-weight:600;color:white;">${m.away}</span>
+    </div>`).join('');
   const tolosa=standings.find(t=>t.team?.toLowerCase().includes('tolosa'));
-  document.getElementById('standings-summary').textContent=tolosa?`Tolosa CF queda en #${tolosa.pos} con ${tolosa.pts} puntos.`:`${standings.length} equipos en la clasificacion.`;
-  window.finalData=AdminLogic.generateCategoryData(currentDBData.name||'Categoria',currentDBData.competition||'Competicion',currentDBData.season||'2025/26',allResults,standings);
+  document.getElementById('standings-summary').textContent=tolosa?`Tolosa CF queda en #${tolosa.pos} con ${tolosa.pts} puntos.`:`${standings.length} equipos en la clasificación.`;
+  window.finalData=AdminLogic.generateCategoryData(currentDBData.name||'Categoría',currentDBData.competition||'Competición',currentDBData.season||'2025/26',allResults,standings,currentDBData.teams);
 }
 
 function displayPreviewStandingsOnly(standings){
@@ -671,37 +946,22 @@ function displayPreviewStandingsOnly(standings){
   document.getElementById('match-count').textContent=`${standings.length} equipos`;
   document.getElementById('parsed-results').innerHTML=`<table class="data-table"><thead><tr><th>Pos</th><th>Equipo</th><th>PJ</th><th>Pts</th></tr></thead><tbody>${standings.map(t=>`<tr><td style="color:var(--accent-bright);font-weight:700;">${t.pos}</td><td>${t.team}</td><td>${t.pj}</td><td style="font-weight:700;">${t.pts}</td></tr>`).join('')}</tbody></table>`;
   const tolosa=standings.find(t=>t.team?.toLowerCase().includes('tolosa'));
-  document.getElementById('standings-summary').textContent=tolosa?`Tolosa CF en #${tolosa.pos} con ${tolosa.pts} puntos.`:'Clasificacion importada manualmente.';
-  window.finalData=AdminLogic.generateCategoryData(currentDBData.name,currentDBData.competition,currentDBData.season,currentDBData.results||[],standings);
+  document.getElementById('standings-summary').textContent=tolosa?`Tolosa CF en #${tolosa.pos} con ${tolosa.pts} puntos.`:'Clasificación importada manualmente.';
+  window.finalData=AdminLogic.generateCategoryData(currentDBData.name,currentDBData.competition,currentDBData.season,currentDBData.results||[],standings,currentDBData.teams);
 }
 
 async function saveToCloud(){
   if(!window.finalData)return;
-  const btn=document.getElementById('save-btn');
-  const catId=document.getElementById('comp-category').value;
+  const btn=document.getElementById('save-btn'),catId=document.getElementById('comp-category').value;
   btn.innerHTML='<div class="spinner"></div>';btn.disabled=true;
   try{
     await db.collection('competitions').doc(catId).set(window.finalData);
-    toast('Guardado en Firebase! La web se actualiza al instante.','success');
+    toast('¡Guardado en Firebase!','success');
     document.getElementById('preview-area').style.display='none';
     document.getElementById('raw-input').value='';
-    loadCompetitionData();
+    await loadCompetitionData();
   }catch(e){toast('Error al guardar: '+e.message,'error');}
   finally{btn.innerHTML='<i data-feather="cloud"></i> Guardar en Firebase';btn.disabled=false;feather.replace();}
-}
-
-async function deleteJourney(){
-  const journeyNum=parseInt(document.getElementById('journey-number').value);
-  if(!confirm(`Borrar COMPLETAMENTE la Jornada ${journeyNum}?`))return;
-  try{
-    const catId=document.getElementById('comp-category').value;
-    const doc=await db.collection('competitions').doc(catId).get();if(!doc.exists)return;
-    const data=doc.data();
-    const cleaned=(data.results||[]).filter(m=>Number(m.journey||1)!==journeyNum);
-    const newStandings=AdminLogic.calculateStandings(cleaned);
-    await db.collection('competitions').doc(catId).set(AdminLogic.generateCategoryData(data.name,data.competition,data.season,cleaned,newStandings));
-    toast(`Jornada ${journeyNum} eliminada`,'success');loadCompetitionData();
-  }catch(e){toast('Error: '+e.message,'error');}
 }
 
 async function repairDatabase(){
@@ -710,41 +970,70 @@ async function repairDatabase(){
     const catId=document.getElementById('comp-category').value;
     const doc=await db.collection('competitions').doc(catId).get();
     if(!doc.exists){toast('Sin datos que reparar','info');return;}
-    const data=doc.data();const oldResults=data.results||[];
+    const data=doc.data(),oldResults=data.results||[];
     const resultsMap=new Map();
     oldResults.forEach(m=>resultsMap.set(AdminLogic.getMatchKey(m),m));
     const cleaned=Array.from(resultsMap.values()).sort((a,b)=>a.journey-b.journey);
     const newStandings=AdminLogic.calculateStandings(cleaned);
-    await db.collection('competitions').doc(catId).set(AdminLogic.generateCategoryData(data.name,data.competition,data.season,cleaned,newStandings));
-    toast(`Limpieza completada. ${oldResults.length} -> ${cleaned.length} partidos`,'success');loadCompetitionData();
+    await db.collection('competitions').doc(catId).set(AdminLogic.generateCategoryData(data.name,data.competition,data.season,cleaned,newStandings,data.teams||[]));
+    toast(`Limpieza: ${oldResults.length} → ${cleaned.length} partidos`,'success');loadCompetitionData();
   }catch(e){toast('Error: '+e.message,'error');}
 }
 
+// ── CLASIFICACIÓN ──
 async function loadStandings(){
   const catId=document.getElementById('standings-category').value;
   const tbody=document.getElementById('standings-tbody');
-  tbody.innerHTML='<tr><td colspan="10" style="text-align:center;"><div class="spinner" style="margin:0 auto;"></div></td></tr>';
+  tbody.innerHTML='<tr><td colspan="11" style="text-align:center;"><div class="spinner" style="margin:0 auto;"></div></td></tr>';
   try{
     const doc=await db.collection('competitions').doc(catId).get();
-    if(!doc.exists||!doc.data().standings?.length){tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:rgba(255,255,255,0.3);">Sin clasificacion para esta categoria</td></tr>';return;}
+    if(!doc.exists||!doc.data().standings?.length){
+      tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:rgba(255,255,255,0.3);">Sin clasificación para esta categoría</td></tr>';return;
+    }
     const standings=doc.data().standings;
     tbody.innerHTML=standings.map((t,i)=>{
       const isTolosa=t.team?.toLowerCase().includes('tolosa');
       const dg=(t.gf||0)-(t.gc||0);
-      return`<tr style="${isTolosa?'background:rgba(18,85,201,0.15);':''}"><td style="font-weight:900;color:${i<3?'var(--accent-bright)':'rgba(255,255,255,0.6)'};">${t.pos}</td><td style="font-weight:${isTolosa?'700':'400'};color:${isTolosa?'white':'rgba(255,255,255,0.8)'};">${t.team}${isTolosa?' 🔵':''}</td><td>${t.pj||0}</td><td style="color:#4ade80;">${t.pg||0}</td><td>${t.pe||0}</td><td style="color:#f87171;">${t.pp||0}</td><td>${t.gf||0}</td><td>${t.gc||0}</td><td style="color:${dg>0?'#4ade80':dg<0?'#f87171':'rgba(255,255,255,0.5)'}">${dg>0?'+':''}${dg}</td><td style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;color:white;">${t.pts||0}</td></tr>`;
+      return`<tr style="${isTolosa?'background:rgba(18,85,201,0.15);':'}">
+        <td style="font-weight:900;color:${i<3?'var(--accent-bright)':'rgba(255,255,255,0.6)'}">${t.pos}</td>
+        <td style="font-weight:${isTolosa?'700':'400'};color:${isTolosa?'white':'rgba(255,255,255,0.8)'}">${t.team}${isTolosa?' 🔵':''}</td>
+        <td>${t.pj||0}</td><td style="color:#4ade80;">${t.pg||0}</td><td>${t.pe||0}</td><td style="color:#f87171;">${t.pp||0}</td>
+        <td>${t.gf||0}</td><td>${t.gc||0}</td>
+        <td style="color:${dg>0?'#4ade80':dg<0?'#f87171':'rgba(255,255,255,0.5)'}">${dg>0?'+':''}${dg}</td>
+        <td style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;color:white;">${t.pts||0}</td>
+        <td style="text-align:center;">
+          <button onclick="deleteStandingRow('${catId}','${t.team.replace(/'/g,'\\&apos;')}')" class="btn btn-danger btn-sm" title="Borrar de la clasificación"><i data-feather="x"></i></button>
+        </td>
+      </tr>`;
     }).join('');
-  }catch(e){tbody.innerHTML=`<tr><td colspan="10" style="color:#f87171;padding:1rem;">Error: ${e.message}</td></tr>`;}
+    feather.replace();
+  }catch(e){tbody.innerHTML=`<tr><td colspan="11" style="color:#f87171;padding:1rem;">Error: ${e.message}</td></tr>`;}
 }
 
+// ── BORRAR FILA DE CLASIFICACIÓN ──
+async function deleteStandingRow(catId, teamName){
+  if(!confirm(`¿Borrar a "${teamName}" de la clasificación?\n\nEsta acción solo borra su fila en standings. Sus partidos en results NO se borran.`))return;
+  try{
+    const doc=await db.collection('competitions').doc(catId).get();
+    if(!doc.exists)return;
+    const data=doc.data();
+    const newStandings=(data.standings||[]).filter(t=>t.team!==teamName);
+    // Renumerar posiciones
+    newStandings.forEach((t,i)=>t.pos=i+1);
+    await db.collection('competitions').doc(catId).update({standings:newStandings});
+    toast(`"${teamName}" eliminado de la clasificación`,'success');
+    loadStandings();
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+// ── EQUIPOS (colección teams) ──
 async function saveTeam(){
   const name=document.getElementById('team-name').value?.trim();
   if(!name){toast('El nombre es obligatorio','error');return;}
   const data={name,category:document.getElementById('team-category').value,season:document.getElementById('team-season').value,coach:document.getElementById('team-coach').value,competition:document.getElementById('team-competition').value};
   const editId=document.getElementById('team-edit-id').value;
-  try{if(editId)await db.collection('teams').doc(editId).update(data);else await db.collection('teams').add(data);toast(editId?'Equipo actualizado':'Equipo guardado','success');clearTeamForm();loadTeams();}
-  catch(e){toast('Error: '+e.message,'error');}
+  try{if(editId)await db.collection('teams').doc(editId).update(data);else await db.collection('teams').add(data);toast(editId?'Equipo actualizado':'Equipo guardado','success');clearTeamForm();loadTeams();}catch(e){toast('Error: '+e.message,'error');}
 }
-
 async function loadTeams(){
   const tbody=document.getElementById('teams-tbody');
   tbody.innerHTML='<tr><td colspan="5" style="text-align:center;"><div class="spinner" style="margin:0 auto;"></div></td></tr>';
@@ -755,26 +1044,22 @@ async function loadTeams(){
     feather.replace();
   }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#f87171;padding:1rem;">Error: ${e.message}</td></tr>`;}
 }
-
 async function editTeam(id){
   const doc=await db.collection('teams').doc(id).get();if(!doc.exists)return;const t=doc.data();
   document.getElementById('team-edit-id').value=id;document.getElementById('team-name').value=t.name||'';document.getElementById('team-category').value=t.category||'senior';document.getElementById('team-season').value=t.season||'';document.getElementById('team-coach').value=t.coach||'';document.getElementById('team-competition').value=t.competition||'';
   document.getElementById('team-form-title').textContent='Editar equipo';
 }
-
 async function deleteTeam(id){if(!confirm('Eliminar este equipo?'))return;await db.collection('teams').doc(id).delete();toast('Equipo eliminado','success');loadTeams();}
-
 function clearTeamForm(){['team-edit-id','team-name','team-season','team-coach','team-competition'].forEach(id=>document.getElementById(id).value='');document.getElementById('team-category').value='senior';document.getElementById('team-form-title').textContent='Nuevo equipo';}
 
+// ── JUGADORES ──
 async function savePlayer(){
   const name=document.getElementById('player-name').value?.trim();
   if(!name){toast('El nombre es obligatorio','error');return;}
   const data={name,number:parseInt(document.getElementById('player-number').value)||0,position:document.getElementById('player-position').value,team:document.getElementById('player-team').value,photo:document.getElementById('player-photo').value,notes:document.getElementById('player-notes').value};
   const editId=document.getElementById('player-edit-id').value;
-  try{if(editId)await db.collection('players').doc(editId).update(data);else await db.collection('players').add(data);toast(editId?'Jugador actualizado':'Jugador guardado','success');clearPlayerForm();loadPlayers();loadDashboardStats();}
-  catch(e){toast('Error: '+e.message,'error');}
+  try{if(editId)await db.collection('players').doc(editId).update(data);else await db.collection('players').add(data);toast(editId?'Jugador actualizado':'Jugador guardado','success');clearPlayerForm();loadPlayers();loadDashboardStats();}catch(e){toast('Error: '+e.message,'error');}
 }
-
 async function loadPlayers(){
   const tbody=document.getElementById('players-tbody');
   tbody.innerHTML='<tr><td colspan="5" style="text-align:center;"><div class="spinner" style="margin:0 auto;"></div></td></tr>';
@@ -787,26 +1072,22 @@ async function loadPlayers(){
     feather.replace();
   }catch(e){tbody.innerHTML=`<tr><td colspan="5" style="color:#f87171;padding:1rem;">Comprueba las reglas de Firestore: ${e.message}</td></tr>`;}
 }
-
 async function editPlayer(id){
   const doc=await db.collection('players').doc(id).get();if(!doc.exists)return;const p=doc.data();
   document.getElementById('player-edit-id').value=id;document.getElementById('player-name').value=p.name||'';document.getElementById('player-number').value=p.number||'';document.getElementById('player-position').value=p.position||'Central';document.getElementById('player-team').value=p.team||'senior-masculino';document.getElementById('player-photo').value=p.photo||'';document.getElementById('player-notes').value=p.notes||'';
   document.getElementById('player-form-title').textContent='Editar jugador';
 }
-
 async function deletePlayer(id){if(!confirm('Eliminar este jugador?'))return;await db.collection('players').doc(id).delete();toast('Jugador eliminado','success');loadPlayers();loadDashboardStats();}
-
 function clearPlayerForm(){['player-edit-id','player-name','player-number','player-photo','player-notes'].forEach(id=>document.getElementById(id).value='');document.getElementById('player-form-title').textContent='Nuevo jugador';}
 
+// ── PATROCINADORES ──
 async function saveSponsor(){
   const name=document.getElementById('sponsor-name').value?.trim();
   if(!name){toast('El nombre es obligatorio','error');return;}
   const data={name,logo:document.getElementById('sponsor-logo').value,url:document.getElementById('sponsor-url').value,category:document.getElementById('sponsor-category').value};
   const editId=document.getElementById('sponsor-edit-id').value;
-  try{if(editId)await db.collection('sponsors').doc(editId).update(data);else await db.collection('sponsors').add(data);toast(editId?'Patrocinador actualizado':'Patrocinador guardado','success');clearSponsorForm();loadSponsors();loadDashboardStats();}
-  catch(e){toast('Error: '+e.message,'error');}
+  try{if(editId)await db.collection('sponsors').doc(editId).update(data);else await db.collection('sponsors').add(data);toast(editId?'Patrocinador actualizado':'Patrocinador guardado','success');clearSponsorForm();loadSponsors();loadDashboardStats();}catch(e){toast('Error: '+e.message,'error');}
 }
-
 async function loadSponsors(){
   const grid=document.getElementById('sponsors-grid');
   grid.innerHTML='<div style="text-align:center;padding:2rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
@@ -817,23 +1098,20 @@ async function loadSponsors(){
     feather.replace();
   }catch(e){grid.innerHTML=`<div style="color:#f87171;font-size:.8rem;padding:1rem;grid-column:1/-1;">Error: ${e.message}</div>`;}
 }
-
 async function editSponsor(id){
   const doc=await db.collection('sponsors').doc(id).get();if(!doc.exists)return;const s=doc.data();
   document.getElementById('sponsor-edit-id').value=id;document.getElementById('sponsor-name').value=s.name||'';document.getElementById('sponsor-logo').value=s.logo||'';document.getElementById('sponsor-url').value=s.url||'';document.getElementById('sponsor-category').value=s.category||'principal';
   document.getElementById('sponsor-form-title').textContent='Editar patrocinador';
 }
-
 async function deleteSponsor(id){if(!confirm('Eliminar este patrocinador?'))return;await db.collection('sponsors').doc(id).delete();toast('Patrocinador eliminado','success');loadSponsors();loadDashboardStats();}
-
 function clearSponsorForm(){['sponsor-edit-id','sponsor-name','sponsor-logo','sponsor-url'].forEach(id=>document.getElementById(id).value='');document.getElementById('sponsor-category').value='principal';document.getElementById('sponsor-form-title').textContent='Nuevo patrocinador';}
 
+// ── IMÁGENES ──
 let savedImages=JSON.parse(localStorage.getItem('admin-images')||'[]');
 function addImageToGallery(){const url=document.getElementById('img-url-input').value.trim();if(!url)return;savedImages.push(url);localStorage.setItem('admin-images',JSON.stringify(savedImages));renderImageGallery();document.getElementById('img-url-input').value='';}
 function renderImageGallery(){
-  const grid=document.getElementById('image-gallery');
-  if(!grid)return;
-  if(!savedImages.length){grid.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.2);font-size:.8rem;grid-column:1/-1;">Las URLs de imagenes guardadas aparecen aqui</div>';return;}
+  const grid=document.getElementById('image-gallery');if(!grid)return;
+  if(!savedImages.length){grid.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.2);font-size:.8rem;grid-column:1/-1;">Las URLs de imágenes guardadas aparecen aquí</div>';return;}
   grid.innerHTML=savedImages.map((url,i)=>`<div style="position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;"><img src="${url}" style="width:100%;height:100%;object-fit:cover;"><div style="position:absolute;inset:0;background:rgba(0,0,0,0.5);opacity:0;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0"><button onclick="copyImageUrl('${url}')" class="btn btn-ghost btn-sm"><i data-feather="copy"></i></button><button onclick="removeImage(${i})" class="btn btn-danger btn-sm"><i data-feather="trash-2"></i></button></div></div>`).join('');
   feather.replace();
 }
