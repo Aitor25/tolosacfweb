@@ -277,7 +277,11 @@
                 <button onclick="loadCompetitionData()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button>
               </div>
             </div>
-            <p style="font-size:.78rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;">Lista maestra de nombres oficiales. Al importar jornadas, los nombres detectados se comparan con esta lista para evitar duplicados.</p>
+            <p style="font-size:.78rem;color:rgba(255,255,255,0.35);margin-bottom:1rem;">
+              Lista maestra de <strong style="color:rgba(255,255,255,0.6);">nombres oficiales completos</strong>.
+              Al importar jornadas, los nombres detectados se comparan con esta lista para evitar duplicados.
+              El nombre guardado en Firestore es siempre el nombre oficial exacto.
+            </p>
             <div id="master-teams-list" style="display:flex;flex-wrap:wrap;gap:.5rem;">
               <span style="color:rgba(255,255,255,0.25);font-size:.8rem;">Cargando...</span>
             </div>
@@ -396,7 +400,10 @@
 <div id="dup-modal" class="modal-overlay" style="display:none;">
   <div class="modal-box">
     <div class="modal-title"><i data-feather="alert-triangle"></i> Equipos similares detectados</div>
-    <p style="font-size:.82rem;color:rgba(255,255,255,0.5);margin-bottom:1.25rem;">Los siguientes nombres no existen en la lista maestra pero son muy parecidos a nombres ya registrados. Elige qué nombre usar o crea uno nuevo.</p>
+    <p style="font-size:.82rem;color:rgba(255,255,255,0.5);margin-bottom:1.25rem;">
+      Los siguientes nombres no coinciden exactamente con ningún equipo de la lista maestra, pero son muy parecidos.
+      Elige el nombre oficial a usar. El nombre seleccionado es el que se guardará en Firestore.
+    </p>
     <div id="dup-rows"></div>
     <div style="display:flex;gap:.75rem;margin-top:1.5rem;justify-content:flex-end;">
       <button onclick="closeDupModal()" class="btn btn-ghost">Cancelar</button>
@@ -407,8 +414,12 @@
 
 <!-- MODAL añadir equipo maestro -->
 <div id="add-team-modal" class="modal-overlay" style="display:none;">
-  <div class="modal-box" style="max-width:400px;">
+  <div class="modal-box" style="max-width:420px;">
     <div class="modal-title"><i data-feather="plus-circle"></i> Añadir equipo oficial</div>
+    <p style="font-size:.78rem;color:rgba(255,255,255,0.4);margin-bottom:1rem;">
+      Escribe el nombre oficial completo tal y como aparece en los documentos de la competición.
+      Este es el nombre que se guardará en Firestore.
+    </p>
     <div class="form-group"><label class="form-label">Nombre oficial del equipo</label><input type="text" id="new-master-team" class="form-input" placeholder="Ej: Trapagaran Eskubaloia"></div>
     <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end;">
       <button onclick="document.getElementById('add-team-modal').style.display='none'" class="btn btn-ghost">Cancelar</button>
@@ -425,7 +436,7 @@ const firebaseConfig={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(), db=firebase.firestore();
 
-// ── LEVENSHTEIN para detectar nombres similares ──
+// ── LEVENSHTEIN — solo para comparar, nunca para guardar ──
 function levenshtein(a,b){
   const m=a.length,n=b.length;
   const dp=Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));
@@ -439,9 +450,19 @@ function similarity(a,b){
   return(maxLen-levenshtein(a,b))/maxLen;
 }
 
-// ── ADMIN LOGIC (conservado íntegro) ──
+// ── ADMIN LOGIC ──
 const AdminLogic={
   config:{pointsWin:2,pointsDraw:1,pointsLoss:0},
+
+  // ─────────────────────────────────────────────────────────────────────
+  // parseJourneyText: extrae partidos del texto pegado.
+  //
+  // REGLA DE NOMBRES:
+  //   - home / away se guardan con el nombre ORIGINAL del texto (trimmed).
+  //   - normalizeTeamName() NO se aplica aquí. Solo se usa en:
+  //       · getMatchKey()  → deduplicación interna (no guarda nada)
+  //       · findSimilarMaster() → comparación con lista maestra (no guarda nada)
+  // ─────────────────────────────────────────────────────────────────────
   parseJourneyText(text,journeyNumber=1){
     const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
     const matches=[];let currentJourney=journeyNumber,currentDate='',currentTime='',currentVenue='';
@@ -456,30 +477,57 @@ const AdminLogic={
         const teamHome=lines[hIdx]||'Equipo Local';
         let aIdx=i+1;while(aIdx<lines.length&&(lines[aIdx].match(/acta/i)||!lines[aIdx].trim())){aIdx++;}
         const teamAway=lines[aIdx]||'Equipo Visitante';
-        matches.push({journey:parseInt(currentJourney),date:currentDate||'Pendiente',time:currentTime||'Pendiente',venue:currentVenue||'Pabellon',home:this.normalizeTeamName(teamHome),away:this.normalizeTeamName(teamAway),score,status:'Finalizado'});
+        matches.push({
+          journey:parseInt(currentJourney),
+          date:currentDate||'Pendiente',
+          time:currentTime||'Pendiente',
+          venue:currentVenue||'Pabellon',
+          // ✅ Nombre original completo — NO se normaliza aquí
+          home: teamHome.trim(),
+          away: teamAway.trim(),
+          score,
+          status:'Finalizado'
+        });
       }
     }
     return matches;
   },
+
   parseStandingsTable(text){
     const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
     const standings=[];
     lines.forEach(line=>{
       const parts=line.split(/\t|\s{2,}/);
       if(parts.length>=8){const pos=parseInt(parts[0]);const pts=parseInt(parts[parts.length-1]);const pj=parseInt(parts[2]);
+      // ✅ Nombre original completo desde el texto pegado
       if(!isNaN(pos)&&parts[1])standings.push({pos,team:parts[1].trim(),pj,pg:parseInt(parts[3])||0,pe:parseInt(parts[4])||0,pp:parseInt(parts[5])||0,gf:parseInt(parts[6])||0,gc:parseInt(parts[7])||0,pts});}
     });
     return standings.sort((a,b)=>a.pos-b.pos);
   },
+
+  // normalizeTeamName: SOLO para comparaciones internas.
+  // NUNCA usar el valor devuelto para guardar en Firestore.
   normalizeTeamName(name){
     if(!name)return'';
-    return name.toUpperCase().replace(/\./g,'').replace(/\b(CF|KE|ZKE|EK|ESKUBALOIA|BM|CLUB BALONMANO|BALONMANO)\b/g,'').replace(/\s+/g,' ').trim();
+    return name.toUpperCase()
+      .replace(/\./g,'')
+      .replace(/\s+/g,' ')
+      .trim();
+    // ⚠️  Se eliminó el replace que quitaba CF, ESKUBALOIA, BM, etc.
+    //     Esa limpieza destruía los nombres oficiales.
+    //     La función ahora solo normaliza mayúsculas y espacios para comparar.
   },
-  getMatchKey(match){return`${match.journey}-${this.normalizeTeamName(match.home)}-${this.normalizeTeamName(match.away)}`;},
+
+  getMatchKey(match){
+    // Solo para deduplicación interna — no guarda nada
+    return`${match.journey}-${this.normalizeTeamName(match.home)}-${this.normalizeTeamName(match.away)}`;
+  },
+
   calculateStandings(allResults){
     const teams={};
     allResults.forEach(m=>{
       const[gHome,gAway]=m.score.split('-').map(g=>parseInt(g.trim()));
+      // ✅ Se usan m.home y m.away directamente (nombre oficial completo)
       if(!teams[m.home])teams[m.home]=this.createNewTeamEntry(m.home);
       if(!teams[m.away])teams[m.away]=this.createNewTeamEntry(m.away);
       const tH=teams[m.home],tA=teams[m.away];
@@ -490,13 +538,16 @@ const AdminLogic={
     });
     return Object.values(teams).sort((a,b)=>{if(b.pts!==a.pts)return b.pts-a.pts;const dA=a.gf-a.gc,dB=b.gf-b.gc;if(dB!==dA)return dB-dA;return b.gf-a.gf;}).map((t,i)=>({...t,pos:i+1}));
   },
+
   createNewTeamEntry(name){return{team:name,pj:0,pg:0,pe:0,pp:0,gf:0,gc:0,pts:0};},
+
   mergeResults(oldResults,newResults){
     if(!newResults||newResults.length===0)return oldResults||[];
     const journeysToReplace=new Set(newResults.map(m=>Number(m.journey||1)));
     const filtered=(oldResults||[]).filter(m=>!journeysToReplace.has(Number(m.journey||1)));
     return[...filtered,...newResults].sort((a,b)=>a.journey-b.journey);
   },
+
   generateCategoryData(name,competition,season,results,standings,teams){
     return{name,competition,season,lastUpdate:new Date().toISOString(),results,standings,teams:teams||[]};
   }
@@ -648,7 +699,7 @@ function clearNewsForm(){
 }
 
 // ── COMPETICIONES ──
-let currentDBData=null, compMode='journey', pendingProcessed=null;
+let currentDBData=null, compMode='journey';
 
 function setCompMode(mode){
   compMode=mode;
@@ -672,11 +723,11 @@ async function loadCompetitionData(){
 function renderMasterTeams(teams){
   const el=document.getElementById('master-teams-list');
   if(!teams.length){
-    el.innerHTML='<span style="color:rgba(255,255,255,0.25);font-size:.8rem;">Sin equipos registrados. Añade los equipos de la competición.</span>';
+    el.innerHTML='<span style="color:rgba(255,255,255,0.25);font-size:.8rem;">Sin equipos registrados. Añade los nombres oficiales de los equipos de la competición.</span>';
     return;
   }
   el.innerHTML=teams.map((t,i)=>`
-    <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(18,85,201,0.12);border:1px solid rgba(18,85,201,0.25);border-radius:20px;padding:.25rem .75rem .25rem .65rem;font-size:.8rem;color:rgba(255,255,255,0.8);">
+    <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(18,85,201,0.12);border:1px solid rgba(18,85,201,0.25);border-radius:20px;padding:.25rem .75rem .25rem .65rem;font-size:.8rem;color:rgba(255,255,255,0.85);">
       ${t}
       <button onclick="removeMasterTeam(${i})" style="background:none;border:none;color:rgba(255,255,255,0.35);cursor:pointer;padding:0;display:flex;align-items:center;" title="Eliminar"><i data-feather="x" style="width:12px;height:12px;"></i></button>
     </div>
@@ -691,7 +742,7 @@ async function addMasterTeam(){
   if(!name){toast('Introduce un nombre','error');return;}
   if(!currentDBData){toast('Carga primero la categoría','error');return;}
   const teams=[...(currentDBData.teams||[])];
-  if(teams.includes(name)){toast('Ese equipo ya existe','error');return;}
+  if(teams.includes(name)){toast('Ese equipo ya existe en la lista','error');return;}
   teams.push(name);
   const catId=document.getElementById('comp-category').value;
   try{
@@ -699,14 +750,14 @@ async function addMasterTeam(){
     currentDBData.teams=teams;
     renderMasterTeams(teams);
     document.getElementById('add-team-modal').style.display='none';
-    toast(`Equipo "${name}" añadido`,'success');
+    toast(`"${name}" añadido a la lista maestra`,'success');
   }catch(e){toast('Error: '+e.message,'error');}
 }
 
 async function removeMasterTeam(idx){
   if(!currentDBData)return;
   const name=currentDBData.teams[idx];
-  if(!confirm(`¿Eliminar "${name}" de la lista maestra? No borra sus resultados.`))return;
+  if(!confirm(`¿Eliminar "${name}" de la lista maestra?\n\nEsto no borra sus resultados, solo el nombre oficial de la lista.`))return;
   const teams=[...(currentDBData.teams||[])].filter((_,i)=>i!==idx);
   const catId=document.getElementById('comp-category').value;
   try{
@@ -718,16 +769,22 @@ async function removeMasterTeam(idx){
 }
 
 // ── DETECCIÓN DE DUPLICADOS ──
-// Umbral: si similitud > 0.75 con algún equipo maestro, avisar.
+// Compara con normalizeTeamName (solo mayúsculas+espacios) para detectar parecidos.
+// El nombre que se GUARDA es siempre el nombre oficial de la lista maestra.
 const SIM_THRESHOLD = 0.75;
 
-function findSimilarMaster(name, masterTeams){
+function findSimilarMaster(rawName, masterTeams){
+  // Comparamos versiones normalizadas, pero devolvemos el nombre oficial original
+  const normRaw = AdminLogic.normalizeTeamName(rawName);
   let best=null, bestSim=0;
   for(const t of masterTeams){
-    const sim=similarity(name.toUpperCase(), t.toUpperCase());
+    const normMaster = AdminLogic.normalizeTeamName(t);
+    const sim = similarity(normRaw, normMaster);
     if(sim>bestSim){bestSim=sim;best=t;}
   }
-  return bestSim>=SIM_THRESHOLD && best!==name ? {match:best, sim:bestSim} : null;
+  // Solo avisar si no es coincidencia exacta (normalizada) con algún maestro
+  const exactNormMatch = masterTeams.some(t => AdminLogic.normalizeTeamName(t) === normRaw);
+  return (!exactNormMatch && bestSim>=SIM_THRESHOLD && best) ? {match:best, sim:bestSim} : null;
 }
 
 let _dupPendingMatches=null, _dupPendingAllResults=null, _dupPendingStandings=null;
@@ -735,16 +792,15 @@ let _dupPendingMatches=null, _dupPendingAllResults=null, _dupPendingStandings=nu
 function checkDuplicatesAndProceed(matches, allResults, standings){
   const masterTeams=currentDBData.teams||[];
   if(!masterTeams.length){
-    // Sin lista maestra: guardar directamente
     _finalizeSave(matches, allResults, standings, []);
     return;
   }
 
-  // Recoger nombres únicos nuevos
   const allNames=[...new Set(matches.flatMap(m=>[m.home,m.away]))];
   const suspectRows=[];
   for(const name of allNames){
-    if(masterTeams.includes(name))continue; // ya existe exacto
+    // Coincidencia exacta de string → no avisar
+    if(masterTeams.includes(name))continue;
     const found=findSimilarMaster(name, masterTeams);
     if(found)suspectRows.push({detected:name, suggested:found.match, sim:found.sim});
   }
@@ -754,7 +810,6 @@ function checkDuplicatesAndProceed(matches, allResults, standings){
     return;
   }
 
-  // Mostrar modal
   _dupPendingMatches=matches;
   _dupPendingAllResults=allResults;
   _dupPendingStandings=standings;
@@ -768,7 +823,7 @@ function showDupModal(rows, masterTeams){
     return`<div class="team-map-row" data-detected="${r.detected}">
       <span class="team-map-detected" title="${Math.round(r.sim*100)}% similar">⚠️ ${r.detected}</span>
       <span class="team-map-arrow">→ usar:</span>
-      <select class="team-map-select" data-idx="${i}">${opts}<option value="__new__">[Crear nuevo]</option></select>
+      <select class="team-map-select" data-idx="${i}">${opts}<option value="__keep__">[Conservar tal cual]</option></select>
     </div>`;
   }).join('');
   feather.replace();
@@ -788,21 +843,23 @@ function applyDupMappings(){
   selects.forEach(sel=>{
     const detected=sel.closest('[data-detected]').dataset.detected;
     const chosen=sel.value;
-    if(chosen!=='__new__')mapping[detected]=chosen;
+    // __keep__ = conservar el nombre original tal cual (sin reemplazar)
+    if(chosen!=='__keep__')mapping[detected]=chosen;
   });
 
-  // Aplicar mapeo a matches y allResults
+  // Aplicar mapeo: sustituir nombre detectado → nombre oficial elegido
   function applyMap(name){return mapping[name]||name;}
   const fixedMatches=_dupPendingMatches.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
   const fixedAllResults=_dupPendingAllResults.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
   const fixedStandings=AdminLogic.calculateStandings(fixedAllResults);
 
   document.getElementById('dup-modal').style.display='none';
-  _finalizeSave(fixedMatches, fixedAllResults, fixedStandings, Object.values(mapping));
+  const applied=Object.keys(mapping);
+  _finalizeSave(fixedMatches, fixedAllResults, fixedStandings, applied);
 }
 
 function _finalizeSave(matches, allResults, standings, mappingsApplied){
-  if(mappingsApplied.length) toast(`Mapeo aplicado para: ${mappingsApplied.join(', ')}`, 'success');
+  if(mappingsApplied.length) toast(`Nombres corregidos: ${mappingsApplied.join(', ')}`, 'success');
   displayPreview(matches, standings, allResults);
 }
 
@@ -836,13 +893,11 @@ function filterResults(){
   if(!currentDBData)return;
   const j=document.getElementById('filter-journey').value;
   const results=j?(currentDBData.results||[]).filter(r=>r.journey==j):(currentDBData.results||[]);
-  // Renderizamos sólo la tabla, sin resetear el select
   const tbody=document.getElementById('results-tbody');
   if(!results.length){
     tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);">Sin resultados para esta jornada</td></tr>';
     return;
   }
-  // Reconstruir con índices reales en el array completo
   const allResults=currentDBData.results||[];
   tbody.innerHTML=results.map(m=>{
     const realIdx=allResults.findIndex(r=>r===m);
@@ -866,7 +921,7 @@ async function deleteMatch(idx){
   const allResults=currentDBData.results||[];
   const m=allResults[idx];
   if(!m){toast('Partido no encontrado','error');return;}
-  if(!confirm(`¿Borrar el partido ${m.home} ${m.score} ${m.away} (J${m.journey})?\n\nSe recalculará la clasificación automáticamente.`))return;
+  if(!confirm(`¿Borrar el partido:\n${m.home} ${m.score} ${m.away} (J${m.journey})?\n\nSe recalculará la clasificación automáticamente.`))return;
   const newResults=allResults.filter((_,i)=>i!==idx);
   const newStandings=AdminLogic.calculateStandings(newResults);
   const catId=document.getElementById('comp-category').value;
@@ -876,15 +931,14 @@ async function deleteMatch(idx){
     );
     currentDBData.results=newResults;
     currentDBData.standings=newStandings;
-    toast(`Partido borrado. Clasificación recalculada.`,'success');
+    toast('Partido borrado. Clasificación recalculada.','success');
     renderResultsTable(newResults);
-    // Reaplicar filtro si había uno activo
     const j=document.getElementById('filter-journey').value;
     if(j)filterResults();
   }catch(e){toast('Error: '+e.message,'error');}
 }
 
-// ── BORRAR JORNADA COMPLETA (desde filtro) ──
+// ── BORRAR JORNADA COMPLETA ──
 async function deleteFilteredJourney(){
   const j=document.getElementById('filter-journey').value;
   if(!j){toast('Selecciona una jornada en el filtro primero','error');return;}
@@ -917,7 +971,6 @@ function processInput(){
     const hist=(currentDBData.results||[]).filter(m=>Number(m.journey||1)!==journeyNum);
     const allResults=AdminLogic.mergeResults(hist,newMatches);
     const newStandings=AdminLogic.calculateStandings(allResults);
-    // Comprobación de duplicados antes de mostrar preview
     checkDuplicatesAndProceed(newMatches, allResults, newStandings);
   }else{
     const newStandings=AdminLogic.parseStandingsTable(text);
@@ -994,7 +1047,9 @@ async function loadStandings(){
     tbody.innerHTML=standings.map((t,i)=>{
       const isTolosa=t.team?.toLowerCase().includes('tolosa');
       const dg=(t.gf||0)-(t.gc||0);
-      return`<tr style="${isTolosa?'background:rgba(18,85,201,0.15);':'}">
+      // Escapar comillas en el nombre para el atributo onclick
+      const teamEscaped=t.team.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+      return`<tr style="${isTolosa?'background:rgba(18,85,201,0.15);':''}">
         <td style="font-weight:900;color:${i<3?'var(--accent-bright)':'rgba(255,255,255,0.6)'}">${t.pos}</td>
         <td style="font-weight:${isTolosa?'700':'400'};color:${isTolosa?'white':'rgba(255,255,255,0.8)'}">${t.team}${isTolosa?' 🔵':''}</td>
         <td>${t.pj||0}</td><td style="color:#4ade80;">${t.pg||0}</td><td>${t.pe||0}</td><td style="color:#f87171;">${t.pp||0}</td>
@@ -1002,7 +1057,7 @@ async function loadStandings(){
         <td style="color:${dg>0?'#4ade80':dg<0?'#f87171':'rgba(255,255,255,0.5)'}">${dg>0?'+':''}${dg}</td>
         <td style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;color:white;">${t.pts||0}</td>
         <td style="text-align:center;">
-          <button onclick="deleteStandingRow('${catId}','${t.team.replace(/'/g,'\\&apos;')}')" class="btn btn-danger btn-sm" title="Borrar de la clasificación"><i data-feather="x"></i></button>
+          <button onclick="deleteStandingRow('${catId}','${teamEscaped}')" class="btn btn-danger btn-sm" title="Borrar de la clasificación"><i data-feather="x"></i></button>
         </td>
       </tr>`;
     }).join('');
@@ -1012,13 +1067,12 @@ async function loadStandings(){
 
 // ── BORRAR FILA DE CLASIFICACIÓN ──
 async function deleteStandingRow(catId, teamName){
-  if(!confirm(`¿Borrar a "${teamName}" de la clasificación?\n\nEsta acción solo borra su fila en standings. Sus partidos en results NO se borran.`))return;
+  if(!confirm(`¿Borrar a "${teamName}" de la clasificación?\n\nSolo borra esta fila de standings. Sus partidos en results NO se borran.`))return;
   try{
     const doc=await db.collection('competitions').doc(catId).get();
     if(!doc.exists)return;
     const data=doc.data();
     const newStandings=(data.standings||[]).filter(t=>t.team!==teamName);
-    // Renumerar posiciones
     newStandings.forEach((t,i)=>t.pos=i+1);
     await db.collection('competitions').doc(catId).update({standings:newStandings});
     toast(`"${teamName}" eliminado de la clasificación`,'success');
