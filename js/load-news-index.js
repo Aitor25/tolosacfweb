@@ -1,16 +1,22 @@
 /**
  * js/load-news-index.js
- * Carga las noticias del index desde Firestore de forma autonoma.
- * Se incluye despues de firebase-config.js en index.html
+ * Carga noticias en la portada desde Firestore.
+ * Requiere que window.db este inicializado antes (firebase-config.js).
  */
 (function() {
+  'use strict';
+
   function buildCard(id, data, featured) {
-    const title = data.title || data.titulo || 'Sin titulo';
-    const date  = data.date  || data.fecha  || '';
-    const tag   = data.tag   || data.categoria || 'Club';
-    const image = data.image || data.imagen || '';
-    return '<a class="news-card' + (featured ? ' featured' : '') + '" href="noticia.html?id=' + encodeURIComponent(id) + '">'
-      + (image ? '<img class="news-card-img" src="' + image + '" alt="' + title + '" loading="lazy">' : '<div class="news-card-img" style="background:rgba(18,85,201,0.15);"></div>')
+    var title = data.title || data.titulo || 'Sin titulo';
+    var date  = data.date  || data.fecha  || '';
+    var tag   = data.tag   || data.categoria || 'Club';
+    var image = data.image || data.imagen || '';
+    var href  = 'noticia.html?id=' + encodeURIComponent(id);
+    var imgHtml = image
+      ? '<img class="news-card-img" src="' + image + '" alt="' + title + '" loading="lazy">'
+      : '<div class="news-card-img" style="background:rgba(18,85,201,0.15);"></div>';
+    return '<a class="news-card' + (featured ? ' featured' : '') + '" href="' + href + '">'
+      + imgHtml
       + '<div class="news-card-overlay"></div>'
       + '<div class="news-card-body">'
       + '<span class="news-card-cat">' + tag + '</span>'
@@ -19,68 +25,60 @@
       + '</div></a>';
   }
 
-  function sortDocs(docs) {
+  function sortByDate(docs) {
     return docs.slice().sort(function(a, b) {
-      var da = a.data(), db_ = b.data();
+      var da = a.data(), db = b.data();
       var ta = da.timestamp ? da.timestamp.seconds : 0;
-      var tb = db_.timestamp ? db_.timestamp.seconds : 0;
+      var tb = db.timestamp ? db.timestamp.seconds : 0;
       if (ta !== tb) return tb - ta;
-      return (db_.date || '').localeCompare(da.date || '');
+      return (db.date || '').localeCompare(da.date || '');
     });
   }
 
-  function loadHomeNews() {
+  function render(docs) {
     var grid = document.getElementById('news-grid');
     if (!grid) return;
-    var db = window.db;
-    if (!db) {
-      console.warn('[Index] window.db no disponible');
+    if (!docs.length) {
+      grid.innerHTML = '<div class="news-placeholder featured" style="grid-column:1/-1;"><span class="news-placeholder-text">Aun no hay noticias</span></div>';
       return;
     }
+    grid.innerHTML = docs.map(function(doc, i) {
+      return buildCard(doc.id, doc.data(), i === 0);
+    }).join('');
+    if (typeof feather !== 'undefined') feather.replace();
+  }
 
-    // Intento 1: con orderBy timestamp
+  function loadNews() {
+    var db = window.db;
+    if (!db) { console.warn('[load-news-index] window.db no disponible'); return; }
+    var grid = document.getElementById('news-grid');
+    if (!grid) return;
+
+    // Intento 1: orderBy timestamp
     db.collection('news').orderBy('timestamp', 'desc').limit(5).get()
       .then(function(snap) {
-        if (!snap.empty) {
-          grid.innerHTML = snap.docs.map(function(doc, i) {
-            return buildCard(doc.id, doc.data(), i === 0);
-          }).join('');
-          if (typeof feather !== 'undefined') feather.replace();
-          return;
-        }
-        // Vacio con orderBy: intentar sin orden
-        return db.collection('news').limit(20).get().then(function(snap2) {
-          if (snap2.empty) {
-            grid.innerHTML = '<div class="news-placeholder featured" style="grid-column:1/-1;"><span class="news-placeholder-text">Aun no hay noticias</span></div>';
-            return;
-          }
-          var sorted = sortDocs(snap2.docs).slice(0, 5);
-          grid.innerHTML = sorted.map(function(doc, i) {
-            return buildCard(doc.id, doc.data(), i === 0);
-          }).join('');
-          if (typeof feather !== 'undefined') feather.replace();
+        if (!snap.empty) { render(snap.docs); return; }
+        // Vacio: intentar sin orden
+        return db.collection('news').limit(20).get().then(function(s2) {
+          render(s2.empty ? [] : sortByDate(s2.docs).slice(0, 5));
         });
       })
       .catch(function(e) {
-        console.warn('[Index] orderBy fallo, reintentando sin orden:', e.message);
-        // Intento 2 en el catch
-        db.collection('news').limit(20).get().then(function(snap2) {
-          if (snap2.empty) return;
-          var sorted = sortDocs(snap2.docs).slice(0, 5);
-          grid.innerHTML = sorted.map(function(doc, i) {
-            return buildCard(doc.id, doc.data(), i === 0);
-          }).join('');
-          if (typeof feather !== 'undefined') feather.replace();
-        }).catch(function(e2) {
-          console.error('[Index] Error cargando noticias:', e2.message);
-        });
+        console.warn('[load-news-index] orderBy fallo:', e.message);
+        // Intento 2: sin orden en el catch
+        db.collection('news').limit(20).get()
+          .then(function(s2) {
+            render(s2.empty ? [] : sortByDate(s2.docs).slice(0, 5));
+          })
+          .catch(function(e2) {
+            console.error('[load-news-index] Error:', e2.message);
+          });
       });
   }
 
-  // Arrancar
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadHomeNews);
+    document.addEventListener('DOMContentLoaded', loadNews);
   } else {
-    loadHomeNews();
+    loadNews();
   }
 })();
