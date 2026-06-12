@@ -392,5 +392,15 @@
 <script src="js/firebase-config.js"></script>
 <script src="js/noticias-data.js"></script>
 <script src="js/common.js"></script>
+
+<!-- Cargar noticias reales desde Firestore en la portada -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Llamar a renderNewsCards una vez que Firebase y common.js estén listos
+  if (typeof renderNewsCards === 'function') {
+    renderNewsCards('news-grid', 6);
+  }
+});
+</script>
 </body>
 </html>
