@@ -144,15 +144,71 @@
   html:not(.dark) .stat-number span{color:var(--accent);}
   .stat-label{font-family:var(--font-display);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:.5rem;}
   html:not(.dark) .stat-label{color:rgba(4,16,31,0.55);}
-  .stat-bar{width:2rem;height:2px;background:var(--accent);margin:.75rem auto 0;border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease-out);}.stat-item.counted .stat-bar{transform:scaleX(1);}html.dark #instagram-section{background:var(--navy-mid);}
-  .insta-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;}@media(max-width:768px){.insta-grid{grid-template-columns:repeat(3,1fr);}}
-  .insta-placeholder{aspect-ratio:1;background:var(--navy-light);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;color:rgba(255,255,255,0.1);position:relative;overflow:hidden;cursor:pointer;transition:transform .3s var(--ease-spring);}
-  .insta-placeholder:hover{transform:scale(1.03);z-index:2;}
-  .insta-placeholder::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent) 0%,var(--accent-bright) 100%);opacity:0;transition:opacity .3s;}.insta-placeholder:hover::after{opacity:0.7;}
-  .insta-placeholder i{position:relative;z-index:2;transition:transform .3s var(--ease-spring),color .3s;}.insta-placeholder:hover i{transform:scale(1.2);color:white;}
-  html:not(.dark) .insta-placeholder{background:#e5e5e5;color:rgba(4,16,31,0.15);}
-  .insta-cta{display:flex;align-items:center;justify-content:center;margin-top:2.5rem;}
-  .insta-follow-btn{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.8rem 2rem;background:var(--navy);color:white;border-radius:6px;transition:background .25s,transform .25s var(--ease-spring),box-shadow .25s;box-shadow:0 4px 15px rgba(4,16,31,0.2);}
+  .stat-bar{width:2rem;height:2px;background:var(--accent);margin:.75rem auto 0;border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease-out);}.stat-item.counted .stat-bar{transform:scaleX(1);}
+
+  /* ── Instagram section ── */
+  #instagram-section { background:var(--surface-2,#f3f6ff); }
+  html.dark #instagram-section { background:var(--navy-mid); }
+
+  /* Contenedor del widget: ancho completo, altura minima razonable */
+  .insta-widget-wrap {
+    width: 100%;
+    min-height: 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  /* El iframe/script del widget debe ir dentro: que ocupe todo el ancho */
+  .insta-widget-wrap iframe,
+  .insta-widget-wrap > div {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* Fallback visible si el widget no carga */
+  .insta-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 3rem 2rem;
+    background: var(--surface-3, #e8eeff);
+    border-radius: 10px;
+    border: 2px dashed var(--border, rgba(4,16,31,0.08));
+    text-align: center;
+  }
+  html.dark .insta-fallback {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .insta-fallback p {
+    font-size: .9rem;
+    color: var(--text-secondary, rgba(4,16,31,0.55));
+    max-width: 380px;
+  }
+  html.dark .insta-fallback p { color: rgba(255,255,255,0.4); }
+
+  /* Boton Instagram con gradiente real */
+  .insta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: .82rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: .8rem 2rem;
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    color: white;
+    border-radius: 8px;
+    transition: opacity .2s, transform .2s var(--ease-spring);
+    box-shadow: 0 4px 15px rgba(131,58,180,0.3);
+  }
+  .insta-btn:hover { opacity:.88; transform:translateY(-2px); }
+
+  /* ── Partners ── */
   #partners-section{background:white;border-top:1px solid rgba(0,0,0,0.05);padding:2.5rem 0;overflow:hidden;}
   html.dark #partners-section{background:var(--navy);border-top-color:rgba(255,255,255,0.04);}
   html:not(.dark) #partners-section{background:#f9fafb;border-top-color:rgba(4,16,31,0.05);}
@@ -163,28 +219,16 @@
   html:not(.dark) .partners-track::before{background:linear-gradient(to right,#f9fafb,transparent);}
   .partners-track::after{right:0;background:linear-gradient(to left,white,transparent);}
   html.dark .partners-track::after{background:linear-gradient(to left,var(--navy),transparent);}
-  html:not(.dark) .partners-track::after{background:linear-gradient(to left,#f9fafb,transparenting:.8rem 2rem;background:var(--navy);color:white;border-radius:6px;transition:background .25s,transform .25s var(--ease-spring),box-shadow .25s;box-shadow:0 4px 15px rgba(4,16,31,0.2);}
-  .insta-follow-btn:hover{background:var(--accent);transform:translateY(-3px);box-shadow:0 8px 25px rgba(18,85,201,0.4);}
-  #partners-section{background:#f8faff;border-top:1px solid rgba(0,0,0,0.05);padding:2.5rem 0;overflow:hidden;}
-  html.dark #partnersvar(--navy);color:rgba(255,255,255,0.5);}
-  html:not(.dark) #footer{background:#f3f6fa;color:rgba(4,16,31,0.65);border-top:1px solid rgba(4,16,31,0.08rder-top-color:rgba(255,255,255,0.04);}
-  .partners-track{overflow:hidden;position:relative;}
-  .partners-track::before,.partners-track::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
-  .partners-track::before{left:0;background:linear-gradient(to right,#f8faff,transparent);}html.dark .partners-track::before{background:linear-gradient(to right,var(--navy),transparent);}
-  .partners-track::after{right:0;background:linear-gradient(to left,#f8faff,transparent);}html.dark .partners-track::after{background:linear-gradient(to left,var(--navy),transparent);}
+  html:not(.dark) .partners-track::after{background:linear-gradient(to left,#f9fafb,transparent);}
   .partners-row{display:flex;gap:4rem;align-items:center;animation:marquee 30s linear infinite;width:max-content;}.partners-row:hover{animation-play-state:paused;}
-  html:not(.dark) .footer-about{color:rgba(4,16,31,0.5);}
-  .footer-heading{font-family:var(--font-display);font-weight:900;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;}
-  html:not(.dark) .footer-heading{color:rgba(4,16,31,0.7)
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .partner-slot{flex:0 0 auto;height:44px;display:flex;align-items:center;opacity:.3;transition:opacity .3s,filter .3s;filter:grayscale(1);}.partner-slot:hover{opacity:.9;filter:none;}
-  html:not(.dark) .footer-links a{color:rgba(4,16,31,0.55);}html:not(.dark) .footer-links a:hover{color:var(--navy);padding-left:4px;}
-  .footer-contact-item{display:flex;align-items:flex-start;gap:.6rem;font-size:.85rem;color:rgba(255,255,255,0.35);margin-bottom:.7rem;}.footer-contact-item i{flex-shrink:0;margin-top:2px;color:var(--accent-bright);opacity:.8;}
-  html:not(.dark) .footer-contact-item{color:rgba(4,16,31,0.55);}html:not(.dark) .footer-contact-item i{color:var(--accent);opacity:1;}
-  html:not(.dark) .social-btn{border-color:rgba(4,16,31,0.15);color:rgba(4,16,31,0.4);}html:not(.dark) .social-btn:hover{background:var(--accent);border-color:var(--accent);color:white;}
-  .footer-bottom{padding-top:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}.footer-copy{font-size:.78rem;color:rgba(255,255,255,0.2);}
-  html:not(.dark) .footer-copy{color:rgba(4,16,31,0.35);}
-  .footer-legal{display:flex;gap:1.5rem;}.footer-legal a{font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;transition:color .2s;}.footer-legal a:hover{color:rgba(255,255,255,0.6);}
-  html:not(.dark) .footer-legal a{color:rgba(4,16,31,0.35);}html:not(.dark) .footer-legal a:hover{color:rgba(4,16,31,0.75
+  .partner-slot-text{font-family:var(--font-display);font-weight:900;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);white-space:nowrap;}
+  html.dark .partner-slot-text{color:rgba(255,255,255,0.6);}
+
+  /* ── Footer ── */
+  #footer{background:#020d1a;color:rgba(255,255,255,0.5);}
+  .footer-inner{max-width:1400px;margin:0 auto;padding:4.5rem 2rem 2.5rem;}
   .footer-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:3.5rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.05);}
   @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}.footer-col:first-child{grid-column:span 2;}}
   @media(max-width:500px){.footer-grid{grid-template-columns:1fr;}.footer-col:first-child{grid-column:span 1;}}
@@ -306,31 +350,89 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════════════════
+     SECCIÓN INSTAGRAM
+     Preparada para widget de LightWidget / SnapWidget
+     ════════════════════════════════════════════ -->
 <div id="instagram-section">
   <div class="section">
+
+    <!-- Cabecera -->
     <div class="section-header reveal">
       <div>
         <div class="section-eyebrow">Redes sociales</div>
         <h2 class="section-title">Síguenos en<br>Instagram</h2>
         <div class="divider-line"></div>
+        <p style="font-size:.9rem;color:var(--text-secondary,rgba(4,16,31,0.6));margin-top:1rem;max-width:400px;line-height:1.6;">
+          Fotos, vídeos y la actualidad del club en tiempo real.
+        </p>
       </div>
-      <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="section-link">@tolosacfeskubaloia <i data-feather="instagram" style="width:15px;height:15px;"></i></a>
-    </div>
-    <div class="insta-grid">
-      <div class="insta-placeholder reveal delay-1"><i data-feather="instagram" style="width:26px;height:26px;"></i></div>
-      <div class="insta-placeholder reveal delay-2"><i data-feather="instagram" style="width:26px;height:26px;"></i></div>
-      <div class="insta-placeholder reveal delay-3"><i data-feather="instagram" style="width:26px;height:26px;"></i></div>
-      <div class="insta-placeholder reveal delay-4"><i data-feather="instagram" style="width:26px;height:26px;"></i></div>
-      <div class="insta-placeholder reveal delay-5"><i data-feather="instagram" style="width:26px;height:26px;"></i></div>
-      <div class="insta-placeholder reveal delay-5"><i data-feather="instagram" style="width:26px;height:26px;"></i></div>
-    </div>
-    <div class="insta-cta">
-      <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="insta-follow-btn" data-ripple>
-        <i data-feather="instagram" style="width:17px;height:17px;"></i> Seguir en Instagram
+      <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="section-link">
+        @tolosacfeskubaloia <i data-feather="instagram" style="width:15px;height:15px;"></i>
       </a>
     </div>
+
+    <!-- ┌─────────────────────────────────────────────┐
+         │  ZONA DEL WIDGET — pega aqui el codigo     │
+         │  de LightWidget o SnapWidget                │
+         │                                             │
+         │  Pasos:                                     │
+         │  1. Ve a https://lightwidget.com            │
+         │  2. Conecta tu cuenta de Instagram          │
+         │  3. Configura el widget (grid, 6 cols)      │
+         │  4. Copia el codigo <script> o <iframe>     │
+         │  5. Pégalo DENTRO del div #insta-widget     │
+         │     reemplazando el bloque de fallback      │
+         └─────────────────────────────────────────────┘ -->
+    <div class="insta-widget-wrap reveal" id="insta-widget">
+
+      <!-- ══ PEGA AQUI EL CODIGO DEL WIDGET ══
+           Ejemplo LightWidget:
+           <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
+           <iframe src="//lightwidget.com/widgets/TU-ID-AQUI.html"
+                   scrolling="no" allowtransparency="true"
+                   class="lightwidget-widget"
+                   style="width:100%;border:0;overflow:hidden;"></iframe>
+
+           Ejemplo SnapWidget:
+           <script src="https://snapwidget.com/js/snapwidget.js"></script>
+           <iframe src="https://snapwidget.com/embed/TU-ID-AQUI"
+                   class="snapwidget-widget"
+                   allowtransparency="true" scrolling="no"
+                   frameborder="0" style="border:none;overflow:hidden;width:100%;"
+                   height="400"></iframe>
+      ══════════════════════════════════════════ -->
+
+      <!-- FALLBACK: visible mientras no hay widget pegado.
+           Cuando pegues el widget, borra este bloque entero. -->
+      <div class="insta-fallback" id="insta-fallback">
+        <i data-feather="instagram" style="width:40px;height:40px;color:var(--accent-bright);opacity:.6;"></i>
+        <p>Síguenos en Instagram para ver las últimas fotos y vídeos del club.</p>
+        <a href="https://www.instagram.com/tolosacfeskubaloia"
+           target="_blank" rel="noopener"
+           class="insta-btn">
+          <i data-feather="instagram" style="width:16px;height:16px;"></i>
+          Ver Instagram
+        </a>
+      </div>
+      <!-- FIN FALLBACK -->
+
+    </div>
+    <!-- FIN #insta-widget -->
+
+    <!-- Boton siempre visible debajo del widget -->
+    <div style="display:flex;justify-content:center;margin-top:2rem;">
+      <a href="https://www.instagram.com/tolosacfeskubaloia"
+         target="_blank" rel="noopener"
+         class="insta-btn reveal">
+        <i data-feather="instagram" style="width:16px;height:16px;"></i>
+        Seguir en Instagram
+      </a>
+    </div>
+
   </div>
 </div>
+<!-- FIN SECCIÓN INSTAGRAM -->
 
 <div id="partners-section">
   <div style="max-width:1400px;margin:0 auto 1.25rem;padding:0 2rem;text-align:center;">
