@@ -72,12 +72,26 @@
       <span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html">Inicio</a></li>
-      <li><a href="noticias.html" class="active">Noticias</a></li>
-      <li><a href="club.html">El Club</a></li>
-      <li><a href="equipo1.html">1. Equipo</a></li>
-      <li><a href="patrocinadores.html">Patrocinadores</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+      <li><a href="noticias.html" class="active" data-i18n="nav.news">Noticias</a></li>
+      <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+      <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
+      <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+      <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+            <li class="lang-selector">
+        <button id="lang-toggle" aria-label="Cambiar idioma" aria-haspopup="true">
+          <span id="lang-current">🇪🇸 <span>ES</span></span>
+          <span class="chevron">▼</span>
+        </button>
+        <div id="lang-dropdown" role="menu">
+          <button class="lang-option active" data-lang="es" role="menuitem">
+            <span class="flag">🇪🇸</span> Castellano
+          </button>
+          <button class="lang-option" data-lang="eu" role="menuitem">
+            <span class="flag">🏴️‍☠️</span> Euskera
+          </button>
+        </div>
+      </li>
       <li><button id="theme-toggle" aria-label="Cambiar tema"><i data-feather="sun" style="width:15px;height:15px;"></i></button></li>
     </ul>
     <button id="menu-toggle" aria-label="Abrir menu"><i data-feather="menu" style="width:26px;height:26px;"></i></button>
@@ -91,13 +105,17 @@
     <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
   </div>
   <ul class="mobile-nav-links">
-    <li><a href="index.html">Inicio</a></li>
-    <li><a href="noticias.html">Noticias</a></li>
-    <li><a href="club.html">El Club</a></li>
-    <li><a href="equipo1.html">1. Equipo</a></li>
-    <li><a href="patrocinadores.html">Patrocinadores</a></li>
-    <li><a href="contacto.html">Contacto</a></li>
+  <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+    <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
+    <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+    <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
+    <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+    <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
   </ul>
+  <div class="mobile-lang-row">
+    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><span>🇪🇸</span> ES</button>
+    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><span>🏴️‍☠️</span> EU</button>
+  </div>
   <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);">
     <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
       <i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span>
@@ -113,7 +131,7 @@
     <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(4,16,31,.9) 0%,rgba(4,16,31,.3) 60%,transparent 100%);"></div>
     <div style="position:absolute;bottom:0;left:0;right:0;max-width:860px;margin:0 auto;padding:0 2rem 2.5rem;">
       <a href="noticias.html" class="back-link" style="color:rgba(255,255,255,.5);margin-bottom:1rem;display:inline-flex;">
-        <i data-feather="arrow-left" style="width:14px;height:14px;"></i> Volver a noticias
+        <i data-feather="arrow-left" style="width:14px;height:14px;"></i> <span data-i18n="article.backToNews">Volver a noticias</span>
       </a>
       <div id="news-tag" style="margin-bottom:.75rem;"></div>
       <h1 id="news-title" style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-style:italic;font-size:clamp(2rem,6vw,4rem);line-height:.9;text-transform:uppercase;color:white;text-shadow:0 2px 20px rgba(0,0,0,.5);">Cargando...</h1>
@@ -128,7 +146,7 @@
     </div>
     <div style="margin-top:2rem;">
       <a href="noticias.html" class="back-link">
-        <i data-feather="arrow-left" style="width:14px;height:14px;"></i> Volver a todas las noticias
+        <i data-feather="arrow-left" style="width:14px;height:14px;"></i> <span data-i18n="article.backToAll">Volver a todas las noticias</span>
       </a>
     </div>
   </div>
@@ -147,26 +165,28 @@
         </div>
       </div>
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;">Secciones</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;" data-i18n="footer.sections">Secciones</div>
         <div style="display:flex;flex-direction:column;gap:.5rem;font-size:.875rem;">
-          <a href="index.html" style="color:rgba(255,255,255,.3);text-decoration:none;">Inicio</a>
-          <a href="noticias.html" style="color:rgba(255,255,255,.3);text-decoration:none;">Noticias</a>
-          <a href="club.html" style="color:rgba(255,255,255,.3);text-decoration:none;">El Club</a>
-          <a href="equipo1.html" style="color:rgba(255,255,255,.3);text-decoration:none;">1. Equipo</a>
+          <a href="index.html" data-i18n="nav.home" style="color:rgba(255,255,255,.3);text-decoration:none;">Inicio</a>
+          <a href="noticias.html" data-i18n="nav.news" style="color:rgba(255,255,255,.3);text-decoration:none;">Noticias</a>
+          <a href="club.html" data-i18n="nav.club" style="color:rgba(255,255,255,.3);text-decoration:none;">El Club</a>
+          <a href="equipo1.html" data-i18n="nav.team" style="color:rgba(255,255,255,.3);text-decoration:none;">1. Equipo</a>
         </div>
       </div>
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;">Contacto</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;" data-i18n="footer.contact">Contacto</div>
         <div style="font-size:.85rem;color:rgba(255,255,255,.3);line-height:1.8;">Usabal Kiroldegia<br>20400 Tolosa<br>eskubaloia.tolosacf@gmail.com</div>
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal"><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="terminos.html">Terminos</a></nav>
+      <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
+      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Terminos</a></nav>
     </div>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
+<script src="js/common.js"></script>
 <script>
 const _fbCfg={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomain:"tolosa-cf-eskubaloia.firebaseapp.com",projectId:"tolosa-cf-eskubaloia",storageBucket:"tolosa-cf-eskubaloia.firebasestorage.app",messagingSenderId:"243368570014",appId:"1:243368570014:web:181d7f5f5990014fbf9f8f"};
 if(!firebase.apps.length){firebase.initializeApp(_fbCfg);}
