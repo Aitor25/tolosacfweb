@@ -1,0 +1,272 @@
+/**
+ * js/i18n.js — Sistema de traducciones Tolosa CF Eskubaloia
+ *
+ * USO EN HTML:
+ *   <span data-i18n="nav.news">Noticias</span>
+ *   <input data-i18n-placeholder="contact.namePlaceholder" placeholder="Tu nombre">
+ *
+ * Para añadir una página nueva:
+ *   1. Añade atributos data-i18n a sus textos
+ *   2. Añade las claves correspondientes en TRANSLATIONS.es y TRANSLATIONS.eu
+ *   3. No hay que tocar nada más — common.js llama a applyTranslations() automáticamente
+ */
+
+window.TRANSLATIONS = {
+
+  es: {
+    // Navbar
+    'nav.home':          'Inicio',
+    'nav.news':          'Noticias',
+    'nav.club':          'El Club',
+    'nav.team':          '1. Equipo',
+    'nav.sponsors':      'Patrocinadores',
+    'nav.contact':       'Contacto',
+    'nav.lightMode':     'Modo claro',
+    'nav.darkMode':      'Modo oscuro',
+
+    // Hero (index)
+    'hero.word1':        'Pasión,',
+    'hero.word2':        'fuerza',
+    'hero.word3':        'y',
+    'hero.word4':        'orgullo',
+    'hero.sub':          'Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la emoción del balonmano vasco.',
+    'hero.cta.news':     'Últimas noticias',
+    'hero.cta.club':     'Conoce el club',
+
+    // Fixture banner
+    'fixture.label':     'Próximo partido',
+    'fixture.vs':        'Tolosa CF vs',
+    'fixture.cta':       'Ver equipo →',
+
+    // Secciones index
+    'section.news.eyebrow':  'Actualidad',
+    'section.news.title':    'Últimas\nNoticias',
+    'section.news.cta':      'Ver todas',
+
+    // Stats
+    'stats.years':       'Años de historia',
+    'stats.teams':       'Equipos activos',
+    'stats.players':     'Jugadores',
+    'stats.division':    'División nacional',
+
+    // Instagram
+    'insta.eyebrow':     'Redes sociales',
+    'insta.title':       'Síguenos en\nInstagram',
+    'insta.desc':        'Fotos, vídeos y la actualidad del club en tiempo real.',
+    'insta.btn':         'Seguir en Instagram',
+
+    // Partners
+    'partners.eyebrow':  'Nuestros patrocinadores',
+
+    // Footer
+    'footer.about':      'Más que un club, una familia unida por el balonmano desde hace más de 100 años.',
+    'footer.sections':   'Secciones',
+    'footer.club':       'El Club',
+    'footer.contact':    'Contacto',
+    'footer.history':    'Historia',
+    'footer.firstTeam':  'Primer equipo',
+    'footer.collaborate':'Colabora',
+    'footer.legal':      'Aviso legal',
+    'footer.privacy':    'Privacidad',
+    'footer.cookies':    'Cookies',
+    'footer.terms':      'Términos',
+    'footer.copy':       '© 2025 Tolosa CF Eskubaloia.',
+
+    // Botones generales
+    'btn.seeTeam':       'Ver equipo →',
+    'btn.seeAll':        'Ver todas',
+    'btn.followIg':      'Seguir en Instagram',
+    'btn.contact':       'Contactar ahora',
+    'btn.seeStats':      'Ver estadísticas',
+
+    // Club page
+    'club.eyebrow':      'Nuestra filosofía',
+    'club.title':        'Formando el Futuro',
+    'club.p1':           'La clave de nuestro éxito como club es la formación de nuestras jugadoras y jugadores. No solo nos centramos en el apartado deportivo, sino también en formarlos en base a nuestros valores.',
+    'club.p2':           'Fomentamos el trabajo en equipo, el compañerismo y el respeto mutuo en cada entrenamiento y partido en el polideportivo Usabal.',
+    'club.p3':           'Contamos con más de 10 equipos en todas las categorías, fomentando el balonmano desde la escuela hasta el equipo de 1ª Nacional.',
+    'club.cta.label':    'Primera División Nacional',
+    'club.cta.title':    'Sigue al Primer Equipo',
+    'club.cta.sub':      'Consulta la clasificación, resultados y calendario oficial.',
+    'club.values.eyebrow': 'Lo que nos define',
+    'club.values.title': 'Nuestros Valores',
+    'club.val1.title':   'Pasión',
+    'club.val1.text':    'Vivimos cada partido con intensidad y entregamos el alma en la pista.',
+    'club.val2.title':   'Comunidad',
+    'club.val2.text':    'Somos una familia unida que apoya a sus miembros dentro y fuera del campo.',
+    'club.val3.title':   'Respeto',
+    'club.val3.text':    'Valores deportivos ante todo: juego limpio con rivales, árbitros y afición.',
+
+    // Contacto page
+    'contact.eyebrow':   'Encuéntranos',
+    'contact.title':     'Hablemos',
+    'contact.loc.label': 'Ubicación',
+    'contact.email.label':'Email',
+    'contact.social.label':'Redes sociales',
+    'contact.form.title':'Envíanos un mensaje',
+    'contact.form.name': 'Nombre',
+    'contact.form.email':'Email',
+    'contact.form.subject':'Asunto',
+    'contact.form.message':'Mensaje',
+    'contact.form.send': 'Enviar mensaje',
+  },
+
+  eu: {
+    // Navbar
+    'nav.home':          'Hasiera',
+    'nav.news':          'Berriak',
+    'nav.club':          'Kluba',
+    'nav.team':          '1. Taldea',
+    'nav.sponsors':      'Babeslariak',
+    'nav.contact':       'Kontaktua',
+    'nav.lightMode':     'Argi modua',
+    'nav.darkMode':      'Ilun modua',
+
+    // Hero (index)
+    'hero.word1':        'Grina,',
+    'hero.word2':        'indarra',
+    'hero.word3':        'eta',
+    'hero.word4':        'harrotasuna',
+    'hero.sub':          'Jarraitu Tolosa CF Eskubaloia-ren albiste guztiak. Emaitzak, berriak eta euskal eskubaloiaren zirrara osoa.',
+    'hero.cta.news':     'Azken berriak',
+    'hero.cta.club':     'Ezagutu kluba',
+
+    // Fixture banner
+    'fixture.label':     'Hurrengo partida',
+    'fixture.vs':        'Tolosa CF vs',
+    'fixture.cta':       'Ikusi taldea →',
+
+    // Secciones index
+    'section.news.eyebrow':  'Albisteak',
+    'section.news.title':    'Azken\nBerriak',
+    'section.news.cta':      'Denak ikusi',
+
+    // Stats
+    'stats.years':       'Urteko historia',
+    'stats.teams':       'Talde aktiboak',
+    'stats.players':     'Jokalariak',
+    'stats.division':    'Nazio maila',
+
+    // Instagram
+    'insta.eyebrow':     'Sare sozialak',
+    'insta.title':       'Jarraitu\nInstagramen',
+    'insta.desc':        'Argazkiak, bideoak eta klubaren albisteak denbora errealean.',
+    'insta.btn':         'Instagramen jarraitu',
+
+    // Partners
+    'partners.eyebrow':  'Gure babeslariak',
+
+    // Footer
+    'footer.about':      'Kluba baino gehiago, eskubaloiak batutako familia, 100 urte baino gehiagoz.',
+    'footer.sections':   'Atalak',
+    'footer.club':       'Kluba',
+    'footer.contact':    'Kontaktua',
+    'footer.history':    'Historia',
+    'footer.firstTeam':  'Lehen taldea',
+    'footer.collaborate':'Lagundu',
+    'footer.legal':      'Lege oharra',
+    'footer.privacy':    'Pribatutasuna',
+    'footer.cookies':    'Cookieak',
+    'footer.terms':      'Baldintzak',
+    'footer.copy':       '© 2025 Tolosa CF Eskubaloia.',
+
+    // Botones generales
+    'btn.seeTeam':       'Ikusi taldea →',
+    'btn.seeAll':        'Denak ikusi',
+    'btn.followIg':      'Instagramen jarraitu',
+    'btn.contact':       'Kontaktatu orain',
+    'btn.seeStats':      'Ikusi estatistikak',
+
+    // Club page
+    'club.eyebrow':      'Gure filosofia',
+    'club.title':        'Etorkizuna prestatzen',
+    'club.p1':           'Gure klubaren arrakastaren giltza jokalari eta jokalarien prestakuntza da. Ez soilik kirol aldetik, baita gure balioen arabera ere heztea.',
+    'club.p2':           'Talde lana, lagunartea eta errespetua sustatzen ditugu Usabal kiroldegiaren entrenamendu eta partida guztietan.',
+    'club.p3':           'Hamar talde baino gehiago ditugu kategoria guztietan, eskubaloia eskolatik 1. Nazio Mailako taldera arte sustatzen.',
+    'club.cta.label':    'Lehen Nazio Maila',
+    'club.cta.title':    'Jarraitu Lehen Taldea',
+    'club.cta.sub':      'Kontsultatu sailkapen, emaitza eta egutegi ofiziala.',
+    'club.values.eyebrow': 'Gu definitzen gaituena',
+    'club.values.title': 'Gure Balioak',
+    'club.val1.title':   'Grina',
+    'club.val1.text':    'Partida bakoitza bizipen handiz bizi dugu eta ariman ematen dugu.',
+    'club.val2.title':   'Komunitatea',
+    'club.val2.text':    'Zelaian zein kanpoan kideak babesten dituen familia batua gara.',
+    'club.val3.title':   'Errespetua',
+    'club.val3.text':    'Kirol balioak lehenik: joko garbia aurkari, arbitro eta zaleen aurrean.',
+
+    // Contacto page
+    'contact.eyebrow':   'Aurkitu gu',
+    'contact.title':     'Hitz egin dezagun',
+    'contact.loc.label': 'Kokapena',
+    'contact.email.label':'Email',
+    'contact.social.label':'Sare sozialak',
+    'contact.form.title':'Bidali mezu bat',
+    'contact.form.name': 'Izena',
+    'contact.form.email':'Email',
+    'contact.form.subject':'Gaia',
+    'contact.form.message':'Mezua',
+    'contact.form.send': 'Mezua bidali',
+  }
+};
+
+// ── Obtener idioma actual ──
+function getLang() {
+  return localStorage.getItem('lang') || 'es';
+}
+
+// ── Cambiar idioma y aplicar ──
+function setLanguage(lang) {
+  if (!window.TRANSLATIONS[lang]) return;
+  localStorage.setItem('lang', lang);
+  applyTranslations();
+  updateLangSelector(lang);
+}
+
+// ── Aplicar traducciones al DOM ──
+function applyTranslations() {
+  const lang = getLang();
+  const t = window.TRANSLATIONS[lang];
+  if (!t) return;
+
+  // Textos normales: data-i18n="key"
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) {
+      // Soporte para saltos de línea con \n (para títulos con <br>)
+      if (el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3') {
+        el.innerHTML = t[key].replace(/\n/g, '<br>');
+      } else {
+        el.textContent = t[key];
+      }
+    }
+  });
+
+  // Placeholders: data-i18n-placeholder="key"
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // Actualizar atributo lang del html para accesibilidad
+  document.documentElement.setAttribute('lang', lang === 'eu' ? 'eu' : 'es');
+}
+
+// ── Actualizar aspecto visual del selector ──
+function updateLangSelector(lang) {
+  // Selector desktop
+  const current = document.getElementById('lang-current');
+  if (current) {
+    const flags = { es: '\uD83C\uDDEA\uD83C\uDDF8', eu: '\uD83C\uDFF4\uFE0F\u200D\u2620\uFE0F' };
+    current.innerHTML = (flags[lang] || '') + ' <span>' + lang.toUpperCase() + '</span>';
+  }
+  // Marcar activo en el dropdown
+  document.querySelectorAll('[data-lang]').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+  });
+}
+
+// Exponer globalmente
+window.setLanguage       = setLanguage;
+window.applyTranslations = applyTranslations;
+window.getLang           = getLang;
