@@ -1,10 +1,6 @@
 /**
  * TOLOSA CF ESKUBALOIA - Common JS
- * Navbar, theme, mobile menu, renderNewsCards.
- *
- * IMPORTANTE: renderNewsCards NO se llama automáticamente aquí.
- * Cada página la invoca explícitamente cuando su contenedor esté listo
- * y Firebase ya esté inicializado.
+ * Navbar, theme, mobile menu, scroll reveal, i18n init.
  */
 
 function _applyTheme(isDark) {
@@ -25,12 +21,25 @@ function _applyTheme(isDark) {
     }
   });
   const label = document.getElementById('mobile-theme-label');
-  if (label) label.textContent = isDark ? 'Modo claro' : 'Modo oscuro';
+  if (label) {
+    const lang = typeof getLang === 'function' ? getLang() : 'es';
+    const t = window.TRANSLATIONS && window.TRANSLATIONS[lang];
+    label.textContent = isDark
+      ? (t && t['nav.lightMode'] || 'Modo claro')
+      : (t && t['nav.darkMode']  || 'Modo oscuro');
+  }
   if (typeof feather !== 'undefined') feather.replace();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof feather !== 'undefined') feather.replace();
+
+  // ── i18n: inicializar idioma guardado ──
+  if (typeof applyTranslations === 'function') {
+    applyTranslations();
+    const lang = typeof getLang === 'function' ? getLang() : 'es';
+    if (typeof updateLangSelector === 'function') updateLangSelector(lang);
+  }
 
   // ── Navbar scroll ──
   const navbar = document.getElementById('navbar');
@@ -57,6 +66,24 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mobileThemeBtn) {
     mobileThemeBtn.addEventListener('click', () => {
       _applyTheme(!document.documentElement.classList.contains('dark'));
+    });
+  }
+
+  // ── Language selector dropdown ──
+  const langToggle = document.getElementById('lang-toggle');
+  const langDropdown = document.getElementById('lang-dropdown');
+  if (langToggle && langDropdown) {
+    langToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langDropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', () => langDropdown.classList.remove('open'));
+    langDropdown.querySelectorAll('[data-lang]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof setLanguage === 'function') setLanguage(btn.getAttribute('data-lang'));
+        langDropdown.classList.remove('open');
+      });
     });
   }
 
@@ -94,126 +121,58 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => r.remove(), 700);
     });
   });
-
-  // NOTA: renderNewsCards ya NO se llama aquí.
-  // noticias.html y index.html la llaman ellas mismas tras inicializar Firebase.
 });
 
-// ── renderNewsCards ──
-// Pública. La llama cada página con su propio containerId.
-// Orden de llamada garantizado: Firebase inline → noticias-data.js → common.js → inline DOMContentLoaded
+// ── renderNewsCards (para common.js — no se autoinvoca) ──
 let _lastNewsDoc = null;
 let _newsOffset  = 0;
 
 async function renderNewsCards(containerId, limit, append) {
   limit = limit || 9;
   append = append || false;
-
   const container = document.getElementById(containerId);
-  if (!container) {
-    console.warn('[renderNewsCards] Contenedor no encontrado:', containerId);
-    return;
-  }
-
+  if (!container) return;
   if (!append) { _lastNewsDoc = null; _newsOffset = 0; }
-
-  // Obtener instancia db
   const db = window.db ||
     (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length
-      ? firebase.firestore()
-      : null);
-
+      ? firebase.firestore() : null);
   if (db) {
-    // Intento 1: con orderBy timestamp desc
-    // Firestore excluye docs sin campo timestamp — si hay docs sin él caeremos al intento 2
     try {
       let q = db.collection('news').orderBy('timestamp', 'desc').limit(limit);
       if (append && _lastNewsDoc) q = q.startAfter(_lastNewsDoc);
       const snap = await q.get();
-
       if (!snap.empty) {
         _lastNewsDoc = snap.docs[snap.docs.length - 1];
         _renderDocs(snap.docs, container, append, limit);
         return;
       }
-      // snap vacío con orderBy: puede haber docs sin timestamp — continuar al intento 2
-      console.info('[Noticias] orderBy timestamp devuelve vacío, reintentando sin orden...');
     } catch(e1) {
-      console.warn('[Noticias] orderBy timestamp falló:', e1.code, e1.message);
+      console.warn('[Noticias] orderBy timestamp falló:', e1.message);
     }
-
-    // Intento 2: sin orderBy — funciona aunque los docs no tengan timestamp
     try {
-      let q2 = db.collection('news').limit(limit);
-      const snap2 = await q2.get();
-
-      if (!snap2.empty) {
-        // Ordenar en JS por el mejor campo disponible
-        const sorted = snap2.docs.slice().sort((a, b) => {
-          const da = a.data(), db_ = b.data();
-          // timestamp (Firestore Timestamp)
-          const ta = da.timestamp?.seconds || 0;
-          const tb = db_.timestamp?.seconds || 0;
-          if (ta !== tb) return tb - ta;
-          // date string ("12 ENE 2026") — comparar lexicográficamente como aproximación
-          const sa = da.date || da.fecha || '';
-          const sb = db_.date || db_.fecha || '';
-          return sb.localeCompare(sa);
-        });
-        _renderDocs(sorted, container, append, limit);
-        return;
-      }
-
-      // Colección realmente vacía en Firestore
+      const snap2 = await db.collection('news').limit(limit).get();
+      if (!snap2.empty) { _renderDocs(snap2.docs, container, append, limit); return; }
       if (!append) container.innerHTML = _emptyMsg();
-      return;
-
     } catch(e2) {
-      console.error('[Noticias] Error Firestore intento 2:', e2.code, e2.message);
-      if (!append) {
-        container.innerHTML = e2.code === 'permission-denied' ? _permMsg() : _errMsg(e2.message);
-      }
-      return;
+      if (!append) container.innerHTML = e2.code === 'permission-denied' ? _permMsg() : _errMsg(e2.message);
     }
-  }
-
-  // Sin Firebase disponible — fallback estático
-  console.warn('[Noticias] Firebase no disponible, usando fallback estático');
-  const fallback = window.NOTICIAS_FALLBACK || [];
-  if (!fallback.length) {
-    if (!append) container.innerHTML = _emptyMsg();
     return;
   }
+  const fallback = window.NOTICIAS_FALLBACK || [];
+  if (!fallback.length) { if (!append) container.innerHTML = _emptyMsg(); return; }
   const page = fallback.slice(_newsOffset, _newsOffset + limit);
   _newsOffset += page.length;
-  const html = page.map((n, i) => _buildCard({
-    id:      n.id || i,
-    title:   n.title   || n.titulo   || 'Sin titulo',
-    date:    n.date    || n.fecha    || '',
-    tag:     n.tag     || n.categoria || 'Club',
-    image:   n.image   || n.imagen   || '',
-    summary: n.summary || n.resumen  || ''
-  }, i, append)).join('');
+  const html = page.map((n, i) => _buildCard({ id: n.id||i, title: n.title||n.titulo||'Sin titulo', date: n.date||n.fecha||'', tag: n.tag||n.categoria||'Club', image: n.image||n.imagen||'', summary: n.summary||n.resumen||'' }, i, append)).join('');
   if (append) container.insertAdjacentHTML('beforeend', html);
   else container.innerHTML = html;
   if (typeof feather !== 'undefined') feather.replace();
-  const lb = document.getElementById('load-more-btn');
-  if (lb && _newsOffset >= fallback.length) { lb.textContent = 'No hay más noticias'; lb.disabled = true; }
 }
 
 function _renderDocs(docs, container, append, limit) {
-  const html = docs.map((docOrObj, i) => {
-    // Acepta tanto DocumentSnapshot como objeto plano (del sort)
-    const d = typeof docOrObj.data === 'function' ? docOrObj.data() : docOrObj;
-    const id = docOrObj.id || d.id || i;
-    return _buildCard({
-      id,
-      title:   d.title   || d.titulo   || 'Sin titulo',
-      date:    d.date    || d.fecha    || '',
-      tag:     d.tag     || d.categoria || 'Club',
-      image:   d.image   || d.imagen   || '',
-      summary: d.summary || d.resumen  || ''
-    }, i, append);
+  const html = docs.map((doc, i) => {
+    const d = typeof doc.data === 'function' ? doc.data() : doc;
+    const id = doc.id || d.id || i;
+    return _buildCard({ id, title: d.title||d.titulo||'Sin titulo', date: d.date||d.fecha||'', tag: d.tag||d.categoria||'Club', image: d.image||d.imagen||'', summary: d.summary||d.resumen||'' }, i, append);
   }).join('');
   if (append) container.insertAdjacentHTML('beforeend', html);
   else container.innerHTML = html;
@@ -225,10 +184,7 @@ function _renderDocs(docs, container, append, limit) {
 function _buildCard(n, i, append) {
   const isFirst = (i === 0 && !append);
   return `<a class="news-card${isFirst?' featured':''} reveal delay-${Math.min(i+1,5)}" href="noticia.html?id=${encodeURIComponent(n.id)}">
-    ${n.image
-      ? `<img class="news-card-img" src="${n.image}" alt="${n.title}" loading="lazy">`
-      : '<div class="news-card-img" style="background:rgba(18,85,201,0.15);"></div>'
-    }
+    ${n.image ? `<img class="news-card-img" src="${n.image}" alt="${n.title}" loading="lazy">` : '<div class="news-card-img" style="background:rgba(18,85,201,0.15);"></div>'}
     <div class="news-card-overlay"></div>
     <div class="news-card-body">
       <span class="news-card-cat">${n.tag}</span>
@@ -238,16 +194,9 @@ function _buildCard(n, i, append) {
   </a>`;
 }
 
-function _emptyMsg() {
-  return '<div style="grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;"><p style="font-family:Barlow Condensed,sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;">Aún no hay noticias publicadas</p><p style="font-size:.85rem;margin-top:.5rem;">Vuelve pronto.</p></div>';
-}
-function _permMsg() {
-  return '<div style="grid-column:1/-1;padding:3rem;text-align:center;background:rgba(239,68,68,0.08);border-radius:8px;border:1px solid rgba(239,68,68,0.15);"><p style="color:#ef4444;font-weight:700;">Error de permisos Firestore</p><p style="font-size:.82rem;margin-top:.5rem;color:rgba(0,0,0,0.5);">Comprueba las reglas de la colección news en Firebase Console.</p></div>';
-}
-function _errMsg(m) {
-  return `<div style="grid-column:1/-1;padding:3rem;text-align:center;"><p style="color:#ef4444;font-size:.85rem;">Error al cargar noticias: ${m}</p></div>`;
-}
+function _emptyMsg() { return '<div style="grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;"><p style="font-family:Barlow Condensed,sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;">Aún no hay noticias publicadas</p></div>'; }
+function _permMsg() { return '<div style="grid-column:1/-1;padding:3rem;text-align:center;"><p style="color:#ef4444;font-weight:700;">Error de permisos Firestore</p></div>'; }
+function _errMsg(m) { return `<div style="grid-column:1/-1;padding:3rem;text-align:center;"><p style="color:#ef4444;font-size:.85rem;">Error: ${m}</p></div>`; }
 
-// Exports globales
 window.renderNewsCards   = renderNewsCards;
 window.buildNewsCardHTML = _buildCard;
