@@ -17,15 +17,16 @@
   html.dark body{background:var(--navy);color:var(--white);}
   .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);}.reveal.visible{opacity:1;transform:none;}
   .reveal-left{opacity:0;transform:translateX(-32px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);}.reveal-left.visible{opacity:1;transform:none;}
-  .reveal-scale{opacity:0;transform:scale(0.92);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out);}.reveal-scale.visible{opacity:1;transform:none;}
   .delay-1{transition-delay:.1s;}.delay-2{transition-delay:.2s;}.delay-3{transition-delay:.3s;}.delay-4{transition-delay:.4s;}.delay-5{transition-delay:.5s;}
-  @media(prefers-reduced-motion:reduce){.reveal,.reveal-left,.reveal-scale{opacity:1;transform:none;transition:none;}*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+  @media(prefers-reduced-motion:reduce){.reveal,.reveal-left{opacity:1;transform:none;transition:none;}*{animation-duration:.01ms!important;}}
+
+  /* ── NAVBAR ── */
   #navbar{position:fixed;top:0;width:100%;z-index:500;padding:1.1rem 0;transition:padding .4s var(--ease-out),background .4s,border-color .4s;border-bottom:1px solid transparent;}
-  html.dark #navbar{background:rgba(4,16,31,0.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(255,255,255,0.05);}
-  html:not(.dark) #navbar{background:rgba(240,244,255,0.82);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(18,85,201,0.1);}
+  html.dark #navbar{background:rgba(4,16,31,0.7);backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(255,255,255,0.05);}
+  html:not(.dark) #navbar{background:rgba(240,244,255,0.82);backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(18,85,201,0.1);}
   #navbar.scrolled{padding:.65rem 0;}
-  html.dark #navbar.scrolled{background:rgba(4,16,31,0.97);border-bottom-color:rgba(255,255,255,0.07);}
-  html:not(.dark) #navbar.scrolled{background:rgba(248,250,255,0.98);border-bottom-color:rgba(18,85,201,0.12);}
+  html.dark #navbar.scrolled{background:rgba(4,16,31,0.97);}
+  html:not(.dark) #navbar.scrolled{background:rgba(248,250,255,0.98);}
   .nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;}
   .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none;transition:opacity .2s;}.nav-brand:hover{opacity:.85;}
   .nav-brand img{height:44px;width:auto;transition:transform .3s var(--ease-spring);}.nav-brand:hover img{transform:rotate(-3deg) scale(1.05);}
@@ -38,13 +39,56 @@
   .nav-links a:hover::after,.nav-links a.active::after{width:calc(100% - 1.5rem);left:.75rem;}
   html.dark .nav-links a{color:rgba(255,255,255,0.85);}html.dark .nav-links a:hover{color:white;background:rgba(255,255,255,0.07);}
   html:not(.dark) .nav-links a{color:rgba(4,16,31,0.75);}html:not(.dark) .nav-links a:hover{color:var(--navy);background:rgba(18,85,201,0.07);}
-  #theme-toggle{border-radius:8px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s var(--ease-spring);margin-left:.5rem;border:1px solid;}
+
+  /* ── LANGUAGE SELECTOR ── */
+  .lang-selector{position:relative;margin-left:.25rem;}
+  #lang-toggle{
+    border-radius:8px;height:38px;padding:0 .65rem;cursor:pointer;
+    display:flex;align-items:center;gap:.35rem;
+    font-family:var(--font-display);font-weight:700;font-size:.78rem;letter-spacing:.08em;
+    transition:all .25s var(--ease-spring);border:1px solid;
+  }
+  html.dark  #lang-toggle{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);}
+  html:not(.dark) #lang-toggle{background:rgba(4,16,31,0.05);border-color:rgba(4,16,31,0.12);color:var(--navy);}
+  #lang-toggle:hover{background:var(--accent);border-color:var(--accent);color:white;}
+  #lang-toggle .chevron{font-size:.55rem;opacity:.6;transition:transform .2s;}
+  #lang-dropdown.open + button .chevron,
+  .lang-selector:has(#lang-dropdown.open) #lang-toggle .chevron{transform:rotate(180deg);}
+
+  #lang-dropdown{
+    display:none;position:absolute;top:calc(100% + 6px);right:0;
+    background:var(--navy);border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;overflow:hidden;min-width:130px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);z-index:600;
+  }
+  html:not(.dark) #lang-dropdown{background:white;border-color:rgba(4,16,31,0.08);box-shadow:0 8px 24px rgba(0,0,0,0.12);}
+  #lang-dropdown.open{display:block;animation:fadeDown .18s var(--ease-out);}
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+
+  .lang-option{
+    display:flex;align-items:center;gap:.6rem;
+    padding:.65rem 1rem;width:100%;border:none;cursor:pointer;
+    font-family:var(--font-display);font-weight:700;font-size:.8rem;letter-spacing:.06em;
+    background:none;color:rgba(255,255,255,0.6);text-align:left;
+    transition:background .15s,color .15s;
+  }
+  html:not(.dark) .lang-option{color:rgba(4,16,31,0.6);}
+  .lang-option:hover{background:rgba(255,255,255,0.08);color:white;}
+  html:not(.dark) .lang-option:hover{background:rgba(18,85,201,0.07);color:var(--navy);}
+  .lang-option.active{color:white;background:rgba(18,85,201,0.25);}
+  html:not(.dark) .lang-option.active{color:var(--accent);background:rgba(18,85,201,0.08);}
+  .lang-option .flag{font-size:1.1rem;line-height:1;}
+
+  /* ── THEME TOGGLE ── */
+  #theme-toggle{border-radius:8px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s var(--ease-spring);margin-left:.25rem;border:1px solid;}
   html.dark #theme-toggle{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);}
   html:not(.dark) #theme-toggle{background:rgba(4,16,31,0.05);border-color:rgba(4,16,31,0.12);color:var(--navy);}
   #theme-toggle:hover{background:var(--accent);border-color:var(--accent);color:white;transform:rotate(15deg) scale(1.1);}
   #menu-toggle{display:flex;background:none;border:none;cursor:pointer;padding:.4rem;border-radius:6px;transition:background .2s;}
   html.dark #menu-toggle{color:rgba(255,255,255,0.9);}html:not(.dark) #menu-toggle{color:var(--navy);}
   #menu-toggle:hover{background:rgba(128,128,128,0.1);}@media(min-width:1024px){#menu-toggle{display:none;}}
+
+  /* ── MOBILE MENU ── */
   #mobile-menu{position:fixed;top:0;right:-100%;width:min(340px,100vw);height:100vh;background:var(--navy);z-index:600;padding:2rem;display:flex;flex-direction:column;transition:right .4s cubic-bezier(.77,0,.175,1);box-shadow:-20px 0 60px rgba(0,0,0,0.4);}
   #mobile-menu.open{right:0;}
   #mobile-menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:550;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px);}
@@ -53,18 +97,21 @@
   .mobile-nav-links li{border-bottom:1px solid rgba(255,255,255,0.06);}
   .mobile-nav-links a{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;font-family:var(--font-display);font-weight:900;font-size:1.4rem;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,0.6);text-decoration:none;transition:color .2s,padding-left .25s var(--ease-spring);}
   .mobile-nav-links a:hover{color:white;padding-left:.75rem;}
+  /* Lang switcher móvil */
+  .mobile-lang-row{display:flex;gap:.5rem;margin-top:1.25rem;}
+  .mobile-lang-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem .5rem;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:none;color:rgba(255,255,255,0.5);font-family:var(--font-display);font-weight:700;font-size:.8rem;letter-spacing:.06em;cursor:pointer;transition:all .2s;}
+  .mobile-lang-btn:hover,.mobile-lang-btn.active{background:rgba(18,85,201,0.25);border-color:var(--accent-bright);color:white;}
+
+  /* ── HERO ── */
   #hero{position:relative;height:calc(100vh - 70px);min-height:520px;margin-top:70px;display:flex;align-items:flex-end;overflow:hidden;background:var(--navy);}
-  #hero-bg{position:absolute;inset:0;width:100%;height:100%;background-image:url('images/hero/hero-bg.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;transform:scale(1.08);animation:heroZoom 10s var(--ease-out) forwards;filter:saturate(0.65) brightness(0.65);will-change:transform;}
+  #hero-bg{position:absolute;inset:0;width:100%;height:100%;background-image:url('images/hero/hero-bg.jpg');background-size:cover;background-position:center;transform:scale(1.08);animation:heroZoom 10s var(--ease-out) forwards;filter:saturate(0.65) brightness(0.65);will-change:transform;}
   html:not(.dark) #hero-bg{filter:saturate(0.35) brightness(0.95);}
   @keyframes heroZoom{to{transform:scale(1);}}
   #hero-overlay{position:absolute;inset:0;background:linear-gradient(105deg,rgba(4,16,31,0.65) 0%,rgba(4,16,31,0.35) 50%,rgba(4,16,31,0.02) 100%),linear-gradient(to top,rgba(4,16,31,0.9) 0%,rgba(4,16,31,0.25) 45%,transparent 100%);transition:background .6s;}
   html:not(.dark) #hero-overlay{background:linear-gradient(105deg,rgba(255,255,255,0.65) 0%,rgba(235,240,255,0.45) 50%,rgba(210,225,255,0.06) 100%),linear-gradient(to top,rgba(255,255,255,0.95) 0%,rgba(235,240,255,0.35) 45%,transparent 100%);}
-  #hero-grain{position:absolute;inset:0;opacity:0.03;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:200px;animation:grain .8s steps(1) infinite;}
-  @keyframes grain{0%,100%{transform:translate(0,0)}10%{transform:translate(-2%,-2%)}20%{transform:translate(2%,2%)}30%{transform:translate(-1%,1%)}40%{transform:translate(1%,-1%)}50%{transform:translate(-2%,0)}60%{transform:translate(2%,0)}70%{transform:translate(0,2%)}80%{transform:translate(0,-2%)}90%{transform:translate(1%,1%)}}
+  #hero-grain{position:absolute;inset:0;opacity:0.03;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:200px;}
   #hero-stripe{position:absolute;top:0;right:15%;width:3px;height:100%;background:linear-gradient(to bottom,transparent,var(--accent),transparent);opacity:0.5;transform:skewX(-8deg);}
-  #hero-stripe::before{content:'';position:absolute;top:0;left:-16px;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--accent-bright),transparent);opacity:0.3;}
-  #hero-glow{position:absolute;bottom:-100px;right:8%;width:600px;height:600px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 65%);pointer-events:none;animation:glowPulse 4s ease-in-out infinite;}
-  @keyframes glowPulse{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+  #hero-glow{position:absolute;bottom:-100px;right:8%;width:600px;height:600px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 65%);pointer-events:none;}
   .hero-content{position:relative;z-index:10;max-width:1400px;width:100%;margin:0 auto;padding:0 2rem 5rem;}
   .hero-title{font-family:var(--font-display);font-weight:900;font-style:italic;font-size:clamp(3.5rem,9vw,7.5rem);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;color:#fff;max-width:760px;text-shadow:0 2px 0 rgba(0,0,0,0.25),0 6px 30px rgba(0,0,0,0.5);}
   .hero-title .word{display:inline-block;overflow:hidden;vertical-align:bottom;}
@@ -80,24 +127,24 @@
   .hero-ctas{display:flex;gap:.75rem;flex-wrap:wrap;opacity:0;transform:translateY(20px);animation:fadeUp .7s 1s var(--ease-out) forwards;}
   @keyframes fadeUp{to{opacity:1;transform:none;}}
   .btn{font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.72rem 1.7rem;border-radius:6px;border:2px solid transparent;display:inline-flex;align-items:center;gap:.5rem;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s;}
-  .btn::before{content:'';position:absolute;inset:0;opacity:0;background:rgba(255,255,255,0.15);transition:opacity .2s;}.btn:hover{transform:translateY(-3px);}.btn:hover::before{opacity:1;}.btn:active{transform:translateY(-1px);}
+  .btn::before{content:'';position:absolute;inset:0;opacity:0;background:rgba(255,255,255,0.15);transition:opacity .2s;}.btn:hover{transform:translateY(-3px);}.btn:hover::before{opacity:1;}
   .btn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 15px rgba(18,85,201,0.4);}.btn-primary:hover{box-shadow:0 8px 25px rgba(18,85,201,0.5);}
-  .btn-ghost{background:rgba(255,255,255,0.08);color:white;border-color:rgba(255,255,255,0.25);backdrop-filter:blur(8px);}.btn-ghost:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.12);}
-  html:not(.dark) .btn-ghost{color:var(--navy);border-color:rgba(4,16,31,0.25);background:rgba(4,16,31,0.04);}html:not(.dark) .btn-ghost:hover{border-color:var(--navy);background:rgba(4,16,31,0.08);}
+  .btn-ghost{background:rgba(255,255,255,0.08);color:white;border-color:rgba(255,255,255,0.25);}.btn-ghost:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.12);}
+  html:not(.dark) .btn-ghost{color:var(--navy);border-color:rgba(4,16,31,0.25);background:rgba(4,16,31,0.04);}html:not(.dark) .btn-ghost:hover{border-color:var(--navy);}
   .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,0.3);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none;}
   @keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
   .hero-scroll{position:absolute;bottom:1.75rem;right:2rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;z-index:10;opacity:0;animation:fadeUp .7s 1.3s var(--ease-out) forwards;}
   .hero-scroll span{font-family:var(--font-display);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.35);writing-mode:vertical-rl;}
-  .hero-scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent);animation:scrollPulse 2s 1.8s ease-in-out infinite;}
-  @keyframes scrollPulse{0%,100%{opacity:0.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(0.7)}}
+  .hero-scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent);}
+  /* ── FIXTURE ── */
   #fixture-banner{background:linear-gradient(135deg,var(--accent) 0%,var(--accent-bright) 100%);color:white;position:relative;overflow:hidden;}
   #fixture-banner::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.03) 10px,rgba(255,255,255,0.03) 20px);}
   .fixture-inner{max-width:1400px;margin:0 auto;padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:relative;}
   .fixture-label{font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;opacity:.7;}
   .fixture-match{font-family:var(--font-display);font-weight:900;font-size:1.05rem;letter-spacing:.03em;text-transform:uppercase;}
-  .fixture-meta{font-size:.82rem;opacity:.8;display:flex;align-items:center;gap:1rem;}
   .fixture-ticket{font-family:var(--font-display);font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:white;border:1.5px solid rgba(255,255,255,0.5);padding:.38rem 1rem;text-decoration:none;border-radius:4px;transition:background .2s,transform .2s var(--ease-spring);}
   .fixture-ticket:hover{background:rgba(255,255,255,0.15);transform:translateY(-1px);}
+  /* ── SECTIONS ── */
   .section{max-width:1400px;margin:0 auto;padding:5rem 2rem;}
   .section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;gap:1rem;flex-wrap:wrap;}
   .section-eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-bright);margin-bottom:.6rem;}
@@ -105,133 +152,61 @@
   .section-title{font-family:var(--font-display);font-weight:900;font-size:clamp(2rem,5vw,3.5rem);line-height:.93;text-transform:uppercase;letter-spacing:-.01em;color:var(--text-primary,#04101f);}
   html.dark .section-title{color:var(--white);}
   .divider-line{width:3rem;height:3px;background:var(--accent);margin-top:.75rem;border-radius:2px;}
-  .section-link{font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-bright);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;white-space:nowrap;padding:.4rem 0;border-bottom:1px solid transparent;transition:gap .25s var(--ease-spring),border-color .2s;}
-  .section-link:hover{gap:.8rem;border-bottom-color:var(--accent-bright);}
+  .section-link{font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-bright);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;white-space:nowrap;transition:gap .25s var(--ease-spring);}
+  .section-link:hover{gap:.8rem;}
+  /* ── NEWS ── */
   .news-section-bg{background:white;}html.dark .news-section-bg{background:var(--navy-mid);}
-  #news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(0,0,0,0.08);}
+  #news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(0,0,0,0.08);min-height:200px;}
   html.dark #news-grid{background:rgba(255,255,255,0.04);}
-  @media(max-width:900px){#news-grid{grid-template-columns:1fr 1fr;}}
-  @media(max-width:600px){#news-grid{grid-template-columns:1fr;}}
-  .news-card{background:white;position:relative;overflow:hidden;aspect-ratio:3/2;display:flex;align-items:flex-end;text-decoration:none;cursor:pointer;transition:transform .4s var(--ease-out);transform-style:preserve-3d;}
-  html.dark .news-card{background:var(--navy-light);}html:not(.dark) .news-card{background:#f9f9f9;}.news-card:hover{transform:scale(1.015);z-index:2;}
+  @media(max-width:900px){#news-grid{grid-template-columns:1fr 1fr;}}@media(max-width:600px){#news-grid{grid-template-columns:1fr;}}
+  .news-card{background:white;position:relative;overflow:hidden;aspect-ratio:3/2;display:flex;align-items:flex-end;text-decoration:none;cursor:pointer;transition:transform .4s var(--ease-out);}
+  html.dark .news-card{background:var(--navy-light);}.news-card:hover{transform:scale(1.015);z-index:2;}
   .news-card-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out);}.news-card:hover .news-card-img{transform:scale(1.07);}
   .news-card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,16,31,.94) 0%,rgba(4,16,31,.25) 55%,transparent 100%);}
-  .news-card-body{position:relative;z-index:2;padding:1.5rem;width:100%;transform:translateY(4px);transition:transform .3s var(--ease-out);}.news-card:hover .news-card-body{transform:none;}
+  .news-card-body{position:relative;z-index:2;padding:1.5rem;width:100%;}
   .news-card-cat{display:inline-block;background:var(--accent);color:white;font-family:var(--font-display);font-weight:700;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.18rem .5rem;margin-bottom:.5rem;border-radius:3px;}
   .news-card-title{font-family:var(--font-display);font-weight:900;font-size:1.15rem;line-height:1.08;text-transform:uppercase;color:white;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
-  .news-card-date{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:.45rem;font-family:var(--font-display);letter-spacing:.05em;}
+  .news-card-date{font-size:.72rem;color:rgba(255,255,255,.45);margin-top:.45rem;font-family:var(--font-display);}
   .news-card.featured{grid-column:span 2;aspect-ratio:16/7;}.news-card.featured .news-card-title{font-size:1.7rem;}
-  @media(max-width:900px){.news-card.featured{grid-column:span 2;}}
-  @media(max-width:600px){.news-card.featured{grid-column:span 1;aspect-ratio:3/2;}.news-card.featured .news-card-title{font-size:1.2rem;}}
-  .news-placeholder{background:var(--navy-light);aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;}
-  html:not(.dark) .news-placeholder{background:#e8eef8;}
-  .news-placeholder-text{font-family:var(--font-display);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.06);}
-  html:not(.dark) .news-placeholder-text{color:rgba(4,16,31,0.08);}
+  @media(max-width:900px){.news-card.featured{grid-column:span 2;}}@media(max-width:600px){.news-card.featured{grid-column:span 1;aspect-ratio:3/2;}.news-card.featured .news-card-title{font-size:1.2rem;}}
+  .news-placeholder{background:#e8eef8;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;}html.dark .news-placeholder{background:var(--navy-light);}
+  .news-placeholder-text{font-family:var(--font-display);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(4,16,31,0.08);}html.dark .news-placeholder-text{color:rgba(255,255,255,0.06);}
+  /* ── STATS ── */
   #stats-section{background:var(--navy);color:white;position:relative;overflow:hidden;}
   html:not(.dark) #stats-section{background:#f3f7ff;color:var(--navy);}
   #stats-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(18,85,201,0.15) 0%,transparent 70%);pointer-events:none;}
-  html:not(.dark) #stats-section::before{background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(18,85,201,0.08) 0%,transparent 70%);}
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
-  @media(max-width:640px){.stats-grid{grid-template-columns:1fr 1fr;}}
-  .stat-item{padding:3.5rem 2rem;border-right:1px solid rgba(255,255,255,0.06);text-align:center;position:relative;transition:background .3s;}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}@media(max-width:640px){.stats-grid{grid-template-columns:1fr 1fr;}}
+  .stat-item{padding:3.5rem 2rem;border-right:1px solid rgba(255,255,255,0.06);text-align:center;}.stat-item:last-child{border-right:none;}
   html:not(.dark) .stat-item{border-right-color:rgba(4,16,31,0.08);}
-  .stat-item:last-child{border-right:none;}.stat-item:hover{background:rgba(255,255,255,0.02);}
-  html:not(.dark) .stat-item:hover{background:rgba(4,16,31,0.02);}
   @media(max-width:640px){.stat-item{border-right:none;border-bottom:1px solid rgba(255,255,255,0.06);}}
   .stat-number{font-family:var(--font-display);font-weight:900;font-size:clamp(3rem,6vw,5rem);line-height:1;background:linear-gradient(135deg,white 0%,rgba(210,228,255,0.8) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-  html:not(.dark) .stat-number{background:none;-webkit-background-clip:unset;-webkit-text-fill-color:unset;background-clip:unset;color:var(--accent);text-shadow:none;}
-  .stat-number span{-webkit-text-fill-color:var(--accent-bright);color:var(--accent-bright);}
-  html:not(.dark) .stat-number span{color:var(--accent);}
+  html:not(.dark) .stat-number{background:none;-webkit-background-clip:unset;-webkit-text-fill-color:unset;color:var(--accent);}
+  .stat-number span{-webkit-text-fill-color:var(--accent-bright);}html:not(.dark) .stat-number span{color:var(--accent);}
   .stat-label{font-family:var(--font-display);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:.5rem;}
   html:not(.dark) .stat-label{color:rgba(4,16,31,0.55);}
   .stat-bar{width:2rem;height:2px;background:var(--accent);margin:.75rem auto 0;border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease-out);}.stat-item.counted .stat-bar{transform:scaleX(1);}
-
-  /* ── Instagram section ── */
-  #instagram-section { background:var(--surface-2,#f3f6ff); }
-  html.dark #instagram-section { background:var(--navy-mid); }
-
-  /* Contenedor del widget: ancho completo, altura minima razonable */
-  .insta-widget-wrap {
-    width: 100%;
-    min-height: 300px;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-  }
-  /* El iframe/script del widget debe ir dentro: que ocupe todo el ancho */
-  .insta-widget-wrap iframe,
-  .insta-widget-wrap > div {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-  /* Fallback visible si el widget no carga */
-  .insta-fallback {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    padding: 3rem 2rem;
-    background: var(--surface-3, #e8eeff);
-    border-radius: 10px;
-    border: 2px dashed var(--border, rgba(4,16,31,0.08));
-    text-align: center;
-  }
-  html.dark .insta-fallback {
-    background: rgba(255,255,255,0.03);
-    border-color: rgba(255,255,255,0.08);
-  }
-  .insta-fallback p {
-    font-size: .9rem;
-    color: var(--text-secondary, rgba(4,16,31,0.55));
-    max-width: 380px;
-  }
-  html.dark .insta-fallback p { color: rgba(255,255,255,0.4); }
-
-  /* Boton Instagram con gradiente real */
-  .insta-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: .6rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: .82rem;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: .8rem 2rem;
-    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
-    color: white;
-    border-radius: 8px;
-    transition: opacity .2s, transform .2s var(--ease-spring);
-    box-shadow: 0 4px 15px rgba(131,58,180,0.3);
-  }
-  .insta-btn:hover { opacity:.88; transform:translateY(-2px); }
-
-  /* ── Partners ── */
-  #partners-section{background:white;border-top:1px solid rgba(0,0,0,0.05);padding:2.5rem 0;overflow:hidden;}
+  /* ── INSTAGRAM ── */
+  #instagram-section{background:var(--surface-2,#f3f6ff);}html.dark #instagram-section{background:var(--navy-mid);}
+  .insta-widget-wrap{width:100%;border-radius:10px;overflow:hidden;}
+  .insta-widget-wrap iframe{width:100%!important;max-width:100%!important;}
+  .insta-btn{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.8rem 2rem;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:white;border-radius:8px;transition:opacity .2s,transform .2s var(--ease-spring);box-shadow:0 4px 15px rgba(131,58,180,0.3);}
+  .insta-btn:hover{opacity:.88;transform:translateY(-2px);}
+  /* ── PARTNERS ── */
+  #partners-section{background:#f8faff;border-top:1px solid rgba(0,0,0,0.05);padding:2.5rem 0;overflow:hidden;}
   html.dark #partners-section{background:var(--navy);border-top-color:rgba(255,255,255,0.04);}
-  html:not(.dark) #partners-section{background:#f9fafb;border-top-color:rgba(4,16,31,0.05);}
   .partners-track{overflow:hidden;position:relative;}
   .partners-track::before,.partners-track::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none;}
-  .partners-track::before{left:0;background:linear-gradient(to right,white,transparent);}
-  html.dark .partners-track::before{background:linear-gradient(to right,var(--navy),transparent);}
-  html:not(.dark) .partners-track::before{background:linear-gradient(to right,#f9fafb,transparent);}
-  .partners-track::after{right:0;background:linear-gradient(to left,white,transparent);}
-  html.dark .partners-track::after{background:linear-gradient(to left,var(--navy),transparent);}
-  html:not(.dark) .partners-track::after{background:linear-gradient(to left,#f9fafb,transparent);}
+  .partners-track::before{left:0;background:linear-gradient(to right,#f8faff,transparent);}html.dark .partners-track::before{background:linear-gradient(to right,var(--navy),transparent);}
+  .partners-track::after{right:0;background:linear-gradient(to left,#f8faff,transparent);}html.dark .partners-track::after{background:linear-gradient(to left,var(--navy),transparent);}
   .partners-row{display:flex;gap:4rem;align-items:center;animation:marquee 30s linear infinite;width:max-content;}.partners-row:hover{animation-play-state:paused;}
   @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .partner-slot{flex:0 0 auto;height:44px;display:flex;align-items:center;opacity:.3;transition:opacity .3s,filter .3s;filter:grayscale(1);}.partner-slot:hover{opacity:.9;filter:none;}
-  .partner-slot-text{font-family:var(--font-display);font-weight:900;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);white-space:nowrap;}
-  html.dark .partner-slot-text{color:rgba(255,255,255,0.6);}
-
-  /* ── Footer ── */
+  .partner-slot{flex:0 0 auto;height:44px;display:flex;align-items:center;opacity:.3;filter:grayscale(1);transition:opacity .3s,filter .3s;}.partner-slot:hover{opacity:.9;filter:none;}
+  .partner-slot-text{font-family:var(--font-display);font-weight:900;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);white-space:nowrap;}html.dark .partner-slot-text{color:rgba(255,255,255,0.6);}
+  /* ── FOOTER ── */
   #footer{background:#020d1a;color:rgba(255,255,255,0.5);}
   .footer-inner{max-width:1400px;margin:0 auto;padding:4.5rem 2rem 2.5rem;}
   .footer-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:3.5rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.05);}
-  @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}.footer-col:first-child{grid-column:span 2;}}
-  @media(max-width:500px){.footer-grid{grid-template-columns:1fr;}.footer-col:first-child{grid-column:span 1;}}
+  @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;}.footer-col:first-child{grid-column:span 2;}}@media(max-width:500px){.footer-grid{grid-template-columns:1fr;}.footer-col:first-child{grid-column:span 1;}}
   .footer-logo{height:56px;margin-bottom:1.25rem;opacity:.9;}
   .footer-about{font-size:.875rem;line-height:1.75;color:rgba(255,255,255,0.38);max-width:260px;}
   .footer-heading{font-family:var(--font-display);font-weight:900;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1.25rem;}
@@ -248,6 +223,7 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav id="navbar" role="navigation">
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
@@ -255,39 +231,63 @@
       <span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html" class="active" aria-current="page">Inicio</a></li>
-      <li><a href="noticias.html">Noticias</a></li>
-      <li><a href="club.html">El Club</a></li>
-      <li><a href="equipo1.html">1. Equipo</a></li>
-      <li><a href="patrocinadores.html">Patrocinadores</a></li>
-      <li><a href="contacto.html">Contacto</a></li>
+      <li><a href="index.html" class="active" aria-current="page" data-i18n="nav.home">Inicio</a></li>
+      <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
+      <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+      <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
+      <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+      <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+
+      <!-- Selector de idioma (desktop) -->
+      <li class="lang-selector">
+        <button id="lang-toggle" aria-label="Cambiar idioma" aria-haspopup="true">
+          <span id="lang-current">🇪🇸 <span>ES</span></span>
+          <span class="chevron">▼</span>
+        </button>
+        <div id="lang-dropdown" role="menu">
+          <button class="lang-option active" data-lang="es" role="menuitem">
+            <span class="flag">🇪🇸</span> Castellano
+          </button>
+          <button class="lang-option" data-lang="eu" role="menuitem">
+            <span class="flag">🏴️‍☠️</span> Euskera
+          </button>
+        </div>
+      </li>
+
       <li><button id="theme-toggle" aria-label="Cambiar tema"><i data-feather="sun" style="width:15px;height:15px;"></i></button></li>
     </ul>
     <button id="menu-toggle" aria-label="Abrir menú" aria-expanded="false"><i data-feather="menu" style="width:26px;height:26px;"></i></button>
   </div>
 </nav>
 
+<!-- MOBILE MENU -->
 <div id="mobile-menu-overlay"></div>
 <div id="mobile-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <img src="escudo.png" alt="Tolosa CF" style="height:42px;">
-    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;padding:.4rem;border-radius:6px;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
+    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;padding:.4rem;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
   </div>
   <ul class="mobile-nav-links">
-    <li><a href="index.html">Inicio <span>→</span></a></li>
-    <li><a href="noticias.html">Noticias <span>→</span></a></li>
-    <li><a href="club.html">El Club <span>→</span></a></li>
-    <li><a href="equipo1.html">1. Equipo <span>→</span></a></li>
-    <li><a href="patrocinadores.html">Patrocinadores <span>→</span></a></li>
-    <li><a href="contacto.html">Contacto <span>→</span></a></li>
+    <li><a href="index.html" data-i18n="nav.home">Inicio <span>→</span></a></li>
+    <li><a href="noticias.html" data-i18n="nav.news">Noticias <span>→</span></a></li>
+    <li><a href="club.html" data-i18n="nav.club">El Club <span>→</span></a></li>
+    <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo <span>→</span></a></li>
+    <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores <span>→</span></a></li>
+    <li><a href="contacto.html" data-i18n="nav.contact">Contacto <span>→</span></a></li>
   </ul>
-  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);">
+  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:1rem;">
+    <!-- Lang switcher móvil -->
+    <div class="mobile-lang-row">
+      <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><span>🇪🇸</span> ES</button>
+      <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><span>🏴️‍☠️</span> EU</button>
+    </div>
     <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
       <i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span>
     </button>
   </div>
 </div>
 
+<!-- HERO -->
 <section id="hero">
   <div id="hero-bg" aria-hidden="true"></div>
   <div id="hero-overlay"></div>
@@ -296,40 +296,45 @@
   <div id="hero-glow"></div>
   <div class="hero-content">
     <h1 class="hero-title">
-      <div class="word"><span>Pasión,</span></div><br>
-      <div class="word"><span>fuerza</span></div> <div class="word"><span>y</span></div><br>
-      <div class="word accent-word"><span>orgullo</span></div>
+      <div class="word"><span data-i18n="hero.word1">Pasión,</span></div><br>
+      <div class="word"><span data-i18n="hero.word2">fuerza</span></div> <div class="word"><span data-i18n="hero.word3">y</span></div><br>
+      <div class="word accent-word"><span data-i18n="hero.word4">orgullo</span></div>
     </h1>
     <div class="hero-rule"></div>
-    <p class="hero-sub">Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la emoción del balonmano vasco.</p>
+    <p class="hero-sub" data-i18n="hero.sub">Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la emoción del balonmano vasco.</p>
     <div class="hero-ctas">
-      <a href="noticias.html" class="btn btn-primary" data-ripple><i data-feather="zap" style="width:14px;height:14px;"></i> Últimas noticias</a>
-      <a href="club.html" class="btn btn-ghost" data-ripple>Conoce el club <i data-feather="arrow-right" style="width:14px;height:14px;"></i></a>
+      <a href="noticias.html" class="btn btn-primary" data-ripple><i data-feather="zap" style="width:14px;height:14px;"></i> <span data-i18n="hero.cta.news">Últimas noticias</span></a>
+      <a href="club.html" class="btn btn-ghost" data-ripple><span data-i18n="hero.cta.club">Conoce el club</span> <i data-feather="arrow-right" style="width:14px;height:14px;"></i></a>
     </div>
   </div>
   <div class="hero-scroll"><div class="hero-scroll-line"></div><span>Scroll</span></div>
 </section>
 
+<!-- FIXTURE BANNER -->
 <div id="fixture-banner">
   <div class="fixture-inner">
-    <div><div class="fixture-label">Próximo partido</div><div class="fixture-match">Tolosa CF vs <span id="fixture-rival">—</span></div></div>
-    <div class="fixture-meta">
+    <div>
+      <div class="fixture-label" data-i18n="fixture.label">Próximo partido</div>
+      <div class="fixture-match"><span data-i18n="fixture.vs">Tolosa CF vs</span> <span id="fixture-rival">—</span></div>
+    </div>
+    <div style="font-size:.82rem;opacity:.8;display:flex;align-items:center;gap:1rem;">
       <span style="display:flex;align-items:center;gap:.3rem;"><i data-feather="calendar" style="width:13px;height:13px;"></i><span id="fixture-date">—</span></span>
       <span style="display:flex;align-items:center;gap:.3rem;"><i data-feather="map-pin" style="width:13px;height:13px;"></i><span id="fixture-venue">Usabal Kiroldegia</span></span>
     </div>
-    <a href="equipo1.html" class="fixture-ticket" data-ripple>Ver equipo →</a>
+    <a href="equipo1.html" class="fixture-ticket" data-ripple data-i18n="fixture.cta">Ver equipo →</a>
   </div>
 </div>
 
+<!-- NOTICIAS -->
 <div class="news-section-bg">
   <div class="section">
     <div class="section-header reveal">
       <div>
-        <div class="section-eyebrow">Actualidad</div>
-        <h2 class="section-title">Últimas<br>Noticias</h2>
+        <div class="section-eyebrow" data-i18n="section.news.eyebrow">Actualidad</div>
+        <h2 class="section-title" data-i18n="section.news.title">Últimas<br>Noticias</h2>
         <div class="divider-line"></div>
       </div>
-      <a href="noticias.html" class="section-link">Ver todas <i data-feather="arrow-right" style="width:15px;height:15px;"></i></a>
+      <a href="noticias.html" class="section-link"><span data-i18n="section.news.cta">Ver todas</span> <i data-feather="arrow-right" style="width:15px;height:15px;"></i></a>
     </div>
     <div id="news-grid">
       <div class="news-placeholder featured reveal delay-1"><span class="news-placeholder-text">Cargando…</span></div>
@@ -339,27 +344,27 @@
   </div>
 </div>
 
+<!-- STATS -->
 <div id="stats-section">
   <div style="max-width:1400px;margin:0 auto;">
     <div class="stats-grid">
-      <div class="stat-item reveal delay-1"><div class="stat-number">100<span>+</span></div><div class="stat-label">Años de historia</div><div class="stat-bar"></div></div>
-      <div class="stat-item reveal delay-2"><div class="stat-number">12</div><div class="stat-label">Equipos activos</div><div class="stat-bar"></div></div>
-      <div class="stat-item reveal delay-3"><div class="stat-number">300<span>+</span></div><div class="stat-label">Jugadores</div><div class="stat-bar"></div></div>
-      <div class="stat-item reveal delay-4"><div class="stat-number">1<span>ª</span></div><div class="stat-label">División nacional</div><div class="stat-bar"></div></div>
+      <div class="stat-item reveal delay-1"><div class="stat-number">100<span>+</span></div><div class="stat-label" data-i18n="stats.years">Años de historia</div><div class="stat-bar"></div></div>
+      <div class="stat-item reveal delay-2"><div class="stat-number">12</div><div class="stat-label" data-i18n="stats.teams">Equipos activos</div><div class="stat-bar"></div></div>
+      <div class="stat-item reveal delay-3"><div class="stat-number">300<span>+</span></div><div class="stat-label" data-i18n="stats.players">Jugadores</div><div class="stat-bar"></div></div>
+      <div class="stat-item reveal delay-4"><div class="stat-number">1<span>ª</span></div><div class="stat-label" data-i18n="stats.division">División nacional</div><div class="stat-bar"></div></div>
     </div>
   </div>
 </div>
 
+<!-- INSTAGRAM -->
 <div id="instagram-section">
   <div class="section">
-
-    <!-- Cabecera -->
     <div class="section-header reveal">
       <div>
-        <div class="section-eyebrow">Redes sociales</div>
-        <h2 class="section-title">Síguenos en<br>Instagram</h2>
+        <div class="section-eyebrow" data-i18n="insta.eyebrow">Redes sociales</div>
+        <h2 class="section-title" data-i18n="insta.title">Síguenos en<br>Instagram</h2>
         <div class="divider-line"></div>
-        <p style="font-size:.9rem;color:var(--text-secondary,rgba(4,16,31,0.6));margin-top:1rem;max-width:400px;line-height:1.6;">
+        <p style="font-size:.9rem;color:var(--text-secondary,rgba(4,16,31,0.6));margin-top:1rem;max-width:400px;line-height:1.6;" data-i18n="insta.desc">
           Fotos, vídeos y la actualidad del club en tiempo real.
         </p>
       </div>
@@ -367,49 +372,25 @@
         @tolosacfeskubaloia <i data-feather="instagram" style="width:15px;height:15px;"></i>
       </a>
     </div>
-
-    <!-- ┌─────────────────────────────────────────────┐
-         │  ZONA DEL WIDGET — pega aqui el codigo     │
-         │  de LightWidget o SnapWidget                │
-         │                                             │
-         │  Pasos:                                     │
-         │  1. Ve a https://lightwidget.com            │
-         │  2. Conecta tu cuenta de Instagram          │
-         │  3. Configura el widget (grid, 6 cols)      │
-         │  4. Copia el codigo <script> o <iframe>     │
-         │  5. Pégalo DENTRO del div #insta-widget     │
-         │     reemplazando el bloque de fallback      │
-         └─────────────────────────────────────────────┘ -->
     <div class="insta-widget-wrap reveal" id="insta-widget">
-
-      
-    <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
+      <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
       <iframe src="//lightwidget.com/widgets/23feb26264d75c54b7435866c58a25f8.html"
-        scrolling="no"
-        allowtransparency="true"
-        class="lightwidget-widget"
+        scrolling="no" allowtransparency="true" class="lightwidget-widget"
         style="width:100%;border:0;overflow:hidden;"></iframe>
-      
     </div>
-    <!-- FIN #insta-widget -->
-
-    <!-- Boton siempre visible debajo del widget -->
     <div style="display:flex;justify-content:center;margin-top:2rem;">
-      <a href="https://www.instagram.com/tolosacfeskubaloia"
-         target="_blank" rel="noopener"
-         class="insta-btn reveal">
+      <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="insta-btn reveal">
         <i data-feather="instagram" style="width:16px;height:16px;"></i>
-        Seguir en Instagram
+        <span data-i18n="insta.btn">Seguir en Instagram</span>
       </a>
     </div>
-
   </div>
 </div>
-<!-- FIN SECCIÓN INSTAGRAM -->
 
+<!-- PARTNERS -->
 <div id="partners-section">
   <div style="max-width:1400px;margin:0 auto 1.25rem;padding:0 2rem;text-align:center;">
-    <div class="section-eyebrow" style="justify-content:center;">Nuestros patrocinadores</div>
+    <div class="section-eyebrow" style="justify-content:center;" data-i18n="partners.eyebrow">Nuestros patrocinadores</div>
   </div>
   <div class="partners-track">
     <div class="partners-row">
@@ -429,12 +410,13 @@
   </div>
 </div>
 
+<!-- FOOTER -->
 <footer id="footer">
   <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-col">
         <img src="escudo.png" alt="Escudo" class="footer-logo">
-        <p class="footer-about">Tolosa CF Eskubaloia. Más que un club, una familia unida por el balonmano desde hace más de 100 años.</p>
+        <p class="footer-about" data-i18n="footer.about">Más que un club, una familia unida por el balonmano desde hace más de 100 años.</p>
         <div class="social-row">
           <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
           <a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
@@ -442,30 +424,80 @@
         </div>
       </div>
       <div class="footer-col">
-        <h3 class="footer-heading">Secciones</h3>
-        <ul class="footer-links"><li><a href="index.html">Inicio</a></li><li><a href="noticias.html">Noticias</a></li><li><a href="club.html">El Club</a></li><li><a href="equipo1.html">1. Equipo</a></li><li><a href="patrocinadores.html">Patrocinadores</a></li></ul>
+        <h3 class="footer-heading" data-i18n="footer.sections">Secciones</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+          <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
+          <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+          <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
+          <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+        </ul>
       </div>
       <div class="footer-col">
-        <h3 class="footer-heading">El Club</h3>
-        <ul class="footer-links"><li><a href="club.html">Historia</a></li><li><a href="equipo1.html">Primer equipo</a></li><li><a href="patrocinadores.html">Colabora</a></li><li><a href="contacto.html">Contacto</a></li></ul>
+        <h3 class="footer-heading" data-i18n="footer.club">El Club</h3>
+        <ul class="footer-links">
+          <li><a href="club.html" data-i18n="footer.history">Historia</a></li>
+          <li><a href="equipo1.html" data-i18n="footer.firstTeam">Primer equipo</a></li>
+          <li><a href="patrocinadores.html" data-i18n="footer.collaborate">Colabora</a></li>
+          <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+        </ul>
       </div>
       <div class="footer-col">
-        <h3 class="footer-heading">Contacto</h3>
+        <h3 class="footer-heading" data-i18n="footer.contact">Contacto</h3>
         <div class="footer-contact-item"><i data-feather="map-pin" style="width:14px;height:14px;"></i><span>Usabal Kiroldegia, 20400 Tolosa</span></div>
         <div class="footer-contact-item"><i data-feather="mail" style="width:14px;height:14px;"></i><a href="mailto:eskubaloia.tolosacf@gmail.com" style="color:inherit;text-decoration:none;">eskubaloia.tolosacf@gmail.com</a></div>
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal"><a href="privacidad.html">Privacidad</a><a href="cookies.html">Cookies</a><a href="terminos.html">Términos</a></nav>
+      <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
+      <nav style="display:flex;gap:1.5rem;">
+        <a href="privacidad.html" style="font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;" data-i18n="footer.privacy">Privacidad</a>
+        <a href="cookies.html" style="font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;" data-i18n="footer.cookies">Cookies</a>
+        <a href="terminos.html" style="font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;" data-i18n="footer.terms">Términos</a>
+      </nav>
     </div>
   </div>
 </footer>
 
+<!-- Scripts (orden importante: i18n → firebase → load-news → common) -->
+<script src="js/i18n.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
 <script src="js/load-news-index.js"></script>
 <script src="js/common.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  feather.replace();
+  // Ripple
+  document.querySelectorAll('[data-ripple]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const rect = this.getBoundingClientRect(), size = Math.max(rect.width, rect.height) * 2;
+      const r = document.createElement('span'); r.classList.add('ripple');
+      r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+      this.appendChild(r); setTimeout(() => r.remove(), 700);
+    });
+  });
+  // Stats counter
+  const statObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target, numEl = el.querySelector('.stat-number');
+      if (!numEl) return;
+      const target = parseInt(numEl.textContent.replace(/[^0-9]/g, ''), 10);
+      if (!target) return;
+      const dur = 1400, start = performance.now();
+      function easeOut(t){return t===1?1:1-Math.pow(2,-10*t);}
+      function tick(now){
+        const p = Math.min((now-start)/dur, 1);
+        numEl.innerHTML = numEl.innerHTML.replace(/\d+/, Math.round(easeOut(p)*target));
+        if(p<1) requestAnimationFrame(tick); else el.classList.add('counted');
+      }
+      requestAnimationFrame(tick); statObs.unobserve(el);
+    });
+  }, {threshold:.4});
+  document.querySelectorAll('.stat-item').forEach(el => statObs.observe(el));
+});
+</script>
 </body>
 </html>
