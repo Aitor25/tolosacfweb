@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tolosa CF Eskubaloia</title>
+<title>Tolosa CF Eskubaloia — Temporada</title>
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
 <link rel="stylesheet" href="styles.css">
 <style>
   :root{--navy:#04101f;--navy-mid:#081829;--navy-light:#0e2340;--accent:#1255c9;--accent-bright:#1e6ef5;--accent-glow:rgba(18,85,201,0.4);--white:#f0f4ff;--font-display:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-out:cubic-bezier(0.16,1,0.3,1);}
@@ -21,12 +22,7 @@
   .reveal.visible{opacity:1;transform:none;}
   .delay-1{transition-delay:.1s;}.delay-2{transition-delay:.2s;}.delay-3{transition-delay:.3s;}.delay-4{transition-delay:.4s;}
   @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}*{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}}
-  #navbar{position:fixed;top:0;width:100%;z-index:500;padding:1.1rem 0;transition:padding 0.4s var(--ease-out),background 0.4s,border-color 0.4s;border-bottom:1px solid transparent;}
-  html.dark #navbar{background:rgba(4,16,31,0.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(255,255,255,0.05);}
-  html:not(.dark) #navbar{background:rgba(220,235,255,0.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(18,85,201,0.08);}
-  #navbar.scrolled{padding:.65rem 0;}
-  html.dark #navbar.scrolled{background:rgba(4,16,31,0.95);border-bottom-color:rgba(255,255,255,0.07);}
-  html:not(.dark) #navbar.scrolled{background:rgba(240,246,255,0.97);border-bottom-color:rgba(18,85,201,0.12);}
+
   .nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;}
   .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none;transition:opacity .2s;}
   .nav-brand:hover{opacity:.85;}
@@ -74,13 +70,14 @@
   .page-eyebrow::before{content:'';width:1.5rem;height:2px;background:var(--accent-bright);border-radius:2px;}
   .page-title{font-family:var(--font-display);font-weight:900;font-style:italic;font-size:clamp(2.5rem,7vw,5rem);line-height:.9;text-transform:uppercase;color:var(--header-text);margin-bottom:.75rem;}
   .page-subtitle{font-size:1rem;color:var(--header-sub);font-weight:500;}
+  html.dark .subnav-btn.active{color:var(--accent-bright);border-bottom-color:var(--accent-bright);}
 
   /* TABS */
   .tabs-wrapper{background:var(--surface-2);border-bottom:1px solid var(--border);position:sticky;top:70px;z-index:40;}
   html.dark .tabs-wrapper{background:var(--navy-mid);border-bottom-color:rgba(255,255,255,0.06);}
   .tabs-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;gap:0;}
-  .tab-btn{font-family:var(--font-display);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;padding:1rem 1.5rem;border:none;background:none;cursor:pointer;color:rgba(4,16,31,0.45);border-bottom:3px solid transparent;transition:all .2s;}
-  html.dark .tab-btn{color:rgba(255,255,255,0.4);}
+  .tab-btn{font-family:var(--font-display);font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;padding:1rem 1.5rem;border:none;background:none;cursor:pointer;color:rgba(4,16,31,0.65);border-bottom:3px solid transparent;transition:all .2s;}
+  html.dark .tab-btn{color:rgba(255,255,255,0.6);}
   .tab-btn:hover{color:var(--accent);}
   html.dark .tab-btn:hover{color:var(--accent-bright);}
   .tab-btn.active{color:var(--accent);border-bottom-color:var(--accent-bright);}
@@ -125,6 +122,8 @@
   @media(max-width:600px){.match-away{justify-self:end;}}
   .match-score{font-family:var(--font-display);font-weight:900;font-size:1.8rem;padding:.75rem 1.5rem;background:var(--accent-bright);color:white;border-radius:10px;min-width:110px;text-align:center;letter-spacing:.05em;box-shadow:0 4px 12px rgba(18,85,201,0.2);}
   html.dark .match-score{box-shadow:0 4px 16px rgba(18,85,201,0.3);}
+  .match-score.unplayed{background:rgba(4,16,31,0.06);color:rgba(4,16,31,0.45);box-shadow:none;}
+  html.dark .match-score.unplayed{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.45);box-shadow:none;}
   @media(max-width:600px){.match-score{font-size:1.4rem;padding:.6rem 1.25rem;min-width:90px;}}
   .match-footer{padding:.75rem 1.5rem;background:rgba(4,16,31,0.02);border-top:1px solid var(--border);font-size:.75rem;color:rgba(4,16,31,0.45);text-transform:uppercase;letter-spacing:.08em;font-weight:600;}
   html.dark .match-footer{background:rgba(255,255,255,0.02);border-top-color:rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);}
@@ -134,13 +133,33 @@
   html.dark .is-tolosa-match .match-header{background:rgba(18,85,201,0.2);}
   .is-tolosa-match .match-score{box-shadow:0 4px 16px rgba(18,85,201,0.4);}
   html.dark .is-tolosa-match .match-score{box-shadow:0 4px 20px rgba(18,85,201,0.5);}
+  .is-tolosa-match {
+    border: 2px solid var(--accent-bright) !important;
+    box-shadow: 0 4px 20px rgba(18,85,201,0.15);
+  }
+  html.dark .is-tolosa-match {
+    border: 2px solid var(--accent-bright) !important;
+    box-shadow: 0 4px 24px rgba(18,85,201,0.25);
+  }
+  
+  .badge{display:inline-flex;align-items:center;padding:.2rem .6rem;border-radius:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+  .badge-blue{background:rgba(18,85,201,0.2);color:var(--accent-bright);border:1px solid rgba(18,85,201,0.3);}
 
   /* JOURNEY SELECTOR */
-  .journey-selector{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem;}
-  .journey-btn{font-family:var(--font-display);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .875rem;border-radius:6px;border:1px solid rgba(0,0,0,0.12);background:white;color:rgba(4,16,31,0.5);cursor:pointer;transition:all .2s;}
+  .journey-selector{display:grid;grid-template-columns:repeat(15,1fr);gap:.5rem;margin-bottom:2rem;}
+  .journey-btn{font-family:var(--font-display);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;padding:.4rem .1rem;text-align:center;border-radius:6px;border:1px solid rgba(0,0,0,0.12);background:white;color:rgba(4,16,31,0.5);cursor:pointer;transition:all .2s;}
   html.dark .journey-btn{background:var(--navy-light);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);}
   .journey-btn:hover{border-color:var(--accent);color:var(--accent);}
   .journey-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
+  @media(max-width:960px){
+    .journey-selector{grid-template-columns:repeat(10,1fr);}
+  }
+  @media(max-width:768px){
+    .journey-selector{grid-template-columns:repeat(8,1fr);}
+  }
+  @media(max-width:640px){
+    .journey-selector{grid-template-columns:repeat(5,1fr);}
+  }
 
   /* FOOTER */
   #footer{background:var(--footer-bg);color:var(--footer-text);}
@@ -191,20 +210,26 @@
       <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
       <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
       <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
-      <li><a href="equipo1.html" class="active" aria-current="page" data-i18n="nav.team">1. Equipo</a></li>
+      <li class="has-dropdown">
+          <a href="equipo1.html" class="active" aria-current="page" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li>
       <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
       <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
-            <li class="lang-selector">
+      <li class="lang-selector">
         <button id="lang-toggle" aria-label="Cambiar idioma" aria-haspopup="true">
-          <span id="lang-current">🇪🇸 <span>ES</span></span>
+          <span id="lang-current"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> <span>ES</span></span>
           <span class="chevron">▼</span>
         </button>
         <div id="lang-dropdown" role="menu">
           <button class="lang-option active" data-lang="es" role="menuitem">
-            <span class="flag">🇪🇸</span> Castellano
+            <img src="images/flag-es.svg" alt="Castellano" class="flag-icon"> <span data-i18n="lang.es">Castellano</span>
           </button>
           <button class="lang-option" data-lang="eu" role="menuitem">
-            <span class="flag">🏴️‍☠️</span> Euskera
+            <img src="images/flag-eu.svg" alt="Euskera" class="flag-icon"> <span data-i18n="lang.eu">Euskera</span>
           </button>
         </div>
       </li>
@@ -224,13 +249,19 @@
   <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
     <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
     <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
-    <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
+    <li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li>
     <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
     <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
   </ul>
   <div class="mobile-lang-row">
-    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><span>🇪🇸</span> ES</button>
-    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><span>🏴️‍☠️</span> EU</button>
+    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
+    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
   </div>
   <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);">
     <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
@@ -254,6 +285,7 @@
   <div class="tabs-inner">
     <button class="tab-btn active" onclick="switchTab('standings')"><i data-feather="list" style="width:14px;height:14px;display:inline;margin-right:.3rem;"></i> <span data-i18n="team.tab.standings">Clasificacion</span></button>
     <button class="tab-btn" onclick="switchTab('results')"><i data-feather="activity" style="width:14px;height:14px;display:inline;margin-right:.3rem;"></i> <span data-i18n="team.tab.results">Resultados</span></button>
+    <button class="tab-btn" onclick="switchTab('calendar')"><i data-feather="calendar" style="width:14px;height:14px;display:inline;margin-right:.3rem;"></i> <span data-i18n="team.tab.calendar">Calendario</span></button>
   </div>
 </div>
 
@@ -272,29 +304,51 @@
     <div class="footer-grid">
       <div class="footer-col">
         <img src="escudo.png" alt="Escudo" class="footer-logo">
-        <p class="footer-about">Tolosa CF Eskubaloia. Mas que un club, una familia unida por el balonmano.</p>
+        <p class="footer-about" data-i18n="footer.aboutSimple">Tolosa CF Eskubaloia. Más que un club, una familia unida por el balonmano.</p>
         <div class="social-row">
-          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
-          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
-          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a>
+          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
+          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
+          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a>
         </div>
       </div>
       <div class="footer-col">
-        <h3 class="footer-heading">Secciones</h3>
-        <ul class="footer-links"><li><a href="index.html" data-i18n="nav.home">Inicio</a></li><li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li><li><a href="club.html" data-i18n="nav.club">El Club</a></li><li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li><li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li></ul>
+        <h3 class="footer-heading" data-i18n="footer.sections">Secciones</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+          <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
+          <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+          <li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li>
+          <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+        </ul>
       </div>
       <div class="footer-col">
-        <h3 class="footer-heading">El Club</h3>
-        <ul class="footer-links"><li><a href="club.html" data-i18n="footer.history">Historia</a></li><li><a href="equipo1.html" data-i18n="footer.firstTeam">Primer equipo</a></li><li><a href="patrocinadores.html" data-i18n="footer.collaborate">Colabora</a></li><li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li></ul>
+        <h3 class="footer-heading" data-i18n="footer.club">El Club</h3>
+        <ul class="footer-links">
+          <li><a href="club.html" data-i18n="footer.history">Historia</a></li>
+          <li><a href="equipo1.html" data-i18n="footer.firstTeam">Primer equipo</a></li>
+          <li><a href="patrocinadores.html" data-i18n="footer.collaborate">Colabora</a></li>
+          <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+        </ul>
       </div>
       <div class="footer-col">
-        <h3 class="footer-heading">Contacto</h3>
-        <div style="font-size:.85rem;color:var(--footer-text-dim);"><div style="margin-bottom:.6rem;">Usabal Kiroldegia, 20400 Tolosa</div><div>eskubaloia.tolosacf@gmail.com</div></div>
+        <h3 class="footer-heading" data-i18n="footer.contact">Contacto</h3>
+        <div class="footer-contact-item"><i data-feather="map-pin" style="width:14px;height:14px;"></i><span>Usabal Kiroldegia, 20400 Tolosa</span></div>
+        <div class="footer-contact-item"><i data-feather="mail" style="width:14px;height:14px;"></i><a href="mailto:eskubaloia.tolosacf@gmail.com" style="color:inherit;text-decoration:none;">eskubaloia.tolosacf@gmail.com</a></div>
       </div>
     </div>
     <div class="footer-bottom">
       <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav>
+      <nav class="footer-legal">
+        <a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a>
+        <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
+        <a href="terminos.html" data-i18n="footer.terms">Términos</a>
+      </nav>
     </div>
   </div>
 </footer>
@@ -305,9 +359,7 @@
 <script src="js/common.js"></script>
 <script>
 // Firebase inline
-const firebaseConfig={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomain:"tolosa-cf-eskubaloia.firebaseapp.com",projectId:"tolosa-cf-eskubaloia",storageBucket:"tolosa-cf-eskubaloia.firebasestorage.app",messagingSenderId:"243368570014",appId:"1:243368570014:web:181d7f5f5990014fbf9f8f"};
-if(!firebase.apps.length)firebase.initializeApp(firebaseConfig);
-const db=firebase.firestore();
+const db=window.db || firebase.firestore();
 
 let currentData=null,activeTab='standings',selectedJourney=null;
 const competitionId='senior-masculino';
@@ -318,11 +370,13 @@ function loadData(){
     document.getElementById('tab-content').style.display='block';
     if(doc.exists){
       currentData=doc.data();
-      document.getElementById('category-name').textContent=currentData.name||'Primer Equipo';
-      document.getElementById('competition-name').textContent=`${currentData.competition||''} | ${currentData.season||''}`;
+      const subEl = document.getElementById('competition-name');
+      subEl.setAttribute('data-i18n', 'competition.name');
+      subEl.setAttribute('data-season', currentData.season || '2026/27');
       renderActiveTab();
     }else{
-      document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin datos disponibles todavia</p><p style="font-size:.85rem;margin-top:.5rem;">El administrador aun no ha subido datos para esta categoria.</p></div>';
+      document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.noDataTitle">Sin datos disponibles todavía</p><p style="font-size:.85rem;margin-top:.5rem;" data-i18n="team.noDataText">El administrador aún no ha subido datos para esta categoría.</p></div>';
+      if(typeof applyTranslations==='function')applyTranslations();
     }
   },err=>{
     document.getElementById('loading').style.display='none';
@@ -334,21 +388,24 @@ function loadData(){
 function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+  const btn = event.target.closest('.tab-btn');
+  if (btn) btn.classList.add('active');
   renderActiveTab();
 }
 
 function renderActiveTab(){
   if(!currentData)return;
   if(activeTab==='standings')renderStandings();
-  else renderResults();
+  else if(activeTab==='results')renderResults();
+  else renderCalendar();
   feather.replace();
+  if(typeof applyTranslations==='function')applyTranslations();
 }
 
 function renderStandings(){
   const standings=currentData.standings||[];
   if(!standings.length){
-    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin clasificacion disponible</p></div>';
+    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.standings.empty">Sin clasificación disponible</p></div>';
     return;
   }
   let html=`<div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);" class="dark-border">
@@ -368,13 +425,32 @@ function renderStandings(){
   document.getElementById('tab-content').innerHTML=html;
 }
 
+function getDayOfWeekName(dateStr, lang='es') {
+  if (!dateStr || dateStr.toLowerCase().includes('pendiente')) {
+    return '';
+  }
+  const parts = dateStr.split(/[-/]/);
+  if (parts.length !== 3) return '';
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1;
+  const year = parseInt(parts[2], 10);
+  
+  const date = new Date(year, month, day);
+  if (isNaN(date.getTime())) return '';
+  
+  const daysEs = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const daysEu = ['Igandea', 'Astelehena', 'Asteartea', 'Asteazkena', 'Osteguna', 'Ostirala', 'Larunbata'];
+  
+  return lang === 'eu' ? daysEu[date.getDay()] : daysEs[date.getDay()];
+}
+
 function renderResults(){
   const results=currentData.results||[];
   if(!results.length){
-    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;">Sin resultados disponibles</p></div>';
+    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.results.empty">Sin resultados disponibles</p></div>';
     return;
   }
-  const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>b-a);
+  const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>a-b);
   if(selectedJourney===null)selectedJourney=journeys[0];
 
   let html=`<div class="journey-selector">`;
@@ -384,63 +460,111 @@ function renderResults(){
   html+=`</div><div style="display:flex;flex-direction:column;gap:1rem;">`;
 
   const filtered=results.filter(m=>(m.journey||1)==selectedJourney);
+  filtered.sort((a,b)=>{
+    const aTol=a.home?.toLowerCase().includes('tolosa')||a.away?.toLowerCase().includes('tolosa');
+    const bTol=b.home?.toLowerCase().includes('tolosa')||b.away?.toLowerCase().includes('tolosa');
+    if(aTol && !bTol) return -1;
+    if(!aTol && bTol) return 1;
+    return 0;
+  });
   filtered.forEach(m=>{
     const isTolosa=m.home?.toLowerCase().includes('tolosa')||m.away?.toLowerCase().includes('tolosa');
+    const currentLang = typeof getLang === 'function' ? getLang() : 'es';
+    const dayOfWeek = getDayOfWeekName(m.date, currentLang);
+    const dateDisplay = dayOfWeek ? `${dayOfWeek}, ${m.date || ''}` : (m.date || '');
+    
+    const score=m.score||'';
+    const parts=score.split('-').map(s=>parseInt(s.trim(),10));
+    const isPlayed=parts.length===2&&!isNaN(parts[0])&&!isNaN(parts[1]);
+    const displayScore=isPlayed ? score : 'VS';
+    
     html+=`<div class="match-card ${isTolosa?'is-tolosa-match':''}">
-      <div class="match-header"><span class="match-journey">J${m.journey||1}</span><span class="match-header-separator">•</span><span class="match-date">${m.date||''}</span></div>
-      <div class="match-body">
-        <div class="match-team match-home">${m.home}</div>
-        <div class="match-score">${m.score}</div>
-        <div class="match-team match-away">${m.away}</div>
+      <div class="match-header">
+        <span class="match-journey">J${m.journey||1}</span>
+        <span class="match-header-separator">•</span>
+        <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${m.time}` : ''}</span>
       </div>
-      <div class="match-footer">${m.venue||''}</div>
+      <div class="match-body">
+        <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'};">${m.home}</div>
+        <div class="match-score ${isPlayed?'':'unplayed'}">${displayScore}</div>
+        <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'};">${m.away}</div>
+      </div>
+      <div class="match-footer" style="opacity:.7;font-size:.78rem;">
+        <span><i data-feather="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:.25rem;"></i>${m.venue||''}</span>
+      </div>
     </div>`;
   });
 
-  if(!filtered.length)html+=`<div style="text-align:center;padding:3rem;opacity:.5;">Sin partidos en esta jornada</div>`;
+  if(!filtered.length)html+=`<div style="text-align:center;padding:3rem;opacity:.5;" data-i18n="fixture.noMatches">Sin partidos en esta jornada</div>`;
   html+=`</div>`;
   document.getElementById('tab-content').innerHTML=html;
 }
 
 function selectJourney(j){
   selectedJourney=j;
-  renderResults();
+  renderActiveTab();
+}
+
+function renderCalendar(){
+  const results=currentData.results||[];
+  if(!results.length){
+    document.getElementById('tab-content').innerHTML='<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.calendar.empty">Sin partidos en el calendario</p></div>';
+    return;
+  }
+  
+  const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>a-b);
+  if(selectedJourney===null)selectedJourney=journeys[0];
+
+  let html=`<div class="journey-selector">`;
+  journeys.forEach(j=>{
+    html+=`<button class="journey-btn ${j==selectedJourney?'active':''}" onclick="selectJourney(${j})">J${j}</button>`;
+  });
+  html+=`</div><div style="display:flex;flex-direction:column;gap:1rem;">`;
+
+  const filtered=results.filter(m=>(m.journey||1)==selectedJourney);
+  filtered.sort((a,b)=>{
+    const aTol=a.home?.toLowerCase().includes('tolosa')||a.away?.toLowerCase().includes('tolosa');
+    const bTol=b.home?.toLowerCase().includes('tolosa')||b.away?.toLowerCase().includes('tolosa');
+    if(aTol && !bTol) return -1;
+    if(!aTol && bTol) return 1;
+    return 0;
+  });
+  
+  filtered.forEach(m=>{
+    const isTolosa=m.home?.toLowerCase().includes('tolosa')||m.away?.toLowerCase().includes('tolosa');
+    const score=m.score||'';
+    const parts=score.split('-').map(s=>parseInt(s.trim(),10));
+    const isPlayed=parts.length===2&&!isNaN(parts[0])&&!isNaN(parts[1]);
+    const displayScore=isPlayed ? score : 'VS';
+    
+    const currentLang = typeof getLang === 'function' ? getLang() : 'es';
+    const dayOfWeek = getDayOfWeekName(m.date, currentLang);
+    const dateDisplay = dayOfWeek ? `${dayOfWeek}, ${m.date || ''}` : (m.date || '');
+    
+    html+=`<div class="match-card ${isTolosa?'is-tolosa-match':''}">
+      <div class="match-header">
+        <span class="match-journey">J${m.journey||1}</span>
+        <span class="match-header-separator">•</span>
+        <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${m.time}` : ''}</span>
+      </div>
+      <div class="match-body">
+        <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'};">${m.home}</div>
+        <div class="match-score ${isPlayed?'':'unplayed'}">${displayScore}</div>
+        <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'};">${m.away}</div>
+      </div>
+      <div class="match-footer" style="opacity:.7;font-size:.78rem;">
+        <span><i data-feather="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:.25rem;"></i>${m.venue||''}</span>
+      </div>
+    </div>`;
+  });
+  
+  if(!filtered.length)html+=`<div style="text-align:center;padding:3rem;opacity:.5;" data-i18n="fixture.noMatches">Sin partidos en esta jornada</div>`;
+  html+=`</div>`;
+  document.getElementById('tab-content').innerHTML=html;
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  feather.replace();
   loadData();
-
-  // Reveal
-  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-
-  // Navbar
-  const navbar=document.getElementById('navbar');
-  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50),{passive:true});
-
-  // Theme
-  function applyTheme(isDark){
-    document.documentElement.classList.toggle('dark',isDark);
-    localStorage.setItem('theme',isDark?'dark':'light');
-    const label=document.getElementById('mobile-theme-label');
-    if(label)label.textContent=isDark?'Modo claro':'Modo oscuro';
-    feather.replace();
-  }
-  document.getElementById('theme-toggle').addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
-  const mobileTheme=document.getElementById('mobile-theme-toggle');
-  if(mobileTheme)mobileTheme.addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
-
-  // Mobile menu
-  const overlay=document.getElementById('mobile-menu-overlay');
-  const mobileMenu=document.getElementById('mobile-menu');
-  const menuToggle=document.getElementById('menu-toggle');
-  function openMenu(){mobileMenu.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';menuToggle.setAttribute('aria-expanded','true');}
-  function closeMenuFn(){mobileMenu.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow='';menuToggle.setAttribute('aria-expanded','false');}
-  menuToggle.addEventListener('click',openMenu);
-  document.getElementById('close-menu').addEventListener('click',closeMenuFn);
-  overlay.addEventListener('click',closeMenuFn);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenuFn();});
 });
 </script>
 </body>

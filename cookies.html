@@ -9,13 +9,7 @@
 <script src="https://unpkg.com/feather-icons"></script>
 <link rel="stylesheet" href="styles.css">
 <style>
-  :root{--navy:#04101f;--navy-mid:#081829;--navy-light:#0e2340;--accent:#1255c9;--accent-bright:#1e6ef5;--accent-glow:rgba(18,85,201,0.4);--white:#f0f4ff;--font-display:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;--ease-spring:cubic-bezier(0.34,1.56,0.64,1);--ease-out:cubic-bezier(0.16,1,0.3,1)}
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
-  body{font-family:var(--font-body);background:#f0f4ff;color:var(--navy);overflow-x:hidden}html.dark body{background:var(--navy);color:var(--white)}
-  #navbar{position:fixed;top:0;width:100%;z-index:500;padding:1.1rem 0;transition:padding .4s var(--ease-out),background .4s,border-color .4s;border-bottom:1px solid transparent}
-  html.dark #navbar{background:rgba(4,16,31,.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(255,255,255,.05)}
-  html:not(.dark) #navbar{background:rgba(220,235,255,.7);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom-color:rgba(18,85,201,.08)}
-  #navbar.scrolled{padding:.65rem 0}html.dark #navbar.scrolled{background:rgba(4,16,31,.95)}html:not(.dark) #navbar.scrolled{background:rgba(240,246,255,.97);border-bottom-color:rgba(18,85,201,.12)}
+  body{font-family:var(--font-body);overflow-x:hidden}
   .nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem}
   .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}.nav-brand img{height:44px;width:auto}
   .nav-brand-text{font-family:var(--font-display);font-weight:900;font-size:1.35rem;letter-spacing:.03em;text-transform:uppercase;color:white;line-height:1.1}.nav-brand-text span{color:var(--accent-bright)}
@@ -46,7 +40,7 @@
   .legal-body ul{padding-left:1.25rem;list-style:disc}.legal-body a{color:var(--accent-bright);text-decoration:none}.legal-body a:hover{text-decoration:underline}
   .legal-body .last-updated{display:inline-flex;align-items:center;gap:.4rem;font-family:var(--font-display);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);padding:.3rem .75rem;border-radius:20px;margin-bottom:2rem}
   html:not(.dark) .legal-body .last-updated{color:#64748b;background:rgba(18,85,201,.07)}
-  #footer{background:#020d1a;color:rgba(255,255,255,.5)}.footer-inner{max-width:1400px;margin:0 auto;padding:4rem 2rem 2rem}
+  .footer-inner{max-width:1400px;margin:0 auto;padding:4rem 2rem 2rem}
   .footer-bottom{padding-top:2rem;border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
   .footer-copy{font-size:.78rem;color:rgba(255,255,255,.2)}.footer-legal{display:flex;gap:1.5rem}.footer-legal a{font-size:.78rem;color:rgba(255,255,255,.2);text-decoration:none;transition:color .2s}.footer-legal a:hover{color:rgba(255,255,255,.6)}
   :focus-visible{outline:2px solid var(--accent-bright);outline-offset:3px;border-radius:4px}
@@ -58,18 +52,24 @@
   <div class="nav-inner">
     <a href="index.html" class="nav-brand"><img src="escudo.png" alt="Escudo" width="44" height="44"><span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span></a>
     <ul class="nav-links">
-      <li><a href="index.html" data-i18n="nav.home">Inicio</a></li><li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li><li><a href="club.html" data-i18n="nav.club">El Club</a></li><li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li><li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li><li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
-            <li class="lang-selector">
+      <li><a href="index.html" data-i18n="nav.home">Inicio</a></li><li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li><li><a href="club.html" data-i18n="nav.club">El Club</a></li><li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li><li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li><li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+      <li class="lang-selector">
         <button id="lang-toggle" aria-label="Cambiar idioma" aria-haspopup="true">
-          <span id="lang-current">🇪🇸 <span>ES</span></span>
+          <span id="lang-current"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> <span>ES</span></span>
           <span class="chevron">▼</span>
         </button>
         <div id="lang-dropdown" role="menu">
           <button class="lang-option active" data-lang="es" role="menuitem">
-            <span class="flag">🇪🇸</span> Castellano
+            <img src="images/flag-es.svg" alt="Castellano" class="flag-icon"> <span data-i18n="lang.es">Castellano</span>
           </button>
           <button class="lang-option" data-lang="eu" role="menuitem">
-            <span class="flag">🏴️‍☠️</span> Euskera
+            <img src="images/flag-eu.svg" alt="Euskera" class="flag-icon"> <span data-i18n="lang.eu">Euskera</span>
           </button>
         </div>
       </li>
@@ -82,23 +82,23 @@
 <div id="mobile-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;"><img src="escudo.png" alt="Logo" style="height:42px;"><button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;"><i data-feather="x" style="width:26px;height:26px;"></i></button></div>
   <ul class="mobile-nav-links">
-  <li><a href="index.html">Inicio <span>→</span></a></li><li><a href="noticias.html">Noticias <span>→</span></a></li><li><a href="club.html">El Club <span>→</span></a></li><li><a href="equipo1.html">1. Equipo <span>→</span></a></li><li><a href="patrocinadores.html">Patrocinadores <span>→</span></a></li><li><a href="contacto.html">Contacto <span>→</span></a></li></ul>
+  <li><a href="index.html"><span data-i18n="nav.home">Inicio</span> <span aria-hidden="true">→</span></a></li><li><a href="noticias.html"><span data-i18n="nav.news">Noticias</span> <span aria-hidden="true">→</span></a></li><li><a href="club.html"><span data-i18n="nav.club">El Club</span> <span aria-hidden="true">→</span></a></li><li><a href="equipo1.html"><span data-i18n="nav.team">1. Equipo</span> <span aria-hidden="true">→</span></a></li><li><a href="patrocinadores.html"><span data-i18n="nav.sponsors">Patrocinadores</span> <span aria-hidden="true">→</span></a></li><li><a href="contacto.html"><span data-i18n="nav.contact">Contacto</span> <span aria-hidden="true">→</span></a></li></ul>
   <div class="mobile-lang-row">
-    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><span>🇪🇸</span> ES</button>
-    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><span>🏴️‍☠️</span> EU</button>
+    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
+    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
   </div>
   <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);"><button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:0.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;"><i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span></button></div>
 </div>
 
 <header class="page-header">
   <div class="page-header-inner">
-    <div class="page-breadcrumb"><a href="index.html" data-i18n="nav.home">Inicio</a><span>→</span><span>Cookies</span></div>
+    <div class="page-breadcrumb"><a href="index.html" data-i18n="nav.home">Inicio</a><span>→</span><span style="color:var(--accent-bright);" data-i18n="footer.cookies">Cookies</span></div>
     <h1 class="page-title" data-i18n="legal.cookies.title">Política de<br>Cookies</h1>
     <div class="page-rule"></div>
   </div>
 </header>
 
-<div class="legal-body" style="background:#f8faff;" class="dark:bg-navy">
+<div class="legal-body" style="background:#f8faff;" class="dark:bg-navy" data-lang-show="es">
   <style>html.dark .legal-body{background:var(--navy-mid)}</style>
   <span class="last-updated"><i data-feather="clock" style="width:12px;height:12px;"></i>Última actualización: enero 2025</span>
   <p>Esta política explica cómo el sitio web de Tolosa CF Eskubaloia utiliza cookies y tecnologías similares.</p>
@@ -122,6 +122,29 @@
   <p>Para cualquier consulta sobre cookies, contacta con nosotros en <a href="mailto:eskubaloia.tolosacf@gmail.com">eskubaloia.tolosacf@gmail.com</a>.</p>
 </div>
 
+<div class="legal-body" style="background:#f8faff;" class="dark:bg-navy" data-lang-show="eu" style="display:none;">
+  <span class="last-updated"><i data-feather="clock" style="width:12px;height:12px;"></i>Azken eguneratzea: 2025eko urtarrila</span>
+  <p>Politika honek Tolosa CF Eskubaloiaren webguneak cookieak eta antzeko teknologiak nola erabiltzen dituen azaltzen du.</p>
+  <h2>Zer dira cookieak?</h2>
+  <p>Cookieak webgune bat bisitatzen duzunean zure gailuan gordetzen diren testu-fitxategi txikiak dira. Webguneak zure lehentasunak gogoratzea ahalbidetzen du eta nabigazio-esperientzia hobetzen du.</p>
+  <h2>Erabiltzen ditugun cookie motak</h2>
+  <h3>Funtsezko cookieak</h3>
+  <p>Webgunearen oinarrizko funtzionamendurako beharrezkoak dira. Zure gai-lehentasuna (argia/iluna) eta saioa gogoratzeko cookieak barne hartzen dituzte.</p>
+  <h3>Analisi cookieak</h3>
+  <p>Erabiltzaileek webgunearekin nola interakzionatzen duten ulertzen laguntzen digute, haren funtzionamendua hobetu ahal izateko. Datuak anonimoak dira.</p>
+  <h3>Firebase-ren cookieak</h3>
+  <p>Google-ren Firebase erabiltzen dugu berriak eta webguneko edukia kudeatzeko. Firebase-k bere cookieak ezar ditzake zerbitzuaren funtzionamendurako.</p>
+  <h2>Nola kudeatu cookieak?</h2>
+  <p>Zure nabigatzailea cookieak ukatzeko edo ezabatzeko konfiguratu dezakezu. Kontuan izan cookie batzuk desaktibatzeak webgunearen funtzionaltasunari eragin diezaiokeela.</p>
+  <ul>
+    <li>Chrome: Konfigurazioa → Pribatutasuna eta segurtasuna → Cookieak</li>
+    <li>Firefox: Aukerak → Pribatutasuna eta segurtasuna</li>
+    <li>Safari: Hobespenak → Pribatutasuna</li>
+  </ul>
+  <h2>Kontaktua</h2>
+  <p>Cookie-i buruzko edozein kontsulta egiteko, jarri gurekin harremanetan <a href="mailto:eskubaloia.tolosacf@gmail.com">eskubaloia.tolosacf@gmail.com</a> helbidean.</p>
+</div>
+
 <footer id="footer">
   <div class="footer-inner">
     <div class="footer-bottom">
@@ -132,19 +155,6 @@
 </footer>
 <script src="js/i18n.js"></script>
 <script src="js/common.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded',()=>{
-  feather.replace();
-  const navbar=document.getElementById('navbar');window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50),{passive:true});
-  function applyTheme(isDark){document.documentElement.classList.toggle('dark',isDark);localStorage.setItem('theme',isDark?'dark':'light');const l=document.getElementById('mobile-theme-label');if(l)l.textContent=isDark?'Modo claro':'Modo oscuro';feather.replace();}
-  document.getElementById('theme-toggle').addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
-  const mt=document.getElementById('mobile-theme-toggle');if(mt)mt.addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
-  const overlay=document.getElementById('mobile-menu-overlay'),mobileMenu=document.getElementById('mobile-menu'),menuToggle=document.getElementById('menu-toggle');
-  function openMenu(){mobileMenu.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';menuToggle.setAttribute('aria-expanded','true');}
-  function closeMenu(){mobileMenu.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow='';menuToggle.setAttribute('aria-expanded','false');}
-  menuToggle.addEventListener('click',openMenu);document.getElementById('close-menu').addEventListener('click',closeMenu);overlay.addEventListener('click',closeMenu);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
-});
-</script>
+<script></script>
 </body>
 </html>

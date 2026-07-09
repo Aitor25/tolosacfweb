@@ -11,6 +11,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
 <style>
   :root{--navy:#04101f;--navy-mid:#081829;--navy-light:#0e2340;--accent:#1255c9;--accent-bright:#1e6ef5;--sidebar-w:260px;}
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -103,11 +104,10 @@
       <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;text-transform:uppercase;">Panel <span style="color:var(--accent-bright);">Admin</span></div>
       <div style="font-size:.75rem;color:rgba(255,255,255,0.3);margin-top:.25rem;">Solo personal autorizado</div>
     </div>
-    <div class="form-group"><label class="form-label">Email</label><input type="email" id="login-email" class="form-input" placeholder="tu@email.com" autocomplete="email"></div>
-    <div class="form-group"><label class="form-label">Contraseña</label><input type="password" id="login-pass" class="form-input" placeholder="••••••••" autocomplete="current-password"></div>
-    <div style="display:flex;gap:.75rem;margin-top:1.5rem;">
-      <button onclick="doLogin()" id="login-btn" class="btn btn-primary" style="flex:1;justify-content:center;"><i data-feather="log-in"></i> Entrar</button>
-      <button onclick="doRegister()" class="btn btn-ghost" style="flex:1;justify-content:center;">Registrar</button>
+    <div class="form-group"><label class="form-label" for="login-email">Email</label><input type="email" id="login-email" class="form-input" placeholder="tu@email.com" autocomplete="email"></div>
+    <div class="form-group"><label class="form-label" for="login-pass">Contraseña</label><input type="password" id="login-pass" class="form-input" placeholder="••••••••" autocomplete="current-password"></div>
+    <div style="margin-top:1.5rem;">
+      <button onclick="doLogin()" id="login-btn" class="btn btn-primary" style="width:100%;justify-content:center;"><i data-feather="log-in"></i> Entrar</button>
     </div>
     <button onclick="doResetPassword()" style="width:100%;margin-top:.75rem;background:none;border:none;color:rgba(255,255,255,0.25);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;font-weight:700;font-family:'Barlow Condensed',sans-serif;">¿Olvidaste tu contraseña?</button>
     <div id="login-error" style="display:none;margin-top:1rem;padding:.75rem;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;font-size:.8rem;text-align:center;"></div>
@@ -246,9 +246,15 @@
                 <option value="juvenil-femenino">Juvenil Femenino</option>
               </select>
             </div>
-            <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-              <button onclick="setCompMode('journey')" id="mode-journey" class="btn btn-primary btn-sm" style="flex:1;justify-content:center;">Jornada</button>
-              <button onclick="setCompMode('standings')" id="mode-standings" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;">Clasificación</button>
+            <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:.75rem;margin-bottom:1rem;">
+              <div class="form-group" style="margin-bottom:0;"><label class="form-label">Nombre Competición</label><input type="text" id="comp-competition-name" class="form-input" placeholder="Ej: 1ª Nacional Grupo C"></div>
+              <div class="form-group" style="margin-bottom:0;"><label class="form-label">Temporada</label><input type="text" id="comp-season-name" class="form-input" placeholder="Ej: 2025/26"></div>
+            </div>
+            <button onclick="updateCompMetadata()" class="btn btn-ghost btn-sm" style="width:100%;margin-bottom:1.25rem;justify-content:center;"><i data-feather="save"></i> Actualizar competición y temp.</button>
+            <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+              <button onclick="setCompMode('journey')" id="mode-journey" class="btn btn-primary btn-sm" style="flex:1;justify-content:center;min-width:70px;">Jornada</button>
+              <button onclick="setCompMode('standings')" id="mode-standings" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;min-width:90px;">Clasificación</button>
+              <button onclick="setCompMode('calendar')" id="mode-calendar" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center;min-width:140px;">Calendario Completo</button>
             </div>
             <div class="form-group" id="journey-num-group"><label class="form-label">Número de jornada</label><input type="number" id="journey-number" value="1" min="1" class="form-input"></div>
             <div class="form-group"><label class="form-label">Pega el texto aquí</label><textarea id="raw-input" class="form-textarea" style="min-height:180px;font-family:monospace;font-size:.8rem;" placeholder="Pega los partidos de la jornada..."></textarea></div>
@@ -372,6 +378,26 @@
             <table class="data-table"><thead><tr><th>#</th><th>Nombre</th><th>Posición</th><th>Equipo</th><th></th></tr></thead><tbody id="players-tbody"><tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);">Cargando...</td></tr></tbody></table>
           </div>
         </div>
+
+        <!-- CUERPO TÉCNICO -->
+        <div style="margin-top:2rem;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em;color:white;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:1.5rem;"><i data-feather="briefcase" style="width:18px;height:18px;color:var(--accent-bright);"></i> Cuerpo Técnico</div>
+          <div style="display:grid;grid-template-columns:380px 1fr;gap:1.5rem;" class="grid-sidebar">
+            <div class="card">
+              <div class="card-title"><i data-feather="user-plus"></i> <span id="staff-form-title">Nuevo miembro</span></div>
+              <input type="hidden" id="staff-edit-id">
+              <div class="form-group"><label class="form-label">Nombre completo *</label><input type="text" id="staff-name" class="form-input" placeholder="Nombre Apellido"></div>
+              <div class="form-group"><label class="form-label">Cargo *</label><input type="text" id="staff-role" class="form-input" placeholder="Entrenador, Preparador físico..."></div>
+              <div class="form-group"><label class="form-label">Foto (URL)</label><input type="text" id="staff-photo" class="form-input" placeholder="https://..."></div>
+              <div class="form-group"><label class="form-label">Orden</label><input type="number" id="staff-order" class="form-input" placeholder="1" min="0"></div>
+              <div style="display:flex;gap:.75rem;"><button onclick="saveStaff()" class="btn btn-primary" style="flex:1;justify-content:center;"><i data-feather="save"></i> Guardar</button><button onclick="clearStaffForm()" class="btn btn-ghost"><i data-feather="x"></i></button></div>
+            </div>
+            <div class="card">
+              <div class="card-title" style="justify-content:space-between;"><span><i data-feather="briefcase"></i> Miembros registrados</span><button onclick="loadStaffAdmin()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button></div>
+              <table class="data-table"><thead><tr><th>Nombre</th><th>Cargo</th><th>Orden</th><th></th></tr></thead><tbody id="staff-tbody"><tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.3);">Cargando...</td></tr></tbody></table>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- PATROCINADORES -->
@@ -428,13 +454,51 @@
   </div>
 </div>
 
+<!-- MODAL editar partido -->
+<div id="edit-match-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-box" style="max-width:460px;">
+    <div class="modal-title"><i data-feather="edit-2"></i> Editar Partido</div>
+    <input type="hidden" id="edit-match-index">
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Jornada</label>
+      <input type="number" id="edit-match-journey" class="form-input" min="1">
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Equipo Local</label>
+      <input type="text" id="edit-match-home" class="form-input" readonly style="opacity:0.6;background:rgba(255,255,255,0.02);">
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Equipo Visitante</label>
+      <input type="text" id="edit-match-away" class="form-input" readonly style="opacity:0.6;background:rgba(255,255,255,0.02);">
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Fecha (DD/MM/AAAA)</label>
+      <input type="text" id="edit-match-date" class="form-input" placeholder="Ej: 12/10/2025 o Pendiente">
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Hora (HH:MM)</label>
+      <input type="text" id="edit-match-time" class="form-input" placeholder="Ej: 18:00 o Pendiente">
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Pabellón / Lugar</label>
+      <input type="text" id="edit-match-venue" class="form-input" placeholder="Ej: Usabal Kiroldegia">
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Marcador (Goles Local - Goles Visitante)</label>
+      <input type="text" id="edit-match-score" class="form-input" placeholder="Ej: 25-22 o vs (si no se ha jugado)">
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:1.5rem;justify-content:flex-end;">
+      <button onclick="closeEditMatchModal()" class="btn btn-ghost">Cancelar</button>
+      <button onclick="saveMatchChanges()" class="btn btn-primary"><i data-feather="save"></i> Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast-container"></div>
 
 <script>
 // ── FIREBASE ──
-const firebaseConfig={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomain:"tolosa-cf-eskubaloia.firebaseapp.com",projectId:"tolosa-cf-eskubaloia",storageBucket:"tolosa-cf-eskubaloia.firebasestorage.app",messagingSenderId:"243368570014",appId:"1:243368570014:web:181d7f5f5990014fbf9f8f"};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth(), db=firebase.firestore();
+const auth=firebase.auth(), db=window.db || firebase.firestore();
 
 // ── LEVENSHTEIN — solo para comparar, nunca para guardar ──
 function levenshtein(a,b){
@@ -471,8 +535,8 @@ const AdminLogic={
       const jM=line.match(/jornada\s*(\d+)/i);if(jM){currentJourney=parseInt(jM[1]);continue;}
       if(line.match(/\d{2}\/\d{2}\/\d{4}/)){currentDate=line.match(/\d{2}\/\d{2}\/\d{4}/)[0];continue;}
       if(line.match(/^\d{2}:\d{2}$/)){currentTime=line;if(lines[i+1]&&!lines[i+1].includes('-')&&!lines[i+1].match(/acta/i)){currentVenue=lines[i+1];i++;}continue;}
-      if(line.match(/^\d+\s*[-\u2013]\s*\d+$/)){
-        const score=line.replace('\u2013','-');
+      if(line.match(/^\d+\s*[-\u2013]\s*\d+$/) || line.toLowerCase() === 'vs' || line === '-' || line === '\u2013'){
+        const score=(line.match(/^\d+\s*[-\u2013]\s*\d+$/)) ? line.replace('\u2013','-') : 'vs';
         let hIdx=i-1;while(hIdx>=0&&(lines[hIdx].match(/acta/i)||lines[hIdx].match(/\d{2}\/\d{2}\/\d{4}/)||lines[hIdx].match(/^\d{2}:\d{2}$/))){hIdx--;}
         const teamHome=lines[hIdx]||'Equipo Local';
         let aIdx=i+1;while(aIdx<lines.length&&(lines[aIdx].match(/acta/i)||!lines[aIdx].trim())){aIdx++;}
@@ -486,7 +550,7 @@ const AdminLogic={
           home: teamHome.trim(),
           away: teamAway.trim(),
           score,
-          status:'Finalizado'
+          status: score === 'vs' ? 'Programado' : 'Finalizado'
         });
       }
     }
@@ -505,6 +569,63 @@ const AdminLogic={
     return standings.sort((a,b)=>a.pos-b.pos);
   },
 
+  parseCalendarText(text){
+    try {
+      const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+      const matches=[];let currentJourney=1,currentDate='';
+      const teamsSet=new Set();
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        const journeyMatch = line.match(/JORNADA\s*(\d+)(?:\s*\(([^)]+)\))?/i);
+        if (journeyMatch) {
+          currentJourney = parseInt(journeyMatch[1], 10);
+          currentDate = journeyMatch[2] ? journeyMatch[2].trim() : 'Pendiente';
+          continue;
+        }
+        
+        if (line.toUpperCase().startsWith('VS')) {
+          const home    = lines[i + 1] || '';
+          const away    = lines[i + 3] || '';
+          const rawScore= lines[i + 7] || '';
+          const rawTime = lines[i + 8] || '';
+          const venue   = lines[i + 9] || '';
+          
+          let score = 'vs';
+          let time = 'Pendiente';
+          if (rawScore && rawScore !== '0 - 0' && rawScore !== '0-0') {
+            score = rawScore.replace(/\s+/g, '');
+          }
+          if (rawTime && rawTime !== '0:00') {
+            time = rawTime;
+          }
+          
+          if (home) teamsSet.add(home.trim());
+          if (away) teamsSet.add(away.trim());
+          
+          matches.push({
+            journey: currentJourney,
+            date: currentDate,
+            time: time,
+            home: home.trim() || 'Equipo Local',
+            away: away.trim() || 'Equipo Visitante',
+            score: score,
+            venue: venue.trim() || 'Pabellon',
+            status: score === 'vs' ? 'Programado' : 'Finalizado'
+          });
+          
+          i += 9;
+        }
+      }
+      
+      return { matches, teams: Array.from(teamsSet).sort() };
+    } catch(e) {
+      console.error('[parseCalendarText] Error al parsear el texto del calendario:', e);
+      return { matches: [], teams: [] };
+    }
+  },
+
   // normalizeTeamName: SOLO para comparaciones internas.
   // NUNCA usar el valor devuelto para guardar en Firestore.
   normalizeTeamName(name){
@@ -513,9 +634,6 @@ const AdminLogic={
       .replace(/\./g,'')
       .replace(/\s+/g,' ')
       .trim();
-    // ⚠️  Se eliminó el replace que quitaba CF, ESKUBALOIA, BM, etc.
-    //     Esa limpieza destruía los nombres oficiales.
-    //     La función ahora solo normaliza mayúsculas y espacios para comparar.
   },
 
   getMatchKey(match){
@@ -523,11 +641,21 @@ const AdminLogic={
     return`${match.journey}-${this.normalizeTeamName(match.home)}-${this.normalizeTeamName(match.away)}`;
   },
 
-  calculateStandings(allResults){
+  calculateStandings(allResults, masterTeams=[]){
     const teams={};
+    if (masterTeams && masterTeams.length) {
+      masterTeams.forEach(t => {
+        teams[t] = this.createNewTeamEntry(t);
+      });
+    }
     allResults.forEach(m=>{
-      const[gHome,gAway]=m.score.split('-').map(g=>parseInt(g.trim()));
-      // ✅ Se usan m.home y m.away directamente (nombre oficial completo)
+      if(!m.score)return;
+      const parts=m.score.split('-').map(g=>g.trim());
+      if(parts.length!==2)return;
+      const gHome=parseInt(parts[0],10);
+      const gAway=parseInt(parts[1],10);
+      if(isNaN(gHome)||isNaN(gAway))return; // Ignorar partidos no jugados o sin marcador numérico en la tabla de clasificación
+      
       if(!teams[m.home])teams[m.home]=this.createNewTeamEntry(m.home);
       if(!teams[m.away])teams[m.away]=this.createNewTeamEntry(m.away);
       const tH=teams[m.home],tA=teams[m.away];
@@ -536,7 +664,7 @@ const AdminLogic={
       else if(gHome<gAway){tA.pg++;tA.pts+=this.config.pointsWin;tH.pp++;tH.pts+=this.config.pointsLoss;}
       else{tH.pe++;tH.pts+=this.config.pointsDraw;tA.pe++;tA.pts+=this.config.pointsDraw;}
     });
-    return Object.values(teams).sort((a,b)=>{if(b.pts!==a.pts)return b.pts-a.pts;const dA=a.gf-a.gc,dB=b.gf-b.gc;if(dB!==dA)return dB-dA;return b.gf-a.gf;}).map((t,i)=>({...t,pos:i+1}));
+    return Object.values(teams).sort((a,b)=>{if(b.pts!==a.pts)return b.pts-a.pts;const dA=a.gf-a.gc,dB=b.gf-b.gc;if(dB!==dA)return dB-dA;return a.team.localeCompare(b.team);}).map((t,i)=>({...t,pos:i+1}));
   },
 
   createNewTeamEntry(name){return{team:name,pj:0,pg:0,pe:0,pp:0,gf:0,gc:0,pts:0};},
@@ -574,7 +702,7 @@ function showSection(name){
   if(name==='resultados')loadCompetitionData();
   if(name==='clasificacion')loadStandings();
   if(name==='equipos')loadTeams();
-  if(name==='jugadores')loadPlayers();
+  if(name==='jugadores'){loadPlayers();loadStaffAdmin();}
   if(name==='patrocinadores')loadSponsors();
   if(name==='imagenes')renderImageGallery();
   closeSidebar();
@@ -608,11 +736,7 @@ async function doLogin(){
     err.textContent=msgs[e.code]||e.message;err.style.display='block';
   }finally{btn.innerHTML='<i data-feather="log-in"></i> Entrar';btn.disabled=false;feather.replace();}
 }
-async function doRegister(){
-  const email=document.getElementById('login-email').value,pass=document.getElementById('login-pass').value,err=document.getElementById('login-error');
-  if(!email||pass.length<6){err.textContent='Email válido y contraseña de al menos 6 caracteres.';err.style.display='block';return;}
-  try{await auth.createUserWithEmailAndPassword(email,pass);toast('Usuario creado.','success');}catch(e){err.textContent=e.message;err.style.display='block';}
-}
+
 async function doResetPassword(){
   const email=document.getElementById('login-email').value;
   if(!email){alert('Introduce tu email primero.');return;}
@@ -703,9 +827,20 @@ let currentDBData=null, compMode='journey';
 
 function setCompMode(mode){
   compMode=mode;
-  const jBtn=document.getElementById('mode-journey'),sBtn=document.getElementById('mode-standings'),jGrp=document.getElementById('journey-num-group');
-  if(mode==='journey'){jBtn.className='btn btn-primary btn-sm';sBtn.className='btn btn-ghost btn-sm';jGrp.style.display='block';document.getElementById('raw-input').placeholder='Pega los partidos de la jornada...';}
-  else{sBtn.className='btn btn-primary btn-sm';jBtn.className='btn btn-ghost btn-sm';jGrp.style.display='none';document.getElementById('raw-input').placeholder='Pega la tabla de clasificación (Pos Equipo PJ PG PE PP GF GC Pts)...';}
+  const jBtn=document.getElementById('mode-journey'),sBtn=document.getElementById('mode-standings'),cBtn=document.getElementById('mode-calendar'),jGrp=document.getElementById('journey-num-group');
+  if(mode==='journey'){
+    jBtn.className='btn btn-primary btn-sm';sBtn.className='btn btn-ghost btn-sm';cBtn.className='btn btn-ghost btn-sm';
+    jGrp.style.display='block';
+    document.getElementById('raw-input').placeholder='Pega los partidos de la jornada...';
+  } else if(mode==='standings') {
+    sBtn.className='btn btn-primary btn-sm';jBtn.className='btn btn-ghost btn-sm';cBtn.className='btn btn-ghost btn-sm';
+    jGrp.style.display='none';
+    document.getElementById('raw-input').placeholder='Pega la tabla de clasificación (Pos Equipo PJ PG PE PP GF GC Pts)...';
+  } else {
+    cBtn.className='btn btn-primary btn-sm';jBtn.className='btn btn-ghost btn-sm';sBtn.className='btn btn-ghost btn-sm';
+    jGrp.style.display='none';
+    document.getElementById('raw-input').placeholder='Pega el calendario completo de todas las jornadas...';
+  }
 }
 
 async function loadCompetitionData(){
@@ -714,6 +849,10 @@ async function loadCompetitionData(){
     const doc=await db.collection('competitions').doc(catId).get();
     currentDBData=doc.exists?doc.data():{name:catId,competition:'Pendiente',season:'2025/26',results:[],standings:[],teams:[]};
     if(!currentDBData.teams)currentDBData.teams=[];
+    
+    document.getElementById('comp-competition-name').value = currentDBData.competition || '';
+    document.getElementById('comp-season-name').value = currentDBData.season || '';
+    
     renderResultsTable(currentDBData.results||[]);
     renderMasterTeams(currentDBData.teams||[]);
   }catch(e){toast('Error cargando datos: '+e.message,'error');}
@@ -851,7 +990,7 @@ function applyDupMappings(){
   function applyMap(name){return mapping[name]||name;}
   const fixedMatches=_dupPendingMatches.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
   const fixedAllResults=_dupPendingAllResults.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
-  const fixedStandings=AdminLogic.calculateStandings(fixedAllResults);
+  const fixedStandings=AdminLogic.calculateStandings(fixedAllResults, currentDBData.teams);
 
   document.getElementById('dup-modal').style.display='none';
   const applied=Object.keys(mapping);
@@ -880,9 +1019,10 @@ function renderResultsTable(results){
       <td style="font-weight:600;color:white;">${m.home}</td>
       <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--accent-bright);">${m.score}</td>
       <td style="font-weight:600;color:white;">${m.away}</td>
-      <td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''}</td>
+      <td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''} ${m.time||''}</td>
       <td style="text-align:center;">
-        <button onclick="deleteMatch(${idx})" class="btn btn-danger btn-sm" title="Borrar este partido"><i data-feather="trash-2"></i></button>
+        <button onclick="openEditMatchModal(${idx})" class="btn btn-ghost btn-sm" style="background:none;border:none;color:var(--accent-bright);margin-right:.25rem;" title="Editar"><i data-feather="edit-2" style="width:14px;height:14px;"></i></button>
+        <button onclick="deleteMatch(${idx})" class="btn btn-danger btn-sm" title="Borrar este partido"><i data-feather="trash-2" style="width:14px;height:14px;"></i></button>
       </td>
     </tr>`
   ).join('');
@@ -906,9 +1046,10 @@ function filterResults(){
       <td style="font-weight:600;color:white;">${m.home}</td>
       <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--accent-bright);">${m.score}</td>
       <td style="font-weight:600;color:white;">${m.away}</td>
-      <td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''}</td>
+      <td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''} ${m.time||''}</td>
       <td style="text-align:center;">
-        <button onclick="deleteMatch(${realIdx})" class="btn btn-danger btn-sm" title="Borrar este partido"><i data-feather="trash-2"></i></button>
+        <button onclick="openEditMatchModal(${realIdx})" class="btn btn-ghost btn-sm" style="background:none;border:none;color:var(--accent-bright);margin-right:.25rem;" title="Editar"><i data-feather="edit-2" style="width:14px;height:14px;"></i></button>
+        <button onclick="deleteMatch(${realIdx})" class="btn btn-danger btn-sm" title="Borrar este partido"><i data-feather="trash-2" style="width:14px;height:14px;"></i></button>
       </td>
     </tr>`;
   }).join('');
@@ -923,7 +1064,7 @@ async function deleteMatch(idx){
   if(!m){toast('Partido no encontrado','error');return;}
   if(!confirm(`¿Borrar el partido:\n${m.home} ${m.score} ${m.away} (J${m.journey})?\n\nSe recalculará la clasificación automáticamente.`))return;
   const newResults=allResults.filter((_,i)=>i!==idx);
-  const newStandings=AdminLogic.calculateStandings(newResults);
+  const newStandings=AdminLogic.calculateStandings(newResults, currentDBData.teams);
   const catId=document.getElementById('comp-category').value;
   try{
     await db.collection('competitions').doc(catId).set(
@@ -945,7 +1086,7 @@ async function deleteFilteredJourney(){
   if(!currentDBData)return;
   if(!confirm(`¿Borrar COMPLETAMENTE la Jornada ${j} y todos sus partidos?\n\nSe recalculará la clasificación.`))return;
   const newResults=(currentDBData.results||[]).filter(m=>String(m.journey)!==String(j));
-  const newStandings=AdminLogic.calculateStandings(newResults);
+  const newStandings=AdminLogic.calculateStandings(newResults, currentDBData.teams);
   const catId=document.getElementById('comp-category').value;
   try{
     await db.collection('competitions').doc(catId).set(
@@ -970,12 +1111,16 @@ function processInput(){
     if(!newMatches.length){toast('No se detectaron partidos','error');return;}
     const hist=(currentDBData.results||[]).filter(m=>Number(m.journey||1)!==journeyNum);
     const allResults=AdminLogic.mergeResults(hist,newMatches);
-    const newStandings=AdminLogic.calculateStandings(allResults);
+    const newStandings=AdminLogic.calculateStandings(allResults, currentDBData.teams);
     checkDuplicatesAndProceed(newMatches, allResults, newStandings);
-  }else{
+  }else if(compMode==='standings'){
     const newStandings=AdminLogic.parseStandingsTable(text);
     if(!newStandings.length){toast('No se pudo procesar la tabla','error');return;}
     displayPreviewStandingsOnly(newStandings);
+  }else{
+    const data=AdminLogic.parseCalendarText(text);
+    if(!data.matches.length){toast('No se pudo procesar el calendario completo','error');return;}
+    displayCalendarPreview(data.matches, data.teams);
   }
 }
 
@@ -1027,7 +1172,7 @@ async function repairDatabase(){
     const resultsMap=new Map();
     oldResults.forEach(m=>resultsMap.set(AdminLogic.getMatchKey(m),m));
     const cleaned=Array.from(resultsMap.values()).sort((a,b)=>a.journey-b.journey);
-    const newStandings=AdminLogic.calculateStandings(cleaned);
+    const newStandings=AdminLogic.calculateStandings(cleaned, data.teams);
     await db.collection('competitions').doc(catId).set(AdminLogic.generateCategoryData(data.name,data.competition,data.season,cleaned,newStandings,data.teams||[]));
     toast(`Limpieza: ${oldResults.length} → ${cleaned.length} partidos`,'success');loadCompetitionData();
   }catch(e){toast('Error: '+e.message,'error');}
@@ -1134,6 +1279,44 @@ async function editPlayer(id){
 async function deletePlayer(id){if(!confirm('Eliminar este jugador?'))return;await db.collection('players').doc(id).delete();toast('Jugador eliminado','success');loadPlayers();loadDashboardStats();}
 function clearPlayerForm(){['player-edit-id','player-name','player-number','player-photo','player-notes'].forEach(id=>document.getElementById(id).value='');document.getElementById('player-form-title').textContent='Nuevo jugador';}
 
+// ── CUERPO TÉCNICO ──
+async function saveStaff(){
+  const name=document.getElementById('staff-name').value?.trim();
+  const role=document.getElementById('staff-role').value?.trim();
+  if(!name||!role){toast('Nombre y cargo son obligatorios','error');return;}
+  const data={name,role,photo:document.getElementById('staff-photo').value?.trim()||'',order:parseInt(document.getElementById('staff-order').value)||0,team:'senior-masculino'};
+  const editId=document.getElementById('staff-edit-id').value;
+  try{
+    if(editId)await db.collection('staff').doc(editId).update(data);
+    else await db.collection('staff').add(data);
+    toast(editId?'Miembro actualizado':'Miembro guardado','success');
+    clearStaffForm();loadStaffAdmin();
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+async function loadStaffAdmin(){
+  const tbody=document.getElementById('staff-tbody');
+  if(!tbody)return;
+  tbody.innerHTML='<tr><td colspan="4" style="text-align:center;"><div class="spinner" style="margin:0 auto;"></div></td></tr>';
+  try{
+    const snap=await db.collection('staff').orderBy('order').get();
+    if(snap.empty){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.3);">Sin miembros registrados</td></tr>';return;}
+    tbody.innerHTML=snap.docs.map(doc=>{const m=doc.data();return`<tr><td style="font-weight:600;color:white;">${m.name}</td><td><span class="badge badge-blue">${m.role||'-'}</span></td><td style="color:rgba(255,255,255,0.4);">${m.order||0}</td><td><div style="display:flex;gap:.4rem;"><button onclick="editStaff('${doc.id}')" class="btn btn-ghost btn-sm"><i data-feather="edit-2"></i></button><button onclick="deleteStaff('${doc.id}')" class="btn btn-danger btn-sm"><i data-feather="trash-2"></i></button></div></td></tr>`;}).join('');
+    feather.replace();
+  }catch(e){tbody.innerHTML=`<tr><td colspan="4" style="color:#f87171;padding:1rem;">Error: ${e.message}</td></tr>`;}
+}
+async function editStaff(id){
+  const doc=await db.collection('staff').doc(id).get();if(!doc.exists)return;const m=doc.data();
+  document.getElementById('staff-edit-id').value=id;
+  document.getElementById('staff-name').value=m.name||'';
+  document.getElementById('staff-role').value=m.role||'';
+  document.getElementById('staff-photo').value=m.photo||'';
+  document.getElementById('staff-order').value=m.order||0;
+  document.getElementById('staff-form-title').textContent='Editar miembro';
+}
+async function deleteStaff(id){if(!confirm('Eliminar este miembro del cuerpo técnico?'))return;await db.collection('staff').doc(id).delete();toast('Miembro eliminado','success');loadStaffAdmin();}
+function clearStaffForm(){['staff-edit-id','staff-name','staff-role','staff-photo','staff-order'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('staff-form-title').textContent='Nuevo miembro';}
+
+
 // ── PATROCINADORES ──
 async function saveSponsor(){
   const name=document.getElementById('sponsor-name').value?.trim();
@@ -1171,6 +1354,133 @@ function renderImageGallery(){
 }
 function copyImageUrl(url){navigator.clipboard.writeText(url);toast('URL copiada','success');}
 function removeImage(i){savedImages.splice(i,1);localStorage.setItem('admin-images',JSON.stringify(savedImages));renderImageGallery();}
+// ── EDITAR PARTIDO MODAL ──
+let editingMatchIndex = null;
+function openEditMatchModal(idx) {
+  if (!currentDBData) return;
+  const matches = currentDBData.results || [];
+  const m = matches[idx];
+  if (!m) return;
+  
+  editingMatchIndex = idx;
+  document.getElementById('edit-match-index').value = idx;
+  document.getElementById('edit-match-journey').value = m.journey || 1;
+  document.getElementById('edit-match-home').value = m.home || '';
+  document.getElementById('edit-match-away').value = m.away || '';
+  document.getElementById('edit-match-date').value = m.date || '';
+  document.getElementById('edit-match-time').value = m.time || '';
+  document.getElementById('edit-match-venue').value = m.venue || '';
+  document.getElementById('edit-match-score').value = m.score || '';
+  
+  document.getElementById('edit-match-modal').style.display = 'flex';
+  if (typeof feather !== 'undefined') feather.replace();
+}
+
+function closeEditMatchModal() {
+  document.getElementById('edit-match-modal').style.display = 'none';
+}
+
+async function saveMatchChanges() {
+  if (editingMatchIndex === null || !currentDBData) return;
+  const idx = editingMatchIndex;
+  const matches = currentDBData.results || [];
+  const m = matches[idx];
+  if (!m) return;
+  
+  const journey = parseInt(document.getElementById('edit-match-journey').value, 10) || 1;
+  const date = document.getElementById('edit-match-date').value.trim() || 'Pendiente';
+  const time = document.getElementById('edit-match-time').value.trim() || 'Pendiente';
+  const venue = document.getElementById('edit-match-venue').value.trim() || 'Pabellon';
+  const score = document.getElementById('edit-match-score').value.trim();
+  
+  m.journey = journey;
+  m.date = date;
+  m.time = time;
+  m.venue = venue;
+  m.score = score;
+  m.status = (score && score.toLowerCase() !== 'vs' && score.trim() !== '') ? 'Finalizado' : 'Programado';
+  
+  // Recalcular clasificación
+  const newStandings = AdminLogic.calculateStandings(matches, currentDBData.teams);
+  const catId = document.getElementById('comp-category').value;
+  
+  try {
+    const btn = document.querySelector('#edit-match-modal .btn-primary');
+    const oldHTML = btn.innerHTML;
+    btn.innerHTML = '<div class="spinner"></div>';
+    btn.disabled = true;
+    
+    await db.collection('competitions').doc(catId).set(
+      AdminLogic.generateCategoryData(currentDBData.name, currentDBData.competition, currentDBData.season, matches, newStandings, currentDBData.teams)
+    );
+    
+    currentDBData.results = matches;
+    currentDBData.standings = newStandings;
+    
+    toast('Partido actualizado con éxito.', 'success');
+    closeEditMatchModal();
+    renderResultsTable(matches);
+    const filterJ = document.getElementById('filter-journey').value;
+    if (filterJ) filterResults();
+  } catch(e) {
+    toast('Error al guardar: ' + e.message, 'error');
+  } finally {
+    const btn = document.querySelector('#edit-match-modal .btn-primary');
+    btn.innerHTML = '<i data-feather="save"></i> Guardar cambios';
+    btn.disabled = false;
+    if (typeof feather !== 'undefined') feather.replace();
+  }
+}
+
+async function updateCompMetadata() {
+  if (!currentDBData) return;
+  const catId = document.getElementById('comp-category').value;
+  const competition = document.getElementById('comp-competition-name').value.trim() || 'Pendiente';
+  const season = document.getElementById('comp-season-name').value.trim() || '2025/26';
+  
+  currentDBData.competition = competition;
+  currentDBData.season = season;
+  
+  try {
+    const btn = document.querySelector('[onclick="updateCompMetadata()"]');
+    btn.innerHTML = '<div class="spinner"></div>';
+    btn.disabled = true;
+    
+    await db.collection('competitions').doc(catId).set(
+      AdminLogic.generateCategoryData(currentDBData.name, competition, season, currentDBData.results || [], currentDBData.standings || [], currentDBData.teams || [])
+    );
+    
+    toast('¡Competición y temporada actualizadas!', 'success');
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  } finally {
+    const btn = document.querySelector('[onclick="updateCompMetadata()"]');
+    btn.innerHTML = '<i data-feather="save"></i> Actualizar competición y temp.';
+    btn.disabled = false;
+    if (typeof feather !== 'undefined') feather.replace();
+  }
+}
+
+function displayCalendarPreview(matches, teams){
+  document.getElementById('preview-area').style.display='block';
+  document.getElementById('match-count').textContent=`${matches.length} partidos`;
+  document.getElementById('parsed-results').innerHTML=`
+    <div style="margin-bottom:1rem;font-size:.82rem;color:rgba(255,255,255,0.6);">
+      <strong>Equipos detectados (${teams.length}):</strong> ${teams.join(', ')}
+    </div>
+    <div style="font-size:.78rem;opacity:.5;margin-bottom:.5rem;">Vista previa de los primeros partidos:</div>
+    ` + matches.slice(0, 8).map(m=>`
+    <div style="background:rgba(255,255,255,0.04);padding:.65rem .875rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.82rem;">
+      <span style="color:rgba(255,255,255,0.5);">J${m.journey} (${m.date})</span>
+      <span style="font-weight:600;color:white;">${m.home}</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--accent-bright);padding:.2rem .6rem;background:rgba(18,85,201,0.2);border-radius:4px;">${m.score}</span>
+      <span style="font-weight:600;color:white;">${m.away}</span>
+    </div>`).join('') + (matches.length > 8 ? `<div style="text-align:center;font-size:.75rem;opacity:.5;padding:.5rem;">... y ${matches.length - 8} partidos más</div>` : '');
+  
+  const initialStandings = AdminLogic.calculateStandings(matches, teams);
+  document.getElementById('standings-summary').textContent=`El calendario completo sustituirá los resultados y registrará ${teams.length} equipos oficiales.`;
+  window.finalData=AdminLogic.generateCategoryData(currentDBData.name, currentDBData.competition, currentDBData.season, matches, initialStandings, teams);
+}
 </script>
 </body>
 </html>

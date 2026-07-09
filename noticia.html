@@ -10,6 +10,7 @@
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
 <link rel="stylesheet" href="styles.css">
 <style>
   body{font-family:'Barlow',sans-serif;}
@@ -49,8 +50,7 @@
   /* Tags */
   .news-tag{display:inline-block;background:#1255c9;color:white;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;padding:.2rem .6rem;border-radius:3px;}
 
-  /* Footer */
-  #footer{background:#020d1a;color:rgba(255,255,255,0.5);}
+
   .footer-inner{max-width:1400px;margin:0 auto;padding:4rem 2rem 2rem;}
   .footer-bottom{padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid rgba(255,255,255,0.05);margin-top:3rem;}
   .footer-copy{font-size:.78rem;color:rgba(255,255,255,0.2);}
@@ -75,20 +75,26 @@
       <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
       <li><a href="noticias.html" class="active" data-i18n="nav.news">Noticias</a></li>
       <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
-      <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
+      <li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li>
       <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
       <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
-            <li class="lang-selector">
+      <li class="lang-selector">
         <button id="lang-toggle" aria-label="Cambiar idioma" aria-haspopup="true">
-          <span id="lang-current">🇪🇸 <span>ES</span></span>
+          <span id="lang-current"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> <span>ES</span></span>
           <span class="chevron">▼</span>
         </button>
         <div id="lang-dropdown" role="menu">
           <button class="lang-option active" data-lang="es" role="menuitem">
-            <span class="flag">🇪🇸</span> Castellano
+            <img src="images/flag-es.svg" alt="Castellano" class="flag-icon"> <span data-i18n="lang.es">Castellano</span>
           </button>
           <button class="lang-option" data-lang="eu" role="menuitem">
-            <span class="flag">🏴️‍☠️</span> Euskera
+            <img src="images/flag-eu.svg" alt="Euskera" class="flag-icon"> <span data-i18n="lang.eu">Euskera</span>
           </button>
         </div>
       </li>
@@ -108,13 +114,19 @@
   <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
     <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
     <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
-    <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
+    <li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li>
     <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
     <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
   </ul>
   <div class="mobile-lang-row">
-    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><span>🇪🇸</span> ES</button>
-    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><span>🏴️‍☠️</span> EU</button>
+    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
+    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
   </div>
   <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);">
     <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
@@ -157,7 +169,7 @@
     <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;padding-bottom:2rem;">
       <div>
         <img src="escudo.png" alt="Logo" style="height:50px;margin-bottom:1rem;opacity:.9;">
-        <p style="font-size:.875rem;line-height:1.7;color:rgba(255,255,255,.35);max-width:240px;">Tolosa CF Eskubaloia. Mas que un club, una familia unida por el balonmano.</p>
+        <p style="font-size:.875rem;line-height:1.7;color:rgba(255,255,255,.35);max-width:240px;" data-i18n="footer.aboutSimple">Tolosa CF Eskubaloia. Mas que un club, una familia unida por el balonmano.</p>
         <div class="social-row">
           <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
           <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
@@ -188,31 +200,9 @@
 <script src="js/i18n.js"></script>
 <script src="js/common.js"></script>
 <script>
-const _fbCfg={apiKey:"AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",authDomain:"tolosa-cf-eskubaloia.firebaseapp.com",projectId:"tolosa-cf-eskubaloia",storageBucket:"tolosa-cf-eskubaloia.firebasestorage.app",messagingSenderId:"243368570014",appId:"1:243368570014:web:181d7f5f5990014fbf9f8f"};
-if(!firebase.apps.length){firebase.initializeApp(_fbCfg);}
-const db=firebase.firestore();
+const db=window.db || firebase.firestore();
 
 document.addEventListener('DOMContentLoaded', async () => {
-  feather.replace();
-
-  // navbar
-  const navbar=document.getElementById('navbar');
-  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',window.scrollY>50),{passive:true});
-
-  // theme
-  function applyTheme(isDark){document.documentElement.classList.toggle('dark',isDark);localStorage.setItem('theme',isDark?'dark':'light');const l=document.getElementById('mobile-theme-label');if(l)l.textContent=isDark?'Modo claro':'Modo oscuro';feather.replace();}
-  document.getElementById('theme-toggle').addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
-  const mt=document.getElementById('mobile-theme-toggle');if(mt)mt.addEventListener('click',()=>applyTheme(!document.documentElement.classList.contains('dark')));
-
-  // mobile menu
-  const overlay=document.getElementById('mobile-menu-overlay'),mob=document.getElementById('mobile-menu'),tog=document.getElementById('menu-toggle');
-  if(tog&&mob&&overlay){
-    function openM(){mob.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';}
-    function closeM(){mob.classList.remove('open');overlay.classList.remove('open');document.body.style.overflow='';}
-    tog.addEventListener('click',openM);document.getElementById('close-menu').addEventListener('click',closeM);overlay.addEventListener('click',closeM);
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM();});
-  }
-
   // load article
   const id = new URLSearchParams(window.location.search).get('id');
   if (!id) { window.location.href='noticias.html'; return; }

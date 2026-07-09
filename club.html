@@ -40,18 +40,24 @@
     <ul class="nav-links">
       <li><a href="index.html" data-i18n="nav.home">Inicio</a></li><li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
       <li><a href="club.html" class="active" aria-current="page" data-i18n="nav.club">El Club</a></li>
-      <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li><li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li><li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+      <li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li><li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li><li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
             <li class="lang-selector">
         <button id="lang-toggle" aria-label="Cambiar idioma" aria-haspopup="true">
-          <span id="lang-current">🇪🇸 <span>ES</span></span>
+          <span id="lang-current"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> <span>ES</span></span>
           <span class="chevron">▼</span>
         </button>
         <div id="lang-dropdown" role="menu">
           <button class="lang-option active" data-lang="es" role="menuitem">
-            <span class="flag">🇪🇸</span> Castellano
+            <img src="images/flag-es.svg" alt="Castellano" class="flag-icon"> <span data-i18n="lang.es">Castellano</span>
           </button>
           <button class="lang-option" data-lang="eu" role="menuitem">
-            <span class="flag">🏴️‍☠️</span> Euskera
+            <img src="images/flag-eu.svg" alt="Euskera" class="flag-icon"> <span data-i18n="lang.eu">Euskera</span>
           </button>
         </div>
       </li>
@@ -70,8 +76,8 @@
   <li><a href="index.html"><span data-i18n="nav.home">Inicio</span> <span aria-hidden="true">→</span></a></li><li><a href="noticias.html"><span data-i18n="nav.news">Noticias</span> <span aria-hidden="true">→</span></a></li><li><a href="club.html"><span data-i18n="nav.club">El Club</span> <span aria-hidden="true">→</span></a></li><li><a href="equipo1.html"><span data-i18n="nav.team">1. Equipo</span> <span aria-hidden="true">→</span></a></li><li><a href="patrocinadores.html"><span data-i18n="nav.sponsors">Patrocinadores</span> <span aria-hidden="true">→</span></a></li><li><a href="contacto.html"><span data-i18n="nav.contact">Contacto</span> <span aria-hidden="true">→</span></a></li>
   </ul>
   <div class="mobile-lang-row">
-    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><span>🇪🇸</span> ES</button>
-    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><span>🏴️‍☠️</span> EU</button>
+    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
+    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
   </div>
   <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);">
     <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;"><i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span></button>
@@ -81,7 +87,7 @@
 <header class="page-header">
   <div class="page-header-grain" aria-hidden="true"></div>
   <div class="page-header-inner">
-    <div class="page-breadcrumb"><a href="index.html" data-i18n="nav.home">Inicio</a><span>→</span><span>El Club</span></div>
+    <div class="page-breadcrumb"><a href="index.html" data-i18n="nav.home">Inicio</a><span>→</span><span style="color:var(--accent-bright);" data-i18n="nav.club">El Club</span></div>
     <h1 class="page-title" data-i18n="club.page.title">Nuestro<br><em>Club</em></h1>
     <div class="page-rule" aria-hidden="true"></div>
     <p class="page-subtitle" data-i18n="club.page.subtitle">Más de un siglo de historia, deporte y valores en el corazón de Tolosa.</p>
@@ -96,9 +102,9 @@
         <h2 class="section-title" style="margin-bottom:1.5rem;" data-i18n="club.title">Formando el <em style="color:var(--accent-bright);font-style:normal;">Futuro</em></h2>
         <div class="divider-line" style="margin-bottom:2rem;"></div>
         <div class="prose-content">
-          <p>La clave de nuestro éxito como club es la formación de nuestras jugadoras y jugadores. No solo nos centramos en el apartado deportivo, sino también en formarlos en base a nuestros valores.</p>
-          <p>Fomentamos el trabajo en equipo, el compañerismo y el respeto mutuo en cada entrenamiento y partido en el polideportivo Usabal.</p>
-          <p>Contamos con más de 10 equipos en todas las categorías, fomentando el balonmano desde la escuela hasta el equipo de 1ª Nacional.</p>
+          <p data-i18n="club.p1">La clave de nuestro éxito como club es la formación de nuestras jugadoras y jugadores. No solo nos centramos en el apartado deportivo, sino también en formarlos en base a nuestros valores.</p>
+          <p data-i18n="club.p2">Fomentamos el trabajo en equipo, el compañerismo y el respeto mutuo en cada entrenamiento y partido en el polideportivo Usabal.</p>
+          <p data-i18n="club.p3">Contamos con más de 10 equipos en todas las categorías, fomentando el balonmano desde la escuela hasta el equipo de 1ª Nacional.</p>
         </div>
       </div>
       <div style="position:relative;">
@@ -107,7 +113,7 @@
         </div>
         <div style="position:absolute;bottom:-1.5rem;left:-1.5rem;background:var(--accent);padding:1.5rem 2rem;border-radius:8px;color:white;box-shadow:0 8px 24px rgba(18,85,201,.4);">
           <div style="font-family:var(--font-display);font-weight:900;font-size:2.5rem;line-height:1;">10+</div>
-          <div style="font-family:var(--font-display);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;opacity:.8;margin-top:.2rem;">Años en 1ª Nacional</div>
+          <div style="font-family:var(--font-display);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;opacity:.8;margin-top:.2rem;" data-i18n="club.yearsInDivision">Años en 1ª Nacional</div>
         </div>
       </div>
     </div>
@@ -142,12 +148,54 @@
 <footer id="footer">
   <div class="footer-inner">
     <div class="footer-grid">
-      <div class="footer-col"><img src="escudo.png" alt="Escudo" class="footer-logo"><p class="footer-about">Tolosa CF Eskubaloia. Más que un club, una familia unida por el balonmano.</p><div class="social-row"><a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a><a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a><a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a></div></div>
-      <div class="footer-col"><h3 class="footer-heading">Secciones</h3><ul class="footer-links"><li><a href="index.html" data-i18n="nav.home">Inicio</a></li><li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li><li><a href="club.html" data-i18n="nav.club">El Club</a></li><li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li></ul></div>
-      <div class="footer-col"><h3 class="footer-heading">El Club</h3><ul class="footer-links"><li><a href="club.html" data-i18n="footer.history">Historia</a></li><li><a href="equipo1.html" data-i18n="footer.firstTeam">Primer equipo</a></li><li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li></ul></div>
-      <div class="footer-col"><h3 class="footer-heading">Contacto</h3><div class="footer-contact-item"><i data-feather="map-pin" style="width:14px;height:14px;"></i><span>Usabal Kiroldegia, 20400 Tolosa</span></div><div class="footer-contact-item"><i data-feather="mail" style="width:14px;height:14px;"></i><a href="mailto:eskubaloia.tolosacf@gmail.com" style="color:inherit;text-decoration:none;">eskubaloia.tolosacf@gmail.com</a></div></div>
+      <div class="footer-col">
+        <img src="escudo.png" alt="Escudo" class="footer-logo">
+        <p class="footer-about" data-i18n="footer.aboutSimple">Tolosa CF Eskubaloia. Más que un club, una familia unida por el balonmano.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
+          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
+          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-heading" data-i18n="footer.sections">Secciones</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+          <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
+          <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+          <li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li>
+          <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-heading" data-i18n="footer.club">El Club</h3>
+        <ul class="footer-links">
+          <li><a href="club.html" data-i18n="footer.history">Historia</a></li>
+          <li><a href="equipo1.html" data-i18n="footer.firstTeam">Primer equipo</a></li>
+          <li><a href="patrocinadores.html" data-i18n="footer.collaborate">Colabora</a></li>
+          <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-heading" data-i18n="footer.contact">Contacto</h3>
+        <div class="footer-contact-item"><i data-feather="map-pin" style="width:14px;height:14px;"></i><span>Usabal Kiroldegia, 20400 Tolosa</span></div>
+        <div class="footer-contact-item"><i data-feather="mail" style="width:14px;height:14px;"></i><a href="mailto:eskubaloia.tolosacf@gmail.com" style="color:inherit;text-decoration:none;">eskubaloia.tolosacf@gmail.com</a></div>
+      </div>
     </div>
-    <div class="footer-bottom"><p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p><nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav></div>
+    <div class="footer-bottom">
+      <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
+      <nav class="footer-legal">
+        <a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a>
+        <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
+        <a href="terminos.html" data-i18n="footer.terms">Términos</a>
+      </nav>
+    </div>
   </div>
 </footer>
 <script src="js/i18n.js"></script>
