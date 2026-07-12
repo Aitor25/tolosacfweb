@@ -248,6 +248,10 @@ html:not(.dark) .lang-option.active{color:var(--accent);background:rgba(18,85,20
 html:not(.dark) .mobile-lang-btn{border-color:rgba(0,0,0,0.12);color:rgba(4,16,31,0.5);}
 html:not(.dark) .mobile-lang-btn:hover,html:not(.dark) .mobile-lang-btn.active{background:rgba(18,85,201,0.1);border-color:var(--accent);color:var(--accent);}
 
+html:not(.dark) #mobile-theme-toggle { color:rgba(4,16,31,0.55) !important; }
+html:not(.dark) #mobile-theme-toggle:hover { color:var(--navy) !important; }
+
+
 #menu-toggle { display:flex;background:none;border:none;cursor:pointer;padding:.4rem;border-radius:6px;transition:background .2s; }
 #menu-toggle:hover { background:rgba(128,128,128,0.1); }
 @media(min-width:1024px) { #menu-toggle { display:none; } }
