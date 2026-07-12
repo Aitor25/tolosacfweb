@@ -1,16 +1,32 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
+<script>
+  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tolosa CF Eskubaloia</title>
+
+  <meta name="description" content="Página oficial del Tolosa CF Eskubaloia. Noticias, plantillas, resultados y toda la actualidad del club.">
+  <meta property="og:title" content="Tolosa CF Eskubaloia">
+  <meta property="og:description" content="Página oficial del Tolosa CF Eskubaloia.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://cdn.lightwidget.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; base-uri 'self'; object-src 'none'; form-action 'self';">
+
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/tailwind.css">
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
+<script src="js/vendor/purify.min.js"></script>
 <link rel="stylesheet" href="styles.css?v=11">
 <style>
   body{font-family:'Barlow',sans-serif;}
@@ -61,9 +77,25 @@
   .social-btn{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);text-decoration:none;transition:all .25s;}
   .social-btn:hover{background:#1255c9;border-color:#1255c9;color:white;transform:translateY(-2px);}
 </style>
-<script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
+<script type="module" src="js/noticia.js?v=1"></script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "Tolosa CF Eskubaloia",
+    "url": "https://[TU_DOMINIO].com",
+    "logo": "https://[TU_DOMINIO].com/escudo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "[TU_EMAIL]",
+      "contactType": "customer service"
+    }
+  }
+  </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
 <nav id="navbar">
   <div class="nav-inner">
@@ -140,7 +172,7 @@
 </div>
 
 <!-- ARTICLE -->
-<main style="padding-top:70px;">
+<main style="padding-top:70px;" id="main-content">
   <!-- Hero image -->
   <div id="article-hero" style="height:55vh;min-height:320px;position:relative;overflow:hidden;background:#04101f;">
     <img id="news-image" src="" alt="" style="width:100%;height:100%;object-fit:cover;filter:brightness(.6) saturate(.7);">
@@ -170,33 +202,50 @@
 
 <footer id="footer">
   <div class="footer-inner">
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;padding-bottom:2rem;">
-      <div>
-        <img src="escudo.png" alt="Logo" style="height:50px;margin-bottom:1rem;opacity:.9;">
-        <p style="font-size:.875rem;line-height:1.7;color:rgba(255,255,255,.35);max-width:240px;" data-i18n="footer.aboutSimple">Tolosa CF Eskubaloia. Mas que un club, una familia unida por el balonmano.</p>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <img src="escudo.png" alt="Escudo" class="footer-logo">
+        <p class="footer-about" data-i18n="footer.about">Más que un club, una familia unida por el balonmano desde hace más de 100 años.</p>
         <div class="social-row">
-          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
-          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
-          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a>
+          <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
+          <a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
+          <a href="https://www.facebook.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="facebook" style="width:15px;height:15px;"></i></a>
         </div>
       </div>
-      <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;" data-i18n="footer.sections">Secciones</div>
-        <div style="display:flex;flex-direction:column;gap:.5rem;font-size:.875rem;">
-          <a href="index.html" data-i18n="nav.home" style="color:rgba(255,255,255,.3);text-decoration:none;">Inicio</a>
-          <a href="noticias.html" data-i18n="nav.news" style="color:rgba(255,255,255,.3);text-decoration:none;">Noticias</a>
-          <a href="club.html" data-i18n="nav.club" style="color:rgba(255,255,255,.3);text-decoration:none;">El Club</a>
-          <a href="equipo1.html" data-i18n="nav.team" style="color:rgba(255,255,255,.3);text-decoration:none;">1. Equipo</a>
-        </div>
+      <div class="footer-col">
+        <h3 class="footer-heading" data-i18n="footer.sections">Secciones</h3>
+        <ul class="footer-links">
+          <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+          <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
+          <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+          <li class="has-dropdown">
+          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+          <div class="nav-dropdown">
+            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+          </div>
+        </li>
+          <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+        </ul>
       </div>
-      <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;" data-i18n="footer.contact">Contacto</div>
-        <div style="font-size:.85rem;color:rgba(255,255,255,.3);line-height:1.8;">Usabal Kiroldegia<br>20400 Tolosa<br>eskubaloia.tolosacf@gmail.com</div>
+      <div class="footer-col">
+        <h3 class="footer-heading" data-i18n="footer.club">El Club</h3>
+        <ul class="footer-links">
+          <li><a href="club.html" data-i18n="footer.history">Historia</a></li>
+          <li><a href="equipo1.html" data-i18n="footer.firstTeam">Primer equipo</a></li>
+          <li><a href="patrocinadores.html" data-i18n="footer.collaborate">Colabora</a></li>
+          <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3 class="footer-heading" data-i18n="footer.contact">Contacto</h3>
+        <div class="footer-contact-item"><i data-feather="map-pin" style="width:14px;height:14px;"></i><span>Usabal Kiroldegia, 20400 Tolosa</span></div>
+        <div class="footer-contact-item"><i data-feather="mail" style="width:14px;height:14px;"></i><a href="mailto:eskubaloia.tolosacf@gmail.com" style="color:inherit;text-decoration:none;">eskubaloia.tolosacf@gmail.com</a></div>
       </div>
     </div>
     <div class="footer-bottom">
       <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Terminos</a></nav>
+      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav>
     </div>
   </div>
 </footer>
@@ -224,7 +273,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (fallback) { renderArticle(fallback); return; }
 
   document.getElementById('news-title').textContent = 'Noticia no encontrada';
-  document.getElementById('news-body').innerHTML = '<p>Lo sentimos, no hemos podido encontrar esta noticia.</p>';
+  document.getElementById('news-body').textContent = 'Lo sentimos, no hemos podido encontrar esta noticia.';
 });
 
 function renderArticle(data) {
@@ -237,9 +286,22 @@ function renderArticle(data) {
   document.title = title + ' - TOLOSA CF ESKUBALOIA';
   document.getElementById('news-title').textContent = title;
   document.getElementById('news-date').textContent = date;
-  document.getElementById('news-tag').innerHTML = `<span class="news-tag">${tag}</span>`;
+  
+  const tagContainer = document.getElementById('news-tag');
+  tagContainer.textContent = '';
+  const tagSpan = document.createElement('span');
+  tagSpan.className = 'news-tag';
+  tagSpan.textContent = tag;
+  tagContainer.appendChild(tagSpan);
+  
   if (image) document.getElementById('news-image').src = image;
-  document.getElementById('news-body').innerHTML = content || '<p>Sin contenido disponible.</p>';
+  
+  const safeContent = DOMPurify.sanitize(content || '<p>Sin contenido disponible.</p>', {
+    ALLOWED_TAGS: ['b','i','em','strong','a','p','br','ul','ol','li'],
+    ALLOWED_ATTR: ['href','target','rel']
+  });
+  document.getElementById('news-body').innerHTML = safeContent;
+  
   feather.replace();
 }
 </script>

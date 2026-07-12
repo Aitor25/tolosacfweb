@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
+<script>
+  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://cdn.lightwidget.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; base-uri 'self'; object-src 'none'; form-action 'self';">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tolosa CF Eskubaloia — Plantilla</title>
 <meta name="description" content="Conoce la plantilla del primer equipo del Tolosa CF Eskubaloia. Jugadores, dorsales y posiciones.">
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/tailwind.css">
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -140,8 +148,24 @@
   html.dark .staff-role{background:rgba(18,85,201,0.15);color:var(--accent-bright);border-color:rgba(18,85,201,0.3);}
 </style>
 <script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "Tolosa CF Eskubaloia",
+    "url": "https://[TU_DOMINIO].com",
+    "logo": "https://[TU_DOMINIO].com/escudo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "[TU_EMAIL]",
+      "contactType": "customer service"
+    }
+  }
+  </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
 <nav id="navbar" role="navigation">
   <div class="nav-inner">
@@ -246,7 +270,7 @@
     <div class="footer-grid">
       <div class="footer-col">
         <img src="escudo.png" alt="Escudo" class="footer-logo">
-        <p class="footer-about" data-i18n="footer.aboutSimple">Tolosa CF Eskubaloia. Mas que un club, una familia unida por el balonmano.</p>
+        <p class="footer-about" data-i18n="footer.about">Más que un club, una familia unida por el balonmano desde hace más de 100 años.</p>
         <div class="social-row">
           <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
           <a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
@@ -286,142 +310,13 @@
     </div>
     <div class="footer-bottom">
       <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal">
-        <a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a>
-        <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
-        <a href="terminos.html" data-i18n="footer.terms">Terminos</a>
-      </nav>
+      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav>
     </div>
   </div>
 </footer>
 
 <script src="js/i18n.js"></script>
 <script src="js/common.js"></script>
-<script>
-const db = window.db || firebase.firestore();
-
-function getInitials(name) {
-  if (!name) return '?';
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-}
-
-function renderPlayerCard(player) {
-  const dorsal   = (player.number != null && player.number !== '') ? player.number : '';
-  const name     = player.name || 'Sin nombre';
-  const position = player.position || '';
-  const photo    = player.photo || '';
-  const initials = getInitials(player.name);
-
-  const safeInitials = initials.replace(/'/g, "\\'");
-  const photoHtml = photo
-    ? '<img src="' + photo + '" alt="' + name.replace(/"/g,'&quot;') + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<div class=\\\'player-photo-placeholder\\\'>' + safeInitials + '</div>\'">'
-    : '<div class="player-photo-placeholder">' + initials + '</div>';
-
-  const dorsalHtml = dorsal !== '' ? '<div class="player-dorsal">' + dorsal + '</div>' : '';
-  const positionHtml = position ? '<span class="player-position">' + position + '</span>' : '';
-
-  return '<div class="player-card reveal">' +
-    dorsalHtml +
-    '<div class="player-photo-wrap">' + photoHtml + '</div>' +
-    '<div class="player-info">' +
-      '<div class="player-name">' + name + '</div>' +
-      positionHtml +
-    '</div>' +
-  '</div>';
-}
-
-async function loadSquad() {
-  const loadingEl = document.getElementById('squad-loading');
-  const gridEl    = document.getElementById('squad-grid');
-  const emptyEl   = document.getElementById('squad-empty');
-
-  try {
-    const snap = await db.collection('players').orderBy('number').get();
-
-    const players = snap.docs
-      .map(function(doc) { return Object.assign({ id: doc.id }, doc.data()); })
-      .filter(function(p) {
-        if (p.team !== 'senior-masculino') return false;
-        if (p.active !== undefined) return p.active === true;
-        return true;
-      });
-
-    loadingEl.style.display = 'none';
-
-    if (!players.length) {
-      emptyEl.style.display = 'block';
-      feather.replace();
-      if (typeof applyTranslations === 'function') applyTranslations();
-      return;
-    }
-
-    gridEl.innerHTML = players.map(renderPlayerCard).join('');
-    gridEl.style.display = 'grid';
-    feather.replace();
-
-    requestAnimationFrame(function() {
-      var cards = gridEl.querySelectorAll('.reveal');
-      cards.forEach(function(el, i) {
-        setTimeout(function() { el.classList.add('visible'); }, i * 50);
-      });
-    });
-
-    if (typeof applyTranslations === 'function') applyTranslations();
-
-  } catch(err) {
-    loadingEl.style.display = 'none';
-    gridEl.style.display = 'grid';
-    gridEl.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#f87171;"><p style="font-family:\'Barlow Condensed\',sans-serif;font-weight:900;font-size:1rem;text-transform:uppercase;">Error al cargar la plantilla: ' + err.message + '</p></div>';
-    console.error('[plantilla.html] Error cargando jugadores:', err);
-  }
-}
-
-function renderStaffCard(member) {
-  const name     = member.name || 'Sin nombre';
-  const role     = member.role || '';
-  const photo    = member.photo || '';
-  const initials = getInitials(member.name);
-  const safeInit = initials.replace(/&/g,'&amp;');
-  const photoHtml = photo
-    ? '<img src="' + photo + '" alt="' + name.replace(/"/g,'&quot;') + '" loading="lazy" onerror="this.style.display=\'none\'">'
-    : '<div class="staff-photo-placeholder">' + safeInit + '</div>';
-  const roleHtml = role ? '<span class="staff-role">' + role + '</span>' : '';
-  return '<div class="staff-card reveal">' +
-    '<div class="staff-photo-wrap">' + photoHtml + '</div>' +
-    '<div class="staff-info"><div class="staff-name">' + name + '</div>' + roleHtml + '</div>' +
-  '</div>';
-}
-
-async function loadStaff() {
-  const staffSection = document.getElementById('staff-section');
-  const staffGrid    = document.getElementById('staff-grid');
-  try {
-    const snap = await db.collection('staff').orderBy('order').get();
-    const members = snap.docs
-      .map(function(doc) { return Object.assign({ id: doc.id }, doc.data()); })
-      .filter(function(m) { return !m.team || m.team === 'senior-masculino'; });
-    if (!members.length) return;
-    staffGrid.innerHTML = members.map(renderStaffCard).join('');
-    staffSection.style.display = 'block';
-    feather.replace();
-    requestAnimationFrame(function() {
-      staffGrid.querySelectorAll('.reveal').forEach(function(el, i) {
-        setTimeout(function() { el.classList.add('visible'); }, i * 60);
-      });
-    });
-    if (typeof applyTranslations === 'function') applyTranslations();
-  } catch(err) {
-    console.warn('[plantilla.html] Staff no cargado:', err.message);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  feather.replace();
-  loadSquad();
-  loadStaff();
-});
-</script>
+<script src="js/plantilla.js?v=1"></script>
 </body>
 </html>

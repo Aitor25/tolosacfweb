@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
+<script>
+  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tolosa CF Eskubaloia</title>
+
+  <meta name="description" content="Página oficial del Tolosa CF Eskubaloia. Noticias, plantillas, resultados y toda la actualidad del club.">
+  <meta property="og:title" content="Tolosa CF Eskubaloia">
+  <meta property="og:description" content="Página oficial del Tolosa CF Eskubaloia.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://cdn.lightwidget.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; base-uri 'self'; object-src 'none'; form-action 'self';">
+
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/tailwind.css">
 <script src="https://unpkg.com/feather-icons"></script>
 <link rel="stylesheet" href="styles.css?v=11">
 <style>
@@ -32,8 +47,24 @@
   .btn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 15px rgba(18,85,201,.4);}
 </style>
 <script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "Tolosa CF Eskubaloia",
+    "url": "https://[TU_DOMINIO].com",
+    "logo": "https://[TU_DOMINIO].com/escudo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "[TU_EMAIL]",
+      "contactType": "customer service"
+    }
+  }
+  </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 <nav id="navbar" role="navigation">
   <div class="nav-inner">
     <a href="index.html" class="nav-brand"><img src="escudo.png" alt="Escudo" width="44" height="44"><span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span></a>
@@ -140,7 +171,7 @@
     <div class="footer-grid">
       <div class="footer-col">
         <img src="escudo.png" alt="Escudo" class="footer-logo">
-        <p class="footer-about" data-i18n="footer.aboutShort">Tolosa CF Eskubaloia. Más que un club.</p>
+        <p class="footer-about" data-i18n="footer.about">Más que un club, una familia unida por el balonmano desde hace más de 100 años.</p>
         <div class="social-row">
           <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
           <a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
@@ -180,11 +211,7 @@
     </div>
     <div class="footer-bottom">
       <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal">
-        <a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a>
-        <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
-        <a href="terminos.html" data-i18n="footer.terms">Términos</a>
-      </nav>
+      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav>
     </div>
   </div>
 </footer>
@@ -194,24 +221,6 @@
 <script src="js/firebase-config.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/common.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  feather.replace();
-  try {
-    const db = window.db;
-    if (db) {
-      const snap = await db.collection('sponsors').get();
-      if (!snap.empty) {
-        const grid = document.getElementById('sponsors-grid');
-        grid.innerHTML = snap.docs.map((doc,i) => {
-          const s = doc.data();
-          return `<div class="sponsor-card reveal delay-${Math.min(i+1,5)}">${s.logo ? `<img src="${s.logo}" alt="${s.name}">` : `<span class="sponsor-name">${s.name}</span>`}</div>`;
-        }).join('');
-        feather.replace();
-      }
-    }
-  } catch(e) { console.warn('Sponsors:', e.message); }
-});
-</script>
+<script src="js/patrocinadores.js?v=1"></script>
 </body>
 </html>

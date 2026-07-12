@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
+<script>
+  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://cdn.lightwidget.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; base-uri 'self'; object-src 'none'; form-action 'self';">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tolosa CF Eskubaloia</title>
 <meta name="description" content="Sitio oficial del Tolosa CF Eskubaloia. Noticias, resultados y toda la actualidad del balonmano vasco.">
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/tailwind.css">
 <script src="https://unpkg.com/feather-icons"></script>
 <link rel="stylesheet" href="styles.css?v=11">
 <style>
@@ -154,8 +162,24 @@
   @media(max-width:768px){.section{padding:3.5rem 1.25rem;}.hero-content{padding:0 1.25rem 3.5rem;}.stat-item{padding:2.5rem 1rem;}}
 </style>
 <script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "Tolosa CF Eskubaloia",
+    "url": "https://[TU_DOMINIO].com",
+    "logo": "https://[TU_DOMINIO].com/escudo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "[TU_EMAIL]",
+      "contactType": "customer service"
+    }
+  }
+  </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
 <!-- NAVBAR -->
 <nav id="navbar" role="navigation">
@@ -407,11 +431,7 @@
     </div>
     <div class="footer-bottom">
       <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav style="display:flex;gap:1.5rem;">
-        <a href="privacidad.html" style="font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;" data-i18n="footer.privacy">Privacidad</a>
-        <a href="cookies.html" style="font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;" data-i18n="footer.cookies">Cookies</a>
-        <a href="terminos.html" style="font-size:.78rem;color:rgba(255,255,255,0.2);text-decoration:none;" data-i18n="footer.terms">Términos</a>
-      </nav>
+      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav>
     </div>
   </div>
 </footer>

@@ -1,12 +1,27 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
+<script>
+  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Noticias - TOLOSA CF ESKUBALOIA</title>
+
+  <meta name="description" content="Página oficial del Noticias - TOLOSA CF ESKUBALOIA. Noticias, plantillas, resultados y toda la actualidad del club.">
+  <meta property="og:title" content="Noticias - TOLOSA CF ESKUBALOIA">
+  <meta property="og:description" content="Página oficial del Tolosa CF Eskubaloia.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://cdn.lightwidget.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; base-uri 'self'; object-src 'none'; form-action 'self';">
+
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="css/tailwind.css">
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -34,8 +49,24 @@
   @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 <script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    "name": "Tolosa CF Eskubaloia",
+    "url": "https://[TU_DOMINIO].com",
+    "logo": "https://[TU_DOMINIO].com/escudo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "[TU_EMAIL]",
+      "contactType": "customer service"
+    }
+  }
+  </script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
 <nav id="navbar" role="navigation">
   <div class="nav-inner">
@@ -141,7 +172,7 @@
     <div class="footer-grid">
       <div class="footer-col">
         <img src="escudo.png" alt="Escudo" class="footer-logo">
-        <p class="footer-about" data-i18n="footer.aboutSimple">Tolosa CF Eskubaloia. Más que un club, una familia unida por el balonmano.</p>
+        <p class="footer-about" data-i18n="footer.about">Más que un club, una familia unida por el balonmano desde hace más de 100 años.</p>
         <div class="social-row">
           <a href="https://www.instagram.com/tolosacfeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="instagram" style="width:15px;height:15px;"></i></a>
           <a href="https://twitter.com/tolosaeskubaloia" target="_blank" rel="noopener" class="social-btn"><i data-feather="twitter" style="width:15px;height:15px;"></i></a>
@@ -181,158 +212,13 @@
     </div>
     <div class="footer-bottom">
       <p class="footer-copy" data-i18n="footer.copy">&copy; 2025 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal">
-        <a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a>
-        <a href="cookies.html" data-i18n="footer.cookies">Cookies</a>
-        <a href="terminos.html" data-i18n="footer.terms">Términos</a>
-      </nav>
+      <nav class="footer-legal"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav>
     </div>
   </div>
 </footer>
 
 <!-- Firebase + carga de noticias completamente autónoma en esta página -->
-<script>
-(function() {
-  // Inicializar Firebase
-  const cfg = {
-    apiKey: "AIzaSyB2mYl__UKQCc90tSEW2dGQ_6D60bO4xuM",
-    authDomain: "tolosa-cf-eskubaloia.firebaseapp.com",
-    projectId: "tolosa-cf-eskubaloia",
-    storageBucket: "tolosa-cf-eskubaloia.firebasestorage.app",
-    messagingSenderId: "243368570014",
-    appId: "1:243368570014:web:181d7f5f5990014fbf9f8f"
-  };
-  if (!firebase.apps.length) firebase.initializeApp(cfg);
-  const db = firebase.firestore();
-  window.db = db; // exponer para debug
-
-  const PAGE_SIZE = 9;
-  let lastDoc = null;
-  let allLoaded = false;
-
-  // ── Construir card HTML ──
-  function buildCard(id, data, featured) {
-    const title   = data.title   || data.titulo   || 'Sin titulo';
-    const date    = data.date    || data.fecha    || '';
-    const tag     = data.tag     || data.categoria || 'Club';
-    const image   = data.image   || data.imagen   || '';
-    return `<a class="news-card${featured ? ' featured' : ''}" href="noticia.html?id=${encodeURIComponent(id)}">
-      ${image
-        ? `<img class="news-card-img" src="${image}" alt="${title}" loading="lazy">`
-        : '<div class="news-card-img" style="background:rgba(18,85,201,0.15);"></div>'
-      }
-      <div class="news-card-overlay"></div>
-      <div class="news-card-body">
-        <span class="news-card-cat">${tag}</span>
-        <h3 class="news-card-title">${title}</h3>
-        <div class="news-card-date">${date}</div>
-      </div>
-    </a>`;
-  }
-
-  // ── Ordenar docs en JS (por timestamp o date) ──
-  function sortDocs(docs) {
-    return docs.slice().sort((a, b) => {
-      const da = a.data(), db_ = b.data();
-      const ta = da.timestamp ? da.timestamp.seconds : 0;
-      const tb = db_.timestamp ? db_.timestamp.seconds : 0;
-      if (ta !== tb) return tb - ta;
-      // fallback: comparar string de fecha
-      return (db_.date || '').localeCompare(da.date || '');
-    });
-  }
-
-  // ── Cargar noticias ──
-  async function loadNoticias(append) {
-    const container = document.getElementById('news-container');
-    const btn = document.getElementById('load-more-btn');
-    if (!container) return;
-
-    if (!append) {
-      lastDoc = null;
-      allLoaded = false;
-      container.innerHTML = `<div style="grid-column:1/-1;padding:3rem;text-align:center;">
-        <div style="width:28px;height:28px;border:3px solid rgba(18,85,201,.15);border-top-color:#1e6ef5;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;"></div>
-      </div>`;
-    }
-    if (btn) btn.style.display = 'none';
-
-    try {
-      let docs = [];
-
-      // Intento 1: con orderBy timestamp
-      try {
-        let q = db.collection('news').orderBy('timestamp', 'desc').limit(PAGE_SIZE);
-        if (append && lastDoc) q = q.startAfter(lastDoc);
-        const snap = await q.get();
-        if (!snap.empty) {
-          docs = snap.docs;
-          lastDoc = snap.docs[snap.docs.length - 1];
-        }
-      } catch (e1) {
-        console.warn('[Noticias] orderBy falló, leyendo sin orden:', e1.message);
-      }
-
-      // Intento 2: sin orderBy si el 1 devolvió vacío
-      if (!docs.length) {
-        const snap2 = await db.collection('news').limit(50).get();
-        if (!snap2.empty) {
-          docs = sortDocs(snap2.docs);
-          allLoaded = true; // cargamos todo de golpe
-        }
-      }
-
-      if (!docs.length) {
-        if (!append) {
-          container.innerHTML = `<div style="grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;">
-            <p style="font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;">Aún no hay noticias publicadas</p>
-          </div>`;
-        }
-        return;
-      }
-
-      // Renderizar
-      const html = docs.map((doc, i) => buildCard(doc.id, doc.data(), i === 0 && !append)).join('');
-      if (append) {
-        container.insertAdjacentHTML('beforeend', html);
-      } else {
-        container.innerHTML = html;
-      }
-
-      if (typeof feather !== 'undefined') feather.replace();
-
-      // Mostrar botón cargar más si puede haber más
-      if (!allLoaded && docs.length >= PAGE_SIZE) {
-        if (btn) { btn.style.display = 'inline-flex'; btn.disabled = false; }
-      }
-
-    } catch (e) {
-      console.error('[Noticias] Error:', e.code, e.message);
-      if (!append) {
-        container.innerHTML = `<div style="grid-column:1/-1;padding:3rem;text-align:center;">
-          <p style="color:#ef4444;font-size:.9rem;">Error al cargar noticias: ${e.message}</p>
-        </div>`;
-      }
-    }
-  }
-
-  // Exponer función para el botón "cargar más"
-  window.loadMoreNoticias = function() {
-    const btn = document.getElementById('load-more-btn');
-    if (btn) btn.disabled = true;
-    loadNoticias(true).then(() => {
-      if (typeof feather !== 'undefined') feather.replace();
-    });
-  };
-
-  // Arrancar cuando el DOM esté listo
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => loadNoticias(false));
-  } else {
-    loadNoticias(false);
-  }
-})();
-</script>
+<script src="js/noticias.js?v=1"></script>
 
 <!-- Botón cargar más necesita el onclick actualizado -->
 <script>
