@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/feather-icons"></script>
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=5">
 <style>
   body{font-family:var(--font-body);overflow-x:hidden}
   .nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem}
@@ -75,14 +75,37 @@
 </nav>
 <div id="mobile-menu-overlay"></div>
 <div id="mobile-menu">
-  <div style="display:flex;justify-content:space-between;align-items:center;"><img src="escudo.png" alt="Logo" style="height:42px;"><button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;"><i data-feather="x" style="width:26px;height:26px;"></i></button></div>
-  <ul class="mobile-nav-links">
-  <li><a href="index.html"><span data-i18n="nav.home">Inicio</span> <span aria-hidden="true">→</span></a></li><li><a href="noticias.html"><span data-i18n="nav.news">Noticias</span> <span aria-hidden="true">→</span></a></li><li><a href="club.html"><span data-i18n="nav.club">El Club</span> <span aria-hidden="true">→</span></a></li><li class="mobile-has-sub"><button class="mobile-sub-toggle" onclick="toggleMobileSub(this)" aria-expanded="false"><span data-i18n="nav.team">1. Equipo</span><span class="mobile-sub-arrow">›</span></button><ul class="mobile-sub-links"><li><a href="equipo1.html" data-i18n="team.subnav.season">Temporada</a></li><li><a href="plantilla.html" data-i18n="team.subnav.squad">Plantilla</a></li></ul></li><li><a href="patrocinadores.html"><span data-i18n="nav.sponsors">Patrocinadores</span> <span aria-hidden="true">→</span></a></li><li><a href="contacto.html"><span data-i18n="nav.contact">Contacto</span> <span aria-hidden="true">→</span></a></li></ul>
-  <div class="mobile-lang-row">
-    <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
-    <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <img src="escudo.png" alt="Tolosa CF" style="height:42px;">
+    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;padding:.4rem;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
   </div>
-  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);"><button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:0.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;"><i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span></button></div>
+  <ul class="mobile-nav-links">
+    <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
+    <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
+    <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+    <li class="mobile-has-sub">
+      <button class="mobile-sub-toggle" onclick="toggleMobileSub(this)" aria-expanded="false">
+        <span data-i18n="nav.team">1. Equipo</span>
+        <span class="mobile-sub-arrow">›</span>
+      </button>
+      <ul class="mobile-sub-links">
+        <li><a href="equipo1.html" data-i18n="team.subnav.season">Temporada</a></li>
+        <li><a href="plantilla.html" data-i18n="team.subnav.squad">Plantilla</a></li>
+      </ul>
+    </li>
+    <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+    <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+  </ul>
+  <div style="margin-top:auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:1rem;">
+    <!-- Lang switcher móvil -->
+    <div class="mobile-lang-row">
+      <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
+      <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
+    </div>
+    <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
+      <i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span>
+    </button>
+  </div>
 </div>
 
 <header class="page-header">
