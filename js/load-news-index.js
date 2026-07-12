@@ -39,7 +39,10 @@
     var grid = document.getElementById('news-grid');
     if (!grid) return;
     if (!docs.length) {
-      grid.innerHTML = '<div class="news-placeholder featured" style="grid-column:1/-1;"><span class="news-placeholder-text">Aun no hay noticias</span></div>';
+      var currentLang = typeof getLang === 'function' ? getLang() : 'es';
+      var t = window.TRANSLATIONS && window.TRANSLATIONS[currentLang];
+      var emptyMsg = t && t['news.empty'] ? t['news.empty'] : 'Aún no hay noticias';
+      grid.innerHTML = '<div class="news-placeholder featured" style="grid-column:1/-1;"><span class="news-placeholder-text">' + emptyMsg + '</span></div>';
       return;
     }
     grid.innerHTML = docs.map(function(doc, i) {
@@ -76,9 +79,113 @@
       });
   }
 
+  function loadFixtureBanner() {
+    var db = window.db;
+    if (!db) { console.warn('[load-news-index] window.db no disponible'); return; }
+    
+    db.collection('competitions').doc('senior-masculino').get()
+      .then(function(doc) {
+        if (!doc.exists) return;
+        var data = doc.data();
+        var results = data.results || [];
+        
+        // Filtrar partidos del Tolosa CF
+        var tolosaMatches = results.filter(function(m) {
+          var homeLower = (m.home || '').toLowerCase();
+          var awayLower = (m.away || '').toLowerCase();
+          return homeLower.indexOf('tolosa') > -1 || awayLower.indexOf('tolosa') > -1;
+        });
+        
+        // Ordenar partidos por jornada cronológicamente
+        tolosaMatches.sort(function(a, b) {
+          return (a.journey || 1) - (b.journey || 1);
+        });
+        
+        // Próximo partido (primer partido donde el score es 'vs' o no numérico o vacío)
+        var nextMatch = null;
+        for (var i = 0; i < tolosaMatches.length; i++) {
+          var m = tolosaMatches[i];
+          var score = m.score || '';
+          var parts = score.split('-').map(function(s) { return parseInt(s.trim(), 10); });
+          var isPlayed = parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1]);
+          if (!isPlayed) {
+            nextMatch = m;
+            break;
+          }
+        }
+        
+        // Último resultado (último partido donde el score es numérico)
+        var lastResult = null;
+        for (var j = tolosaMatches.length - 1; j >= 0; j--) {
+          var m2 = tolosaMatches[j];
+          var score2 = m2.score || '';
+          var parts2 = score2.split('-').map(function(s) { return parseInt(s.trim(), 10); });
+          var isPlayed2 = parts2.length === 2 && !isNaN(parts2[0]) && !isNaN(parts2[1]);
+          if (isPlayed2) {
+            lastResult = m2;
+            break;
+          }
+        }
+        
+        // Actualizar UI del Próximo Partido
+        var rivalEl = document.getElementById('fixture-rival');
+        var dateEl  = document.getElementById('fixture-date');
+        var venueEl = document.getElementById('fixture-venue');
+        
+        var currentLang = typeof getLang === 'function' ? getLang() : 'es';
+        var t = window.TRANSLATIONS && window.TRANSLATIONS[currentLang];
+
+        if (nextMatch) {
+          rivalEl.textContent = nextMatch.home + ' vs ' + nextMatch.away;
+          var dayOfWeek = typeof getDayOfWeekName === 'function' ? getDayOfWeekName(nextMatch.date, currentLang) : '';
+          var dateText = dayOfWeek ? dayOfWeek + ', ' + (nextMatch.date || '') : (nextMatch.date || 'Pendiente');
+          if (nextMatch.time && nextMatch.time !== 'Pendiente' && nextMatch.time !== '0:00') {
+            dateText += ' • ' + nextMatch.time;
+          }
+          dateEl.textContent = dateText;
+          venueEl.textContent = nextMatch.venue || 'Usabal Kiroldegia';
+        } else {
+          rivalEl.textContent = t && t['fixture.noMatches'] ? t['fixture.noMatches'] : 'Sin partidos programados';
+          dateEl.textContent = '—';
+          venueEl.textContent = '—';
+        }
+        
+        // Actualizar UI del Último Resultado
+        var teamsEl  = document.getElementById('last-result-teams');
+        var scoreEl  = document.getElementById('last-result-score');
+        var journeyEl = document.getElementById('last-result-journey');
+        
+        if (lastResult) {
+          teamsEl.textContent = lastResult.home + ' vs ' + lastResult.away;
+          scoreEl.textContent = lastResult.score || '—';
+          var jText = t && t['fixture.journey'] ? t['fixture.journey'] : 'Jornada';
+          journeyEl.textContent = jText + ' ' + (lastResult.journey || 1);
+        } else {
+          teamsEl.textContent = t && t['fixture.noResults'] ? t['fixture.noResults'] : 'Sin resultados registrados';
+          scoreEl.textContent = '—';
+          journeyEl.textContent = '—';
+        }
+        
+        // Reprocesar iconos feather por si acaso
+        if (typeof feather !== 'undefined') feather.replace();
+        
+        // Aplicar traducciones para los nuevos literales dinámicos
+        if (typeof applyTranslations === 'function') {
+          applyTranslations();
+        }
+      })
+      .catch(function(err) {
+        console.error('[load-news-index] Error al cargar banner:', err.message);
+      });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadNews);
+    document.addEventListener('DOMContentLoaded', function() {
+      loadNews();
+      loadFixtureBanner();
+    });
   } else {
     loadNews();
+    loadFixtureBanner();
   }
 })();

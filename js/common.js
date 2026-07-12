@@ -1,25 +1,43 @@
-/**
- * TOLOSA CF ESKUBALOIA - Common JS
- * Navbar, theme, mobile menu, scroll reveal, i18n init.
- */
+// Inject theme icon CSS rules
+(function() {
+  const style = document.createElement('style');
+  style.textContent = `
+    html.dark #theme-toggle .sun-icon,
+    html.dark #mobile-theme-toggle .sun-icon { display: none !important; }
+    html.dark #theme-toggle .moon-icon,
+    html.dark #mobile-theme-toggle .moon-icon { display: inline-block !important; }
+    
+    html:not(.dark) #theme-toggle .moon-icon,
+    html:not(.dark) #mobile-theme-toggle .moon-icon { display: none !important; }
+    html:not(.dark) #theme-toggle .sun-icon,
+    html:not(.dark) #mobile-theme-toggle .sun-icon { display: inline-block !important; }
+  `;
+  document.head.appendChild(style);
+})();
+
+function getDayOfWeekName(dateStr, lang='es') {
+  if (!dateStr || dateStr.toLowerCase().includes('pendiente')) {
+    return '';
+  }
+  const parts = dateStr.split(/[-/]/);
+  if (parts.length !== 3) return '';
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1;
+  const year = parseInt(parts[2], 10);
+  
+  const date = new Date(year, month, day);
+  if (isNaN(date.getTime())) return '';
+  
+  const daysEs = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const daysEu = ['Igandea', 'Astelehena', 'Asteartea', 'Asteazkena', 'Osteguna', 'Ostirala', 'Larunbata'];
+  
+  return lang === 'eu' ? daysEu[date.getDay()] : daysEs[date.getDay()];
+}
+window.getDayOfWeekName = getDayOfWeekName;
 
 function _applyTheme(isDark) {
   document.documentElement.classList.toggle('dark', isDark);
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  const toggleBtns = document.querySelectorAll('#theme-toggle, #mobile-theme-toggle');
-  toggleBtns.forEach(btn => {
-    const icon = btn.querySelector('i[data-feather]') || btn.querySelector('svg');
-    if (icon) {
-      if (icon.tagName === 'svg') {
-        const newIcon = document.createElement('i');
-        newIcon.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-        newIcon.style.cssText = 'width:15px;height:15px;';
-        icon.replaceWith(newIcon);
-      } else {
-        icon.setAttribute('data-feather', isDark ? 'sun' : 'moon');
-      }
-    }
-  });
   const label = document.getElementById('mobile-theme-label');
   if (label) {
     const lang = typeof getLang === 'function' ? getLang() : 'es';
@@ -28,10 +46,46 @@ function _applyTheme(isDark) {
       ? (t && t['nav.lightMode'] || 'Modo claro')
       : (t && t['nav.darkMode']  || 'Modo oscuro');
   }
-  if (typeof feather !== 'undefined') feather.replace();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Inject sun and moon icons dynamically to avoid DOM reconstruction on theme toggle
+  const themeBtns = document.querySelectorAll('#theme-toggle, #mobile-theme-toggle');
+  themeBtns.forEach(btn => {
+    const isMobile = btn.id === 'mobile-theme-toggle';
+    const size = isMobile ? 17 : 15;
+    
+    if (!btn.querySelector('.sun-icon')) {
+      const sun = document.createElement('i');
+      sun.setAttribute('data-feather', 'sun');
+      sun.className = 'sun-icon';
+      sun.style.cssText = `width:${size}px;height:${size}px;`;
+      
+      const moon = document.createElement('i');
+      moon.setAttribute('data-feather', 'moon');
+      moon.className = 'moon-icon';
+      moon.style.cssText = `width:${size}px;height:${size}px;`;
+      
+      if (isMobile) {
+        const originalLabel = btn.querySelector('#mobile-theme-label') || btn.querySelector('span');
+        const labelText = originalLabel ? originalLabel.textContent : 'Modo claro';
+        
+        btn.innerHTML = '';
+        btn.appendChild(sun);
+        btn.appendChild(moon);
+        
+        const label = document.createElement('span');
+        label.id = 'mobile-theme-label';
+        label.textContent = labelText;
+        btn.appendChild(label);
+      } else {
+        btn.innerHTML = '';
+        btn.appendChild(sun);
+        btn.appendChild(moon);
+      }
+    }
+  });
+
   if (typeof feather !== 'undefined') feather.replace();
 
   // ── i18n: inicializar idioma guardado ──
@@ -51,10 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Theme toggles ──
   const isDarkNow = document.documentElement.classList.contains('dark');
-  document.querySelectorAll('#theme-toggle i[data-feather], #mobile-theme-toggle i[data-feather]').forEach(el => {
-    el.setAttribute('data-feather', isDarkNow ? 'sun' : 'moon');
-  });
-  if (typeof feather !== 'undefined') feather.replace();
+  _applyTheme(isDarkNow);
 
   const themeBtn = document.getElementById('theme-toggle');
   if (themeBtn) {

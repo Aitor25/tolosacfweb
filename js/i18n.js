@@ -102,8 +102,11 @@ window.TRANSLATIONS = {
     'club.page.subtitle':'Más de un siglo de historia, deporte y valores en el corazón de Tolosa.',
     'team.page.eyebrow': 'Competición',
     'team.page.title':   'Primer Equipo',
+    'competition.name':  '1ª Nacional, Grupo C',
     'team.tab.standings': 'Clasificación',
     'team.tab.results':   'Resultados',
+    'team.tab.calendar':  'Calendario',
+    'fixture.lastResult': 'Último resultado',
     'contact.form.heading': 'Envíanos un mensaje',
     'contact.form.namePlaceholder': 'Tu nombre',
     'contact.form.emailPlaceholder': 'tu@email.com',
@@ -139,6 +142,41 @@ window.TRANSLATIONS = {
     'contact.form.subject':'Asunto',
     'contact.form.message':'Mensaje',
     'contact.form.send': 'Enviar mensaje',
+    'lang.es': 'Castellano',
+    'lang.eu': 'Euskera',
+    'footer.aboutSimple': 'Tolosa CF Eskubaloia. Más que un club, una familia unida por el balonmano.',
+    'footer.aboutShort': 'Tolosa CF Eskubaloia. Más que un club.',
+    'sponsors.mainTitle': 'Colaboradores principales',
+    'club.yearsInDivision': 'Años en 1ª Nacional',
+    'fixture.noMatches': 'Sin partidos programados',
+    'fixture.noResults': 'Sin resultados registrados',
+    'fixture.journey': 'Jornada',
+    'news.empty': 'Aún no hay noticias publicadas',
+    'team.tab.calendar.empty': 'Sin partidos en el calendario',
+    'team.tab.results.empty': 'Sin resultados disponibles',
+    'team.tab.standings.empty': 'Sin clasificación disponible',
+    'contact.form.success': '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.',
+    'contact.form.error': 'Por favor, rellena todos los campos correctamente.',
+    'contact.form.sending': 'Enviando...',
+    'team.noDataTitle': 'Sin datos disponibles todavía',
+    'team.noDataText': 'El administrador aún no ha subido datos para esta categoría.',
+
+    // Sub-navegación 1. Equipo
+    'team.subnav.season': 'Temporada',
+    'team.subnav.squad':  'Plantilla',
+
+    // Plantilla page
+    'squad.page.eyebrow':  'Primer Equipo',
+    'squad.page.title':    'Plantilla',
+    'squad.page.subtitle': 'Conoce a los jugadores que componen el primer equipo esta temporada.',
+    'squad.loading':       'Cargando plantilla...',
+    'squad.empty':         'No hay jugadores registrados en la plantilla.',
+    'squad.pos.label':     'Posición',
+    'squad.dorsal.label':  'Dorsal',
+
+    // Cuerpo Técnico
+    'staff.section.title': 'Cuerpo Técnico',
+    'staff.empty':         'No hay miembros del cuerpo técnico registrados.',
   },
 
   eu: {
@@ -230,6 +268,7 @@ window.TRANSLATIONS = {
     'club.page.subtitle':'Tolosa bihotzean mende bat baino gehiagoz kirola eta balioak biltzen dituen taldea.',
     'team.page.eyebrow': 'Lehiaketa',
     'team.page.title':   'Lehen Taldea',
+    'competition.name':  '1. Nazionala, C Taldea',
     'team.tab.standings': 'Sailkapena',
     'team.tab.results':   'Emaitzak',
     'contact.form.heading': 'Bidali mezua',
@@ -267,6 +306,45 @@ window.TRANSLATIONS = {
     'contact.form.subject':'Gaia',
     'contact.form.message':'Mezua',
     'contact.form.send': 'Mezua bidali',
+    'lang.es': 'Gaztelania',
+    'lang.eu': 'Euskara',
+    'footer.aboutSimple': 'Tolosa CF Eskubaloia. Kluba baino gehiago, eskubaloiak batutako familia.',
+    'footer.aboutShort': 'Tolosa CF Eskubaloia. Kluba baino gehiago.',
+    'sponsors.mainTitle': 'Babesle nagusiak',
+    'club.yearsInDivision': 'Urteak 1. Nazio Mailan',
+    'team.tab.standings': 'Sailkapena',
+    'team.tab.results': 'Emaitzak',
+    'team.tab.calendar':  'Egutegia',
+    'fixture.lastResult': 'Azken emaitza',
+    'fixture.noMatches': 'Ez dago partidarik programatuta',
+    'fixture.noResults': 'Ez dago emaitzarik erregistratuta',
+    'fixture.journey': 'Jardunaldia',
+    'news.empty': 'Oraindik ez dago albisterik argitaratuta',
+    'team.tab.calendar.empty': 'Ez dago partidarik egutegian',
+    'team.tab.results.empty': 'Ez dago emaitzarik eskuragarri',
+    'team.tab.standings.empty': 'Ez dago sailkapenik eskuragarri',
+    'contact.form.success': 'Mezua ongi bidali da! Laster jarriko gara zurekin harremanetan.',
+    'contact.form.error': 'Mesedez, bete eremu guztiak behar bezala.',
+    'contact.form.sending': 'Bidaltzen...',
+    'team.noDataTitle': 'Ez dago daturik eskuragarri oraindik',
+    'team.noDataText': 'Administratzaileak ez du oraindik kategoria honetarako daturik igo.',
+
+    // Sub-navegación 1. Equipo
+    'team.subnav.season': 'Denboraldia',
+    'team.subnav.squad':  'Plantila',
+
+    // Plantilla page
+    'squad.page.eyebrow':  'Lehen Taldea',
+    'squad.page.title':    'Plantila',
+    'squad.page.subtitle': 'Ezagutu denboraldi honetan lehen taldea osatzen duten jokalariak.',
+    'squad.loading':       'Plantila kargatzen...',
+    'squad.empty':         'Ez dago jokalaririk plantilan erregistratuta.',
+    'squad.pos.label':     'Posizioa',
+    'squad.dorsal.label':  'Dorsala',
+
+    // Cuerpo Técnico
+    'staff.section.title': 'Teknikari Taldea',
+    'staff.empty':         'Ez dago teknikari talderik erregistratuta.',
   }
 };
 
@@ -293,11 +371,16 @@ function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (t[key] !== undefined) {
+      let text = t[key];
+      const season = el.getAttribute('data-season');
+      if (season) {
+        text = `${text} | ${season}`;
+      }
       // Soporte para saltos de línea con \n (para títulos con <br>)
       if (el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3') {
-        el.innerHTML = t[key].replace(/\n/g, '<br>');
+        el.innerHTML = text.replace(/\n/g, '<br>');
       } else {
-        el.textContent = t[key];
+        el.textContent = text;
       }
     }
   });
@@ -306,6 +389,15 @@ function applyTranslations() {
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
     if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // Mostrar u ocultar elementos específicos según el idioma activo
+  document.querySelectorAll('[data-lang-show]').forEach(el => {
+    if (el.getAttribute('data-lang-show') === lang) {
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
   });
 
   // Actualizar atributo lang del html para accesibilidad
@@ -317,10 +409,10 @@ function updateLangSelector(lang) {
   // Selector desktop
   const current = document.getElementById('lang-current');
   if (current) {
-    const flags = { es: '\uD83C\uDDEA\uD83C\uDDF8', eu: '\uD83C\uDFF4\uFE0F\u200D\u2620\uFE0F' };
-    current.innerHTML = (flags[lang] || '') + ' <span>' + lang.toUpperCase() + '</span>';
+    const flagSrc = lang === 'eu' ? 'images/flag-eu.svg' : 'images/flag-es.svg';
+    current.innerHTML = `<img src="${flagSrc}" alt="${lang.toUpperCase()}" class="flag-icon"> <span>${lang.toUpperCase()}</span>`;
   }
-  // Marcar activo en el dropdown
+  // Marcar activo en el dropdown desktop y botones móviles
   document.querySelectorAll('[data-lang]').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
   });
