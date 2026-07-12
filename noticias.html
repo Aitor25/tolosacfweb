@@ -10,8 +10,29 @@
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles.css?v=9">
+<style>
+  .news-section { transition:background .3s; }
+  html:not(.dark) .news-section { background:#f3f6ff; }
+  html.dark      .news-section { background:#081829; }
+  .section { max-width:1400px;margin:0 auto;padding:4rem 2rem; }
 
+  #news-container { display:grid;grid-template-columns:repeat(3,1fr);gap:2px; }
+  html:not(.dark) #news-container { background:rgba(0,0,0,.06); }
+  html.dark       #news-container { background:rgba(255,255,255,.04); }
+  @media(max-width:900px){#news-container{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){#news-container{grid-template-columns:1fr;}}
+
+  .load-more-wrap{display:flex;justify-content:center;padding-top:2.5rem;}
+  .btn-load-more{font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;padding:.8rem 1.8rem;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:all .2s;border:2px solid;}
+  html:not(.dark) .btn-load-more{background:white;color:#04101f;border-color:rgba(4,16,31,.12);}
+  html:not(.dark) .btn-load-more:hover{border-color:var(--accent);color:var(--accent);}
+  html.dark       .btn-load-more{background:transparent;color:white;border-color:rgba(255,255,255,.15);}
+  html.dark       .btn-load-more:hover{border-color:var(--accent-bright);color:var(--accent-bright);}
+  .btn-load-more:disabled{opacity:.35;cursor:not-allowed;}
+  .btn-load-more i{width:15px;height:15px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
 <script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
 </head>
 <body>
