@@ -225,7 +225,16 @@
     <li><a href="index.html" data-i18n="nav.home">Inicio <span>→</span></a></li>
     <li><a href="noticias.html" data-i18n="nav.news">Noticias <span>→</span></a></li>
     <li><a href="club.html" data-i18n="nav.club">El Club <span>→</span></a></li>
-    <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo <span>→</span></a></li>
+    <li class="mobile-has-sub">
+      <button class="mobile-sub-toggle" onclick="toggleMobileSub(this)" aria-expanded="false">
+        <span data-i18n="nav.team">1. Equipo</span>
+        <span class="mobile-sub-arrow">›</span>
+      </button>
+      <ul class="mobile-sub-links">
+        <li><a href="equipo1.html" data-i18n="team.subnav.season">Temporada</a></li>
+        <li><a href="plantilla.html" data-i18n="team.subnav.squad">Plantilla</a></li>
+      </ul>
+    </li>
     <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores <span>→</span></a></li>
     <li><a href="contacto.html" data-i18n="nav.contact">Contacto <span>→</span></a></li>
   </ul>

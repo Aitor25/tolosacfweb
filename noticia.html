@@ -114,13 +114,16 @@
   <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
     <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
     <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
-    <li class="has-dropdown">
-          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
-          <div class="nav-dropdown">
-            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
-            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
-          </div>
-        </li>
+    <li class="mobile-has-sub">
+      <button class="mobile-sub-toggle" onclick="toggleMobileSub(this)" aria-expanded="false">
+        <span data-i18n="nav.team">1. Equipo</span>
+        <span class="mobile-sub-arrow">›</span>
+      </button>
+      <ul class="mobile-sub-links">
+        <li><a href="equipo1.html" data-i18n="team.subnav.season">Temporada</a></li>
+        <li><a href="plantilla.html" data-i18n="team.subnav.squad">Plantilla</a></li>
+      </ul>
+    </li>
     <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
     <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
   </ul>

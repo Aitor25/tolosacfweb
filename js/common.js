@@ -251,3 +251,13 @@ function _errMsg(m) { return `<div style="grid-column:1/-1;padding:3rem;text-ali
 
 window.renderNewsCards   = renderNewsCards;
 window.buildNewsCardHTML = _buildCard;
+
+// ── Mobile nav accordion ──
+function toggleMobileSub(btn) {
+  var isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+  var sub = btn.nextElementSibling;
+  if (sub) sub.classList.toggle('open', !isOpen);
+}
+window.toggleMobileSub = toggleMobileSub;

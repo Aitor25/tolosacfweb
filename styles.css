@@ -468,3 +468,67 @@ html.dark .value-card { box-shadow:none; }
   margin-right: 0.15rem;
 }
 
+
+/* ── MOBILE NAV ACCORDION (1. Equipo → Temporada / Plantilla) ── */
+.mobile-has-sub { border-bottom: 1px solid rgba(255,255,255,0.06); }
+html:not(.dark) .mobile-has-sub { border-bottom-color: rgba(0,0,0,0.07); }
+
+.mobile-sub-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  background: none;
+  border: none;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.4rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: color .2s, padding-left .25s var(--ease-spring);
+}
+.mobile-sub-toggle:hover { color: white; padding-left: .75rem; }
+.mobile-sub-toggle.open  { color: white; }
+html:not(.dark) .mobile-sub-toggle { color: rgba(4,16,31,0.55); }
+html:not(.dark) .mobile-sub-toggle:hover { color: var(--navy); }
+html:not(.dark) .mobile-sub-toggle.open  { color: var(--accent); }
+
+.mobile-sub-arrow {
+  font-size: 1.5rem;
+  line-height: 1;
+  transition: transform .25s var(--ease-spring);
+  display: inline-block;
+}
+.mobile-sub-toggle.open .mobile-sub-arrow { transform: rotate(90deg); }
+
+.mobile-sub-links {
+  list-style: none;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s var(--ease-out), opacity .25s;
+  opacity: 0;
+  padding-left: .75rem;
+}
+.mobile-sub-links.open {
+  max-height: 120px;
+  opacity: 1;
+}
+.mobile-sub-links li { border: none; }
+.mobile-sub-links a {
+  display: block;
+  padding: .45rem 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  transition: color .2s, padding-left .2s;
+}
+.mobile-sub-links a:hover { color: white; padding-left: .5rem; }
+html:not(.dark) .mobile-sub-links a { color: rgba(4,16,31,0.4); }
+html:not(.dark) .mobile-sub-links a:hover { color: var(--accent); padding-left: .5rem; }
