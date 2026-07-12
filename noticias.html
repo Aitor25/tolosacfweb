@@ -10,7 +10,7 @@
 <script src="https://unpkg.com/feather-icons"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=11">
 <style>
   .news-section { transition:background .3s; }
   html:not(.dark) .news-section { background:#f3f6ff; }
@@ -79,7 +79,7 @@
 <div id="mobile-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <img src="escudo.png" alt="Tolosa CF" style="height:42px;">
-    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;padding:.4rem;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
+    <button id="close-menu"><i data-feather="x" style="width:26px;height:26px;"></i></button>
   </div>
   <ul class="mobile-nav-links">
     <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
@@ -104,7 +104,7 @@
       <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
       <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
     </div>
-    <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
+    <button id="mobile-theme-toggle">
       <i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span>
     </button>
   </div>

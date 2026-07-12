@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/feather-icons"></script>
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=11">
 <style>
   body{font-family:var(--font-body);overflow-x:hidden}
   .nav-inner{max-width:1400px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem}
@@ -23,9 +23,6 @@
   #theme-toggle:hover{background:var(--accent);border-color:var(--accent);color:white;transform:rotate(15deg) scale(1.1)}
   html:not(.dark) #navbar #theme-toggle{color:var(--navy);border-color:rgba(0,0,0,.12);background:rgba(0,0,0,.04)}
   #menu-toggle{display:flex;background:none;border:none;color:rgba(255,255,255,.9);cursor:pointer;padding:.4rem;border-radius:6px}@media(min-width:1024px){#menu-toggle{display:none}}html:not(.dark) #navbar #menu-toggle{color:var(--navy)}
-  #mobile-menu{position:fixed;top:0;right:-100%;width:min(340px,100vw);height:100vh;background:var(--navy);z-index:600;padding:2rem;display:flex;flex-direction:column;transition:right .4s cubic-bezier(.77,0,.175,1);box-shadow:-20px 0 60px rgba(0,0,0,.4)}
-  #mobile-menu.open{right:0}#mobile-menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:550;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}#mobile-menu-overlay.open{opacity:1;pointer-events:all}
-  .mobile-nav-links{list-style:none;display:flex;flex-direction:column;margin-top:2rem}.mobile-nav-links li{border-bottom:1px solid rgba(255,255,255,.06)}.mobile-nav-links a{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;font-family:var(--font-display);font-weight:900;font-size:1.4rem;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.6);text-decoration:none;transition:color .2s,padding-left .25s var(--ease-spring)}.mobile-nav-links a:hover{color:white;padding-left:.75rem}
   .page-header{padding-top:calc(70px + 4rem);padding-bottom:4rem;background:var(--navy);position:relative;overflow:hidden}
   .page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 50%,rgba(18,85,201,.15) 0%,transparent 60%);pointer-events:none}
   .page-header-inner{max-width:900px;margin:0 auto;padding:0 2rem;position:relative;z-index:2}
@@ -77,7 +74,7 @@
 <div id="mobile-menu">
   <div style="display:flex;justify-content:space-between;align-items:center;">
     <img src="escudo.png" alt="Tolosa CF" style="height:42px;">
-    <button id="close-menu" style="background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;padding:.4rem;"><i data-feather="x" style="width:26px;height:26px;"></i></button>
+    <button id="close-menu"><i data-feather="x" style="width:26px;height:26px;"></i></button>
   </div>
   <ul class="mobile-nav-links">
     <li><a href="index.html" data-i18n="nav.home">Inicio</a></li>
@@ -102,7 +99,7 @@
       <button class="mobile-lang-btn active" data-lang="es" onclick="setLanguage('es')"><img src="images/flag-es.svg" alt="ES" class="flag-icon"> ES</button>
       <button class="mobile-lang-btn" data-lang="eu" onclick="setLanguage('eu')"><img src="images/flag-eu.svg" alt="EU" class="flag-icon"> EU</button>
     </div>
-    <button id="mobile-theme-toggle" style="background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;display:flex;align-items:center;gap:.75rem;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;text-transform:uppercase;">
+    <button id="mobile-theme-toggle">
       <i data-feather="sun" style="width:17px;height:17px;"></i><span id="mobile-theme-label">Modo claro</span>
     </button>
   </div>
