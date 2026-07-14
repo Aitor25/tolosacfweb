@@ -376,9 +376,25 @@ function applyTranslations() {
       if (season) {
         text = `${text} | ${season}`;
       }
-      // Soporte para saltos de línea con \n (para títulos con <br>)
+      // Soporte para saltos de línea con \n o <br> y cursivas con <em>
       if (el.tagName === 'H1' || el.tagName === 'H2' || el.tagName === 'H3') {
-        el.innerHTML = text.replace(/\n/g, '<br>');
+        el.textContent = '';
+        let parsedText = text.replace(/<br\s*\/?>/gi, '\n');
+        parsedText.split('\n').forEach((line, index, array) => {
+          const emMatch = line.match(/^(.*?)<em>(.*?)<\/em>(.*)$/i);
+          if (emMatch) {
+            if (emMatch[1]) el.appendChild(document.createTextNode(emMatch[1]));
+            const em = document.createElement('em');
+            em.textContent = emMatch[2];
+            el.appendChild(em);
+            if (emMatch[3]) el.appendChild(document.createTextNode(emMatch[3]));
+          } else {
+            el.appendChild(document.createTextNode(line));
+          }
+          if (index < array.length - 1) {
+            el.appendChild(document.createElement('br'));
+          }
+        });
       } else {
         el.textContent = text;
       }
@@ -410,7 +426,16 @@ function updateLangSelector(lang) {
   const current = document.getElementById('lang-current');
   if (current) {
     const flagSrc = lang === 'eu' ? 'images/flag-eu.svg' : 'images/flag-es.svg';
-    current.innerHTML = `<img src="${flagSrc}" alt="${lang.toUpperCase()}" class="flag-icon"> <span>${lang.toUpperCase()}</span>`;
+    current.textContent = '';
+    const img = document.createElement('img');
+    img.src = flagSrc;
+    img.alt = lang.toUpperCase();
+    img.className = 'flag-icon';
+    const span = document.createElement('span');
+    span.textContent = lang.toUpperCase();
+    current.appendChild(img);
+    current.appendChild(document.createTextNode(' '));
+    current.appendChild(span);
   }
   // Marcar activo en el dropdown desktop y botones móviles
   document.querySelectorAll('[data-lang]').forEach(btn => {

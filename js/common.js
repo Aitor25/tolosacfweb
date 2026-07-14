@@ -104,8 +104,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ── Theme toggles ──
-  const isDarkNow = document.documentElement.classList.contains('dark');
-  _applyTheme(isDarkNow);
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    _applyTheme(savedTheme === 'dark');
+  } else {
+    const isDarkNow = document.documentElement.classList.contains('dark');
+    _applyTheme(isDarkNow);
+  }
 
   const themeBtn = document.getElementById('theme-toggle');
   if (themeBtn) {
@@ -178,15 +183,102 @@ document.addEventListener('DOMContentLoaded', () => {
 let _lastNewsDoc = null;
 let _newsOffset  = 0;
 
+function _emptyMsg() {
+  const div = document.createElement('div');
+  div.style.cssText = "grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;";
+  const p = document.createElement('p');
+  p.style.cssText = "font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;";
+  p.textContent = "Aún no hay noticias publicadas";
+  div.appendChild(p);
+  return div;
+}
+
+function _permMsg() {
+  const div = document.createElement('div');
+  div.style.cssText = "grid-column:1/-1;padding:3rem;text-align:center;";
+  const p = document.createElement('p');
+  p.style.cssText = "color:#ef4444;font-weight:700;";
+  p.textContent = "Error de permisos Firestore";
+  div.appendChild(p);
+  return div;
+}
+
+function _errMsg(m) {
+  const div = document.createElement('div');
+  div.style.cssText = "grid-column:1/-1;padding:3rem;text-align:center;";
+  const p = document.createElement('p');
+  p.style.cssText = "color:#ef4444;font-size:.85rem;";
+  p.textContent = "Error: " + m;
+  div.appendChild(p);
+  return div;
+}
+
+function _buildCard(n, i, append) {
+  const a = document.createElement('a');
+  a.className = 'news-card' + ((i === 0 && !append) ? ' featured' : '') + ' reveal delay-' + Math.min(i+1, 5);
+  a.href = 'noticia.html?id=' + encodeURIComponent(n.id);
+  
+  if (n.image) {
+    const img = document.createElement('img');
+    img.className = 'news-card-img';
+    img.src = safeURL(n.image, 'image');
+    img.alt = n.title;
+    img.loading = 'lazy';
+    a.appendChild(img);
+  } else {
+    const imgDiv = document.createElement('div');
+    imgDiv.className = 'news-card-img';
+    imgDiv.style.background = 'rgba(18,85,201,0.15)';
+    a.appendChild(imgDiv);
+  }
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'news-card-overlay';
+  a.appendChild(overlay);
+  
+  const body = document.createElement('div');
+  body.className = 'news-card-body';
+  
+  const cat = document.createElement('span');
+  cat.className = 'news-card-cat';
+  cat.textContent = n.tag;
+  body.appendChild(cat);
+  
+  const h3 = document.createElement('h3');
+  h3.className = 'news-card-title';
+  h3.textContent = n.title;
+  body.appendChild(h3);
+  
+  const dateDiv = document.createElement('div');
+  dateDiv.className = 'news-card-date';
+  dateDiv.textContent = n.date;
+  body.appendChild(dateDiv);
+  
+  a.appendChild(body);
+  return a;
+}
+
+function _renderDocs(docs, container, append, limit) {
+  if (!append) container.textContent = '';
+  docs.forEach((doc, i) => {
+    const d = typeof doc.data === 'function' ? doc.data() : doc;
+    const id = doc.id || d.id || i;
+    const cardData = { id, title: d.title||d.titulo||'Sin titulo', date: d.date||d.fecha||'', tag: d.tag||d.categoria||'Club', image: d.image||d.imagen||'', summary: d.summary||d.resumen||'' };
+    container.appendChild(_buildCard(cardData, i, append));
+  });
+  if (typeof feather !== 'undefined') feather.replace();
+  const lb = document.getElementById('load-more-btn');
+  if (lb && docs.length < limit) { lb.textContent = 'No hay más noticias'; lb.disabled = true; }
+}
+
 async function renderNewsCards(containerId, limit, append) {
   limit = limit || 9;
   append = append || false;
   const container = document.getElementById(containerId);
   if (!container) return;
   if (!append) { _lastNewsDoc = null; _newsOffset = 0; }
-  const db = window.db ||
-    (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length
-      ? firebase.firestore() : null);
+  
+  const db = window.db || (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length ? firebase.firestore() : null);
   if (db) {
     try {
       let q = db.collection('news').orderBy('timestamp', 'desc').limit(limit);
@@ -203,51 +295,29 @@ async function renderNewsCards(containerId, limit, append) {
     try {
       const snap2 = await db.collection('news').limit(limit).get();
       if (!snap2.empty) { _renderDocs(snap2.docs, container, append, limit); return; }
-      if (!append) container.innerHTML = _emptyMsg();
+      if (!append) { container.textContent = ''; container.appendChild(_emptyMsg()); }
     } catch(e2) {
-      if (!append) container.innerHTML = e2.code === 'permission-denied' ? _permMsg() : _errMsg(e2.message);
+      if (!append) { container.textContent = ''; container.appendChild(e2.code === 'permission-denied' ? _permMsg() : _errMsg(e2.message)); }
     }
     return;
   }
+  
   const fallback = window.NOTICIAS_FALLBACK || [];
-  if (!fallback.length) { if (!append) container.innerHTML = _emptyMsg(); return; }
+  if (!fallback.length) { 
+    if (!append) { container.textContent = ''; container.appendChild(_emptyMsg()); }
+    return; 
+  }
+  
   const page = fallback.slice(_newsOffset, _newsOffset + limit);
   _newsOffset += page.length;
-  const html = page.map((n, i) => _buildCard({ id: n.id||i, title: n.title||n.titulo||'Sin titulo', date: n.date||n.fecha||'', tag: n.tag||n.categoria||'Club', image: n.image||n.imagen||'', summary: n.summary||n.resumen||'' }, i, append)).join('');
-  if (append) container.insertAdjacentHTML('beforeend', html);
-  else container.innerHTML = html;
+  
+  if (!append) container.textContent = '';
+  page.forEach((n, i) => {
+    const cardData = { id: n.id||i, title: n.title||n.titulo||'Sin titulo', date: n.date||n.fecha||'', tag: n.tag||n.categoria||'Club', image: n.image||n.imagen||'', summary: n.summary||n.resumen||'' };
+    container.appendChild(_buildCard(cardData, i, append));
+  });
   if (typeof feather !== 'undefined') feather.replace();
 }
-
-function _renderDocs(docs, container, append, limit) {
-  const html = docs.map((doc, i) => {
-    const d = typeof doc.data === 'function' ? doc.data() : doc;
-    const id = doc.id || d.id || i;
-    return _buildCard({ id, title: d.title||d.titulo||'Sin titulo', date: d.date||d.fecha||'', tag: d.tag||d.categoria||'Club', image: d.image||d.imagen||'', summary: d.summary||d.resumen||'' }, i, append);
-  }).join('');
-  if (append) container.insertAdjacentHTML('beforeend', html);
-  else container.innerHTML = html;
-  if (typeof feather !== 'undefined') feather.replace();
-  const lb = document.getElementById('load-more-btn');
-  if (lb && docs.length < limit) { lb.textContent = 'No hay más noticias'; lb.disabled = true; }
-}
-
-function _buildCard(n, i, append) {
-  const isFirst = (i === 0 && !append);
-  return `<a class="news-card${isFirst?' featured':''} reveal delay-${Math.min(i+1,5)}" href="noticia.html?id=${encodeURIComponent(n.id)}">
-    ${n.image ? `<img class="news-card-img" src="${n.image}" alt="${n.title}" loading="lazy">` : '<div class="news-card-img" style="background:rgba(18,85,201,0.15);"></div>'}
-    <div class="news-card-overlay"></div>
-    <div class="news-card-body">
-      <span class="news-card-cat">${n.tag}</span>
-      <h3 class="news-card-title">${n.title}</h3>
-      <div class="news-card-date">${n.date}</div>
-    </div>
-  </a>`;
-}
-
-function _emptyMsg() { return '<div style="grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;"><p style="font-family:Barlow Condensed,sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;">Aún no hay noticias publicadas</p></div>'; }
-function _permMsg() { return '<div style="grid-column:1/-1;padding:3rem;text-align:center;"><p style="color:#ef4444;font-weight:700;">Error de permisos Firestore</p></div>'; }
-function _errMsg(m) { return `<div style="grid-column:1/-1;padding:3rem;text-align:center;"><p style="color:#ef4444;font-size:.85rem;">Error: ${m}</p></div>`; }
 
 window.renderNewsCards   = renderNewsCards;
 window.buildNewsCardHTML = _buildCard;
@@ -261,3 +331,28 @@ function toggleMobileSub(btn) {
   if (sub) sub.classList.toggle('open', !isOpen);
 }
 window.toggleMobileSub = toggleMobileSub;
+
+// Centralized URL Validator
+function safeURL(urlStr, type = 'link') {
+  if (!urlStr) return '';
+  try {
+    const u = new URL(urlStr, window.location.origin);
+    const proto = u.protocol.toLowerCase();
+    
+    // Rechazar explícitamente credenciales embebidas para mitigar ataques de phishing (ej. http://user:pass@google.com)
+    if (u.username || u.password) return '';
+    
+    if (type === 'image') {
+      if (proto === 'https:' || proto === 'http:') return u.href;
+      return ''; 
+    }
+    
+    if (type === 'link') {
+      if (['http:', 'https:', 'mailto:', 'tel:'].includes(proto)) return u.href;
+      return '';
+    }
+    return '';
+  } catch(e) {
+    return '';
+  }
+}

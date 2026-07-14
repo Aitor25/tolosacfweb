@@ -17,7 +17,9 @@
     }
     if (typeof firebase !== 'undefined' && firebase.apps.length) {
       window.db = firebase.firestore();
+      window.storage = firebase.storage();
     }
+
   } catch(e) {
     console.warn('Firebase init error:', e);
   }
