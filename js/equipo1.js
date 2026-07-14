@@ -191,7 +191,7 @@ function renderStandings(){
     html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};">${item.team}${isTolosa?' <span style="color:var(--accent-bright);font-size:.7rem;">&#9679;</span>':''}</td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td style="text-align:center;">${item.gf||0}</td><td style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
   });
   html+=`</tbody></table></div>`;
-  document.getElementById('tab-content').textContent = html;
+  document.getElementById('tab-content').innerHTML = html;
 }
 
 function getDayOfWeekName(dateStr, lang='es') {
@@ -262,7 +262,7 @@ function renderResults(){
 
   if(!filtered.length)html+=`<div style="text-align:center;padding:3rem;opacity:.5;" data-i18n="fixture.noMatches">Sin partidos en esta jornada</div>`;
   html+=`</div>`;
-  document.getElementById('tab-content').textContent = html;
+  document.getElementById('tab-content').innerHTML = html;
 }
 
 function buildJourneySelector(journeys, selected){
@@ -343,7 +343,7 @@ function renderCalendar(){
   
   if(!filtered.length)html+=`<div style="text-align:center;padding:3rem;opacity:.5;" data-i18n="fixture.noMatches">Sin partidos en esta jornada</div>`;
   html+=`</div>`;
-  document.getElementById('tab-content').textContent = html;
+  document.getElementById('tab-content').innerHTML = html;
 }
 
 document.addEventListener('DOMContentLoaded',()=>{

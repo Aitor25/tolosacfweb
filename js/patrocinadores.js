@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           } else {
             card = document.createElement('div');
           }
-          card.className = 'sponsor-card fade-up';
+          card.className = 'sponsor-card animate-fade-in';
           card.style.animationDelay = delay + 'ms';
           
           if(logo) {
