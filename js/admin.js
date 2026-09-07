@@ -3,14 +3,72 @@ const auth=firebase.auth(), db=window.db || firebase.firestore();
 
 // --- DOM HELPERS ---
 
+function cropWhitespace(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width; canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
+      let hasContent = false;
+      for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+          const i = (y * canvas.width + x) * 4;
+          const isBg = data[i+3] < 10 || (data[i]>250 && data[i+1]>250 && data[i+2]>250 && data[i+3]>250);
+          if (!isBg) {
+            hasContent = true;
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+      }
+      if (!hasContent) { resolve(file); return; }
+      const pad = 10;
+      minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
+      maxX = Math.min(canvas.width, maxX + pad); maxY = Math.min(canvas.height, maxY + pad);
+      const cw = maxX - minX, ch = maxY - minY;
+      const cCanvas = document.createElement('canvas');
+      cCanvas.width = cw; cCanvas.height = ch;
+      cCanvas.getContext('2d').drawImage(canvas, minX, minY, cw, ch, 0, 0, cw, ch);
+      cCanvas.toBlob(blob => resolve(new File([blob], file.name, { type: file.type || 'image/png' })), file.type || 'image/png', 0.95);
+    };
+    img.onerror = () => resolve(file);
+    img.src = url;
+  });
+}
+
+const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // debe coincidir con storage.rules
+
 async function uploadImageToStorage(fileInputId, progressId, folder) {
   const fileInput = document.getElementById(fileInputId);
-  const file = fileInput?.files[0];
+  let file = fileInput?.files[0];
   if (!file) return null;
   if (!window.storage) {
-    toast('Firebase Storage no está inicializado. Revisa firebase-config.js', 'error');
+    toast('Firebase Storage no está inicializado.', 'error');
     return null;
   }
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    toast('Formato no permitido. Usa PNG, JPG, WEBP o GIF.', 'error');
+    return null;
+  }
+  if (file.size > MAX_IMAGE_SIZE) {
+    toast('La imagen pesa demasiado (máx. 5MB).', 'error');
+    return null;
+  }
+
+  if(folder === 'sponsors') {
+    try { file = await cropWhitespace(file); } catch(e) {}
+  }
+  
   const progressDiv = document.getElementById(progressId);
   if(progressDiv) progressDiv.style.display = 'block';
   try {
@@ -243,7 +301,20 @@ const AdminLogic={
   },
 
   generateCategoryData(name,competition,season,results,standings,teams){
-    return{name,competition,season,lastUpdate:new Date().toISOString(),results,standings,teams:teams||[]};
+    const uniqueTeams = new Set(teams || []);
+    if (results && results.length) {
+      results.forEach(r => {
+        if (r.home) uniqueTeams.add(AdminLogic.normalizeTeamName(r.home));
+        if (r.away) uniqueTeams.add(AdminLogic.normalizeTeamName(r.away));
+      });
+    }
+    if (standings && standings.length) {
+      standings.forEach(s => {
+        if (s.team) uniqueTeams.add(AdminLogic.normalizeTeamName(s.team));
+      });
+    }
+    const finalTeams = Array.from(uniqueTeams).filter(Boolean);
+    return{name,competition,season,lastUpdate:new Date().toISOString(),results,standings,teams:finalTeams};
   }
 };
 
@@ -256,7 +327,7 @@ function toast(msg,type='info'){
   setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(100%)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},4000);
 }
 
-const sectionTitles={dashboard:'Dashboard',noticias:'Noticias',imagenes:'Imagenes',resultados:'Resultados',clasificacion:'Clasificacion',equipos:'Equipos',jugadores:'Jugadores',patrocinadores:'Patrocinadores'};
+const sectionTitles={dashboard:'Dashboard',noticias:'Noticias',mensajes:'Mensajes',imagenes:'Imagenes',resultados:'Resultados',clasificacion:'Clasificacion',equipos:'Equipos',jugadores:'Jugadores',patrocinadores:'Patrocinadores'};
 
 function showSection(name){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -265,6 +336,7 @@ function showSection(name){
   document.querySelector(`[data-section="${name}"]`)?.classList.add('active');
   document.getElementById('page-title').textContent=sectionTitles[name]||name;
   if(name==='noticias')loadNewsList();
+  if(name==='mensajes')loadMessages();
   if(name==='resultados')loadCompetitionData();
   if(name==='clasificacion')loadStandings();
   if(name==='equipos')loadTeams();
@@ -334,10 +406,11 @@ document.addEventListener('DOMContentLoaded',()=>{
 // ── DASHBOARD ──
 async function loadDashboardStats(){
   try{
-    const[news,players,sponsors]=await Promise.all([db.collection('news').get(),db.collection('players').get(),db.collection('sponsors').get()]);
+    const[news,players,sponsors,messages]=await Promise.all([db.collection('news').get(),db.collection('players').get(),db.collection('sponsors').get(),db.collection('messages').get()]);
     document.getElementById('stat-noticias').textContent=news.size;
     document.getElementById('stat-jugadores').textContent=players.size;
     document.getElementById('stat-patrocinadores').textContent=sponsors.size;
+    document.getElementById('stat-mensajes').textContent=messages.size;
     let totalPartidos=0;
     try{const c=await db.collection('competitions').doc('senior-masculino').get();if(c.exists)totalPartidos=(c.data().results||[]).length;}catch(e){}
     document.getElementById('stat-resultados').textContent=totalPartidos;
@@ -436,6 +509,59 @@ function clearNewsForm(){
   const lbl=document.getElementById('news-image-filename');if(lbl)lbl.textContent='';
   document.getElementById('news-form-title').textContent='Nueva noticia';document.getElementById('news-save-btn').innerHTML='<i data-feather="send"></i> Publicar';
   feather.replace();updateNewsPreview();
+}
+
+// ── MENSAJES DE CONTACTO ──
+async function loadMessages(){
+  const container=document.getElementById('messages-list');
+  container.innerHTML='<div style="text-align:center;padding:1.5rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
+  try{
+    const snap=await db.collection('messages').orderBy('timestamp','desc').get();
+    if(snap.empty){container.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-size:.82rem;">No hay mensajes</div>';return;}
+
+    container.innerHTML='';
+    snap.docs.forEach(doc=>{
+      const m=doc.data();
+      const card=document.createElement('div');
+      card.style.cssText="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:1rem;margin-bottom:.75rem;";
+
+      const head=document.createElement('div');
+      head.style.cssText="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:.5rem;";
+
+      const info=document.createElement('div');
+      const nameDiv=document.createElement('div'); nameDiv.style.cssText="font-weight:700;color:white;"; nameDiv.textContent=m.name||'(sin nombre)';
+      const emailDiv=document.createElement('div'); emailDiv.style.cssText="font-size:.78rem;color:var(--accent-bright);"; emailDiv.textContent=m.email||'';
+      const dateDiv=document.createElement('div'); dateDiv.style.cssText="font-size:.75rem;color:rgba(255,255,255,0.35);margin-top:.15rem;";
+      dateDiv.textContent=m.timestamp?new Date(m.timestamp.seconds*1000).toLocaleString():'';
+      info.appendChild(nameDiv); info.appendChild(emailDiv); info.appendChild(dateDiv);
+
+      const actions=document.createElement('div'); actions.style.cssText="display:flex;gap:.4rem;flex-shrink:0;";
+      const btnReply=document.createElement('a'); btnReply.className="btn btn-ghost btn-sm"; btnReply.title='Responder';
+      btnReply.href='mailto:'+encodeURIComponent(m.email||'')+'?subject='+encodeURIComponent('Re: '+(m.subject||''));
+      const iconReply=document.createElement('i'); iconReply.setAttribute('data-feather','corner-up-left'); btnReply.appendChild(iconReply);
+      const btnDelete=document.createElement('button'); btnDelete.className="btn btn-danger btn-sm"; btnDelete.title='Eliminar'; btnDelete.onclick=()=>deleteMessage(doc.id);
+      const iconDelete=document.createElement('i'); iconDelete.setAttribute('data-feather','trash-2'); btnDelete.appendChild(iconDelete);
+      actions.appendChild(btnReply); actions.appendChild(btnDelete);
+
+      head.appendChild(info); head.appendChild(actions);
+
+      const subjectDiv=document.createElement('div'); subjectDiv.style.cssText="font-weight:600;color:rgba(255,255,255,0.85);margin-bottom:.35rem;font-size:.85rem;"; subjectDiv.textContent=m.subject||'';
+      const bodyDiv=document.createElement('div'); bodyDiv.style.cssText="color:rgba(255,255,255,0.6);font-size:.82rem;white-space:pre-wrap;line-height:1.5;"; bodyDiv.textContent=m.message||'';
+
+      card.appendChild(head); card.appendChild(subjectDiv); card.appendChild(bodyDiv);
+      container.appendChild(card);
+    });
+
+    feather.replace();
+  }catch(e){container.innerHTML=`<div style="color:#f87171;font-size:.8rem;padding:1rem;">Error: ${e.message}</div>`;}
+}
+async function deleteMessage(id){
+  if(!confirm('¿Eliminar este mensaje?'))return;
+  try{
+    await db.collection('messages').doc(id).delete();
+    toast('Mensaje eliminado','success');
+    loadMessages();loadDashboardStats();
+  }catch(e){toast('Error: '+e.message,'error');}
 }
 
 // ── COMPETICIONES ──
@@ -1235,4 +1361,153 @@ function displayCalendarPreview(matches, teams){
   const initialStandings = AdminLogic.calculateStandings(matches, teams);
   document.getElementById('standings-summary').textContent=`El calendario completo sustituirá los resultados y registrará ${teams.length} equipos oficiales.`;
   window.finalData=AdminLogic.generateCategoryData(currentDBData.name, currentDBData.competition, currentDBData.season, matches, initialStandings, teams);
+}
+
+// ── ESCUDOS RIVALES ──
+let globalTeamLogos = {};
+let uniqueTeamsSet = new Set();
+let currentEditingTeam = '';
+
+async function renderEscudosRivales() {
+  const container = document.getElementById('escudos-list');
+  container.innerHTML = '<div class="spinner" style="margin: 3rem auto;"></div>';
+  
+  try {
+    // 1. Fetch logos from competitions/teamLogos
+    const docRef = await db.collection('competitions').doc('teamLogos').get();
+    if (docRef.exists) {
+      globalTeamLogos = docRef.data();
+    }
+    
+    // 2. Fetch all teams from all competitions
+    uniqueTeamsSet.clear();
+    const compSnap = await db.collection('competitions').get();
+    compSnap.forEach(doc => {
+      const data = doc.data();
+      if (data.teams && Array.isArray(data.teams)) {
+        data.teams.forEach(t => {
+          const norm = AdminLogic.normalizeTeamName(t);
+          if (norm && !norm.includes('TOLOSA')) { // Ignore Tolosa CF (has its own logo)
+            uniqueTeamsSet.add(norm);
+          }
+        });
+      }
+    });
+    
+    // 3. Render grid
+    if (uniqueTeamsSet.size === 0) {
+      container.innerHTML = '<div style="color:var(--text-secondary);">No se encontraron equipos rivales en la base de datos. Sube una clasificación primero.</div>';
+      return;
+    }
+    
+    let html = '';
+    const sortedTeams = Array.from(uniqueTeamsSet).sort();
+    sortedTeams.forEach(team => {
+      const logoUrl = globalTeamLogos[team] || '';
+      const hasLogo = !!logoUrl;
+      const svgStr = encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>');
+      const displayLogo = hasLogo ? logoUrl : 'data:image/svg+xml;utf8,' + svgStr;
+      
+      html += `
+        <div class="stat-card" style="cursor:pointer; display:flex; align-items:center; gap:1rem; padding:1rem; transition:transform 0.2s; position:relative;" onclick="openEditEscudoModal('${team.replace(/'/g, "\\'")}')" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div style="width:40px;height:40px;flex-shrink:0;border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;padding:4px;">
+            <img src="${displayLogo}" style="width:100%;height:100%;object-fit:contain; ${hasLogo ? '' : 'opacity:0.5;'}">
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${team}</div>
+            <div style="font-size:.7rem;color:${hasLogo ? 'var(--accent-bright)' : 'var(--text-secondary)'};font-weight:700;text-transform:uppercase;">
+              ${hasLogo ? 'Escudo asignado' : 'Falta escudo'}
+            </div>
+          </div>
+          ${!hasLogo ? '<div style="position:absolute;top:-4px;right:-4px;width:12px;height:12px;background:#ef4444;border-radius:50%;box-shadow:0 0 0 3px var(--surface);"></div>' : ''}
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  } catch(e) {
+    container.innerHTML = `<div style="color:#ef4444;">Error: ${e.message}</div>`;
+  }
+}
+
+function openEditEscudoModal(team) {
+  currentEditingTeam = team;
+  document.getElementById('edit-escudo-team').textContent = team;
+  document.getElementById('edit-escudo-file').value = '';
+  
+  const currentLogo = globalTeamLogos[team];
+  const preview = document.getElementById('edit-escudo-preview');
+  if (currentLogo) {
+    preview.innerHTML = `<img src="${currentLogo}" style="width:100%;height:100%;object-fit:contain;">`;
+  } else {
+    preview.innerHTML = '<i data-feather="shield" style="opacity:0.3;width:32px;height:32px;"></i>';
+    if (typeof feather !== 'undefined') feather.replace();
+  }
+  
+  document.getElementById('edit-escudo-modal').style.display = 'flex';
+}
+
+function closeEditEscudoModal() {
+  document.getElementById('edit-escudo-modal').style.display = 'none';
+}
+
+async function saveEscudo() {
+  const fileInput = document.getElementById('edit-escudo-file');
+  const file = fileInput.files[0];
+  if (!file) {
+    toast('Selecciona una imagen', 'error');
+    return;
+  }
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    toast('Formato no permitido. Usa PNG, JPG, WEBP o GIF.', 'error');
+    return;
+  }
+  if (file.size > MAX_IMAGE_SIZE) {
+    toast('La imagen pesa demasiado (máx. 5MB).', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-save-escudo');
+  btn.innerHTML = '<div class="spinner"></div>';
+  btn.disabled = true;
+  
+  try {
+    // 1. Upload to Storage
+    const storageRef = firebase.storage().ref();
+    const ext = file.name.split('.').pop();
+    const fileName = `escudos/${Date.now()}_${currentEditingTeam.replace(/[^a-zA-Z0-9]/g, '')}.${ext}`;
+    const fileRef = storageRef.child(fileName);
+    
+    await fileRef.put(file);
+    const downloadURL = await fileRef.getDownloadURL();
+    
+    // 2. Save to Firestore
+    globalTeamLogos[currentEditingTeam] = downloadURL;
+    await db.collection('competitions').doc('teamLogos').set(globalTeamLogos, { merge: true });
+    
+    toast('Escudo guardado con éxito', 'success');
+    closeEditEscudoModal();
+    renderEscudosRivales(); // Refresh grid
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+  } finally {
+    btn.innerHTML = '<i data-feather="upload"></i> Subir y Guardar';
+    btn.disabled = false;
+    if (typeof feather !== 'undefined') feather.replace();
+  }
+}
+
+// Hook showSection to load Escudos data when opened
+const originalShowSection = window.showSection;
+window.showSection = function(id) {
+  // Update sectionTitles dynamically for our custom section
+  if(typeof sectionTitles !== 'undefined') {
+    sectionTitles['escudos'] = 'Escudos Rivales';
+  }
+
+  if (originalShowSection) originalShowSection(id);
+  
+  // Custom logic
+  if (id === 'escudos') {
+    renderEscudosRivales();
+  }
 }

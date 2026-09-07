@@ -35,9 +35,9 @@
   .page-title em{color:var(--accent-bright);font-style:normal;}
   .page-subtitle{font-size:1rem;color:var(--header-sub);max-width:480px;line-height:1.6;margin-top:1rem;}
   .page-rule{width:3rem;height:3px;background:var(--accent);margin-top:1.25rem;border-radius:2px;}
-  .sponsor-card{background:var(--card-bg);border-radius:12px;border:1px solid var(--card-border);padding:2.5rem 2rem;display:flex;align-items:center;justify-content:center;transition:all .35s var(--ease-spring);}
+  .sponsor-card{background:var(--card-bg);border-radius:12px;border:1px solid var(--card-border);height:160px;padding:2rem;display:flex;align-items:center;justify-content:center;transition:all .35s var(--ease-spring);}
   .sponsor-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(18,85,201,.1);}
-  .sponsor-card img{height:60px;width:auto;object-fit:contain;max-width:180px;transition:filter .3s;}
+  .sponsor-card img{width:100%;height:100%;max-width:180px;object-fit:contain;transition:filter .3s;}
   /* Monocromo automático: negro en claro, blanco en oscuro */
   html:not(.dark) .sponsor-card img { filter: brightness(0) invert(0); opacity: 0.8; }
   html:not(.dark) .sponsor-card:hover img { opacity: 1; }

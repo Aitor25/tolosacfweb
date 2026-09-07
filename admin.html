@@ -166,10 +166,12 @@
       <a class="nav-item active" data-section="dashboard" onclick="showSection('dashboard')"><i data-feather="grid"></i> Dashboard</a>
       <div class="nav-section-label">Contenido</div>
       <a class="nav-item" data-section="noticias" onclick="showSection('noticias')"><i data-feather="file-text"></i> Noticias</a>
+      <a class="nav-item" data-section="mensajes" onclick="showSection('mensajes')"><i data-feather="mail"></i> Mensajes</a>
       <a class="nav-item" data-section="imagenes" onclick="showSection('imagenes')"><i data-feather="image"></i> Imágenes</a>
       <div class="nav-section-label">Competición</div>
       <a class="nav-item" data-section="resultados" onclick="showSection('resultados')"><i data-feather="activity"></i> Resultados</a>
       <a class="nav-item" data-section="clasificacion" onclick="showSection('clasificacion')"><i data-feather="list"></i> Clasificación</a>
+      <a class="nav-item" data-section="escudos" onclick="showSection('escudos')"><i data-feather="image"></i> Escudos Rivales</a>
       <div class="nav-section-label">Club</div>
       <a class="nav-item" data-section="equipos" onclick="showSection('equipos')"><i data-feather="shield"></i> Equipos</a>
       <a class="nav-item" data-section="jugadores" onclick="showSection('jugadores')"><i data-feather="users"></i> Jugadores</a>
@@ -202,6 +204,7 @@
           <div class="stat-card"><div class="stat-icon"><i data-feather="activity"></i></div><div><div class="stat-value" id="stat-resultados">—</div><div class="stat-label">Partidos</div></div></div>
           <div class="stat-card"><div class="stat-icon"><i data-feather="users"></i></div><div><div class="stat-value" id="stat-jugadores">—</div><div class="stat-label">Jugadores</div></div></div>
           <div class="stat-card"><div class="stat-icon"><i data-feather="star"></i></div><div><div class="stat-value" id="stat-patrocinadores">—</div><div class="stat-label">Patrocinadores</div></div></div>
+          <div class="stat-card" style="cursor:pointer;" onclick="showSection('mensajes')"><div class="stat-icon"><i data-feather="mail"></i></div><div><div class="stat-value" id="stat-mensajes">—</div><div class="stat-label">Mensajes</div></div></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;" class="grid-2col">
           <div class="card"><div class="card-title"><i data-feather="clock"></i> Últimas noticias</div><div id="dashboard-recent-news" style="font-size:.82rem;color:rgba(255,255,255,0.4);">Cargando...</div></div>
@@ -256,6 +259,14 @@
               <div id="news-list" style="max-height:400px;overflow-y:auto;"><div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-size:.82rem;">Cargando...</div></div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- MENSAJES -->
+      <div id="section-mensajes" class="section">
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between;"><span><i data-feather="mail"></i> Mensajes de contacto</span><button onclick="loadMessages()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button></div>
+          <div id="messages-list"><div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-size:.82rem;">Cargando...</div></div>
         </div>
       </div>
 
@@ -474,6 +485,26 @@
         </div>
       </div>
 
+      </div>
+
+      <!-- SECTION: ESCUDOS RIVALES -->
+      <div id="section-escudos" class="section">
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between;">
+            <span><i data-feather="image"></i> Escudos Rivales</span>
+            <button onclick="renderEscudosRivales()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button>
+          </div>
+          <div class="card-body">
+            <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:1.5rem;line-height:1.5;">
+              Aquí aparecen todos los equipos contra los que jugáis. Haz clic en un equipo para asignarle su escudo. Se mostrará automáticamente en la clasificación, resultados y calendario.
+            </p>
+            <div id="escudos-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;">
+              <!-- Renderizado por JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -550,8 +581,34 @@
   </div>
 </div>
 
+<!-- MODAL Editar Escudo -->
+<div id="edit-escudo-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-box" style="max-width:460px;">
+    <div class="modal-title"><i data-feather="image"></i> Asignar Escudo</div>
+    <div style="margin-bottom:1rem;color:var(--text-secondary);font-size:.9rem;">
+      Equipo: <strong id="edit-escudo-team" style="color:var(--text-primary);font-size:1.1rem;display:block;margin-top:.25rem;"></strong>
+    </div>
+    
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:center;">
+      <div id="edit-escudo-preview" style="width:80px;height:80px;border-radius:12px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.1);padding:10px;">
+        <i data-feather="shield" style="opacity:0.3;width:32px;height:32px;"></i>
+      </div>
+      <div style="flex:1;">
+        <label class="form-label">Subir nuevo escudo (PNG/JPG)</label>
+        <input type="file" id="edit-escudo-file" accept="image/*" class="form-input" style="padding:.5rem;">
+        <p style="font-size:0.75rem;color:var(--text-secondary);margin-top:.5rem;">Se recomienda fondo transparente.</p>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;">
+      <button onclick="closeEditEscudoModal()" class="btn btn-ghost">Cancelar</button>
+      <button onclick="saveEscudo()" class="btn btn-primary" id="btn-save-escudo"><i data-feather="upload"></i> Subir y Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast-container"></div>
 
-<script src="js/admin.js?v=1"></script>
+<script src="js/admin.js?v=3"></script>
 </body>
 </html>

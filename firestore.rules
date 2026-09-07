@@ -10,6 +10,20 @@ service cloud.firestore {
     match /staff/{document=**} { allow read: if true; allow write: if isAdmin(); }
     match /sponsors/{document=**} { allow read: if true; allow write: if isAdmin(); }
     match /competitions/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /settings/{document=**} { allow read: if true; allow write: if isAdmin(); }
+
+    // Mensajes del formulario de contacto: cualquier visitante puede crear uno
+    // (con forma y tamaño limitados), pero solo el admin puede leerlos o borrarlos.
+    match /messages/{messageId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(['name','email','subject','message','timestamp'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 200
+        && request.resource.data.email is string && request.resource.data.email.size() > 0 && request.resource.data.email.size() <= 200
+        && request.resource.data.subject is string && request.resource.data.subject.size() <= 300
+        && request.resource.data.message is string && request.resource.data.message.size() > 0 && request.resource.data.message.size() <= 5000
+        && request.resource.data.timestamp == request.time;
+    }
+
     match /{document=**} { allow read, write: if false; }
   }
 }

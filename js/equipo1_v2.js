@@ -127,22 +127,83 @@ function renderCalendar(calendarData, groupName) {
   return wrapper;
 }
 
+// Escapa datos de Firestore (nombres de equipo, sede...) antes de insertarlos con innerHTML.
+// Estos vienen de texto pegado por el admin desde webs de terceros (federación),
+// así que no se puede confiar en que nunca contengan caracteres HTML.
+function escapeHtml(str){
+  if(str==null) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
 // Firebase inline
 const db=window.db || firebase.firestore();
 
 let currentData=null,activeTab='standings',selectedJourney=null;
+let globalTeamLogos = {};
 const competitionId='senior-masculino';
 
+function fetchLogos() {
+  return new Promise((resolve) => {
+    db.collection('competitions').doc('teamLogos').onSnapshot(doc => {
+      if(doc.exists) {
+        const rawData = doc.data();
+        globalTeamLogos = {};
+        for(let key in rawData) {
+          if(!key) continue;
+          const normKey = key.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+          globalTeamLogos[normKey] = rawData[key];
+        }
+        if(currentData) renderActiveTab();
+      }
+      resolve();
+    }, () => {
+      resolve();
+    });
+  });
+}
+
+function getTeamHtml(teamName, isLarge = false, isAway = false) {
+  if(!teamName) return '';
+  const norm = teamName.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, " ").replace(/\s+/g, " ").trim();
+  const lookupSlug = teamName.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const isTolosa = lookupSlug.includes('TOLOSA');
+  
+  let crestClass = isLarge ? 'team-crest-lg' : 'team-crest';
+  if(isAway) crestClass += ' team-crest-away';
+  
+  let crestHtml = '';
+  let textHtml = '';
+  
+  const safeTeamName = escapeHtml(teamName);
+
+  if(isTolosa) {
+    crestHtml = `<img src="escudo.png" class="${crestClass}" alt="Tolosa CF">`;
+    textHtml = `<span style="font-weight:700;">${safeTeamName} <span style="color:var(--accent-bright);font-size:.7rem;">&#9679;</span></span>`;
+  } else {
+    const logo = globalTeamLogos[lookupSlug];
+    if(logo) crestHtml = `<img src="${escapeHtml(logo)}" class="${crestClass}" alt="${safeTeamName}">`;
+    textHtml = `<span style="font-weight:400;">${safeTeamName}</span>`;
+  }
+  
+  return isAway && crestHtml ? textHtml + crestHtml : crestHtml + textHtml;
+}
+
 function loadData(){
-  db.collection('competitions').doc(competitionId).onSnapshot(doc=>{
-    document.getElementById('loading').style.display='none';
-    document.getElementById('tab-content').style.display='block';
-    if(doc.exists){
-      currentData=doc.data();
-      const subEl = document.getElementById('competition-name');
-      subEl.setAttribute('data-i18n', 'competition.name');
-      subEl.setAttribute('data-season', currentData.season || '2026/27');
-      renderActiveTab();
+  fetchLogos().then(() => {
+    db.collection('competitions').doc(competitionId).onSnapshot(doc=>{
+      document.getElementById('loading').style.display='none';
+      document.getElementById('tab-content').style.display='block';
+      if(doc.exists){
+        currentData=doc.data();
+        const subEl = document.getElementById('competition-name');
+        subEl.setAttribute('data-i18n', 'competition.name');
+        subEl.setAttribute('data-season', currentData.season || '2026/27');
+        renderActiveTab();
     }else{
       document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.noDataTitle">Sin datos disponibles todavía</p><p style="font-size:.85rem;margin-top:.5rem;" data-i18n="team.noDataText">El administrador aún no ha subido datos para esta categoría.</p></div>';
       if(typeof applyTranslations==='function')applyTranslations();
@@ -151,6 +212,7 @@ function loadData(){
     document.getElementById('loading').style.display='none';
     document.getElementById('tab-content').style.display='block';
     document.getElementById('tab-content').textContent = `<div style="text-align:center;padding:4rem;color:#f87171;"><p style="font-weight:700;">Error de conexion: ${err.message}</p></div>`;
+  });
   });
 }
 
@@ -177,6 +239,7 @@ function renderStandings(){
     document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.standings.empty">Sin clasificación disponible</p></div>';
     return;
   }
+  
   let html=`<div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);" class="dark-border">
   <table class="standings-table">
   <thead><tr><th style="text-align:center;">Pos</th><th>Equipo</th><th style="text-align:center;">PJ</th><th style="text-align:center;">PG</th><th style="text-align:center;">PE</th><th style="text-align:center;">PP</th><th style="text-align:center;">GF</th><th style="text-align:center;">GC</th><th style="text-align:center;">DG</th><th style="text-align:center;color:var(--accent-bright);">PTS</th></tr></thead>
@@ -188,7 +251,8 @@ function renderStandings(){
     if(item.pos===1)posEl=`<span class="pos-medal pos-1">${item.pos}</span>`;
     if(item.pos===2)posEl=`<span class="pos-medal pos-2">${item.pos}</span>`;
     if(item.pos===3)posEl=`<span class="pos-medal pos-3">${item.pos}</span>`;
-    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};">${item.team}${isTolosa?' <span style="color:var(--accent-bright);font-size:.7rem;">&#9679;</span>':''}</td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td style="text-align:center;">${item.gf||0}</td><td style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
+    const teamHtml = getTeamHtml(item.team);
+    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};"><div style="display:flex; align-items:center; height:100%;">${teamHtml}</div></td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td style="text-align:center;">${item.gf||0}</td><td style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
   });
   html+=`</tbody></table></div>`;
   document.getElementById('tab-content').innerHTML = html;
@@ -236,7 +300,7 @@ function renderResults(){
     const isTolosa=m.home?.toLowerCase().includes('tolosa')||m.away?.toLowerCase().includes('tolosa');
     const currentLang = typeof getLang === 'function' ? getLang() : 'es';
     const dayOfWeek = getDayOfWeekName(m.date, currentLang);
-    const dateDisplay = dayOfWeek ? `${dayOfWeek}, ${m.date || ''}` : (m.date || '');
+    const dateDisplay = dayOfWeek ? `${dayOfWeek}, ${escapeHtml(m.date || '')}` : escapeHtml(m.date || '');
     
     const score=m.score||'';
     const parts=score.split('-').map(s=>parseInt(s.trim(),10));
@@ -247,15 +311,15 @@ function renderResults(){
       <div class="match-header">
         <span class="match-journey">J${m.journey||1}</span>
         <span class="match-header-separator">•</span>
-        <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${m.time}` : ''}</span>
+        <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${escapeHtml(m.time)}` : ''}</span>
       </div>
       <div class="match-body">
-        <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'};">${m.home}</div>
+        <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px;">${getTeamHtml(m.home, true, false)}</div>
         <div class="match-score ${isPlayed?'':'unplayed'}">${displayScore}</div>
-        <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'};">${m.away}</div>
+        <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px; justify-content:flex-end; text-align:right;">${getTeamHtml(m.away, true, true)}</div>
       </div>
       <div class="match-footer" style="opacity:.7;font-size:.78rem;">
-        <span><i data-feather="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:.25rem;"></i>${m.venue||''}</span>
+        <span><i data-feather="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:.25rem;"></i>${escapeHtml(m.venue||'')}</span>
       </div>
     </div>`;
   });
@@ -322,21 +386,21 @@ function renderCalendar(){
     
     const currentLang = typeof getLang === 'function' ? getLang() : 'es';
     const dayOfWeek = getDayOfWeekName(m.date, currentLang);
-    const dateDisplay = dayOfWeek ? `${dayOfWeek}, ${m.date || ''}` : (m.date || '');
+    const dateDisplay = dayOfWeek ? `${dayOfWeek}, ${escapeHtml(m.date || '')}` : escapeHtml(m.date || '');
     
     html+=`<div class="match-card ${isTolosa?'is-tolosa-match':''}">
       <div class="match-header">
         <span class="match-journey">J${m.journey||1}</span>
         <span class="match-header-separator">•</span>
-        <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${m.time}` : ''}</span>
+        <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${escapeHtml(m.time)}` : ''}</span>
       </div>
       <div class="match-body">
-        <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'};">${m.home}</div>
+        <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px;">${getTeamHtml(m.home, true, false)}</div>
         <div class="match-score ${isPlayed?'':'unplayed'}">${displayScore}</div>
-        <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'};">${m.away}</div>
+        <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px; justify-content:flex-end; text-align:right;">${getTeamHtml(m.away, true, true)}</div>
       </div>
       <div class="match-footer" style="opacity:.7;font-size:.78rem;">
-        <span><i data-feather="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:.25rem;"></i>${m.venue||''}</span>
+        <span><i data-feather="map-pin" style="width:11px;height:11px;display:inline-block;vertical-align:middle;margin-right:.25rem;"></i>${escapeHtml(m.venue||'')}</span>
       </div>
     </div>`;
   });

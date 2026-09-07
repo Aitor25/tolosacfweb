@@ -453,6 +453,9 @@ html.dark .value-card { box-shadow:none; }
 /* ── Legacy compat ── */
 .animate-fade-in { animation:fadeIn .8s ease-out forwards; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;} }
+.team-crest{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:8px;display:inline-block;}
+.team-crest-lg{width:48px;height:48px;object-fit:contain;vertical-align:middle;margin-right:12px;display:inline-block;}
+.team-crest-away{margin-right:0 !important; margin-left:12px !important;}
 .hover-lift { transition:all .3s cubic-bezier(.4,0,.2,1); }
 .hover-lift:hover { transform:translateY(-5px);box-shadow:0 10px 25px -5px rgba(0,0,0,.1); }
 

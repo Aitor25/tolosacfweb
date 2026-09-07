@@ -83,25 +83,46 @@
     var db = window.db;
     if (!db) { console.warn('[load-news-index] window.db no disponible'); return; }
     
-    db.collection('competitions').doc('senior-masculino').get()
-      .then(function(doc) {
-        if (!doc.exists) return;
-        var data = doc.data();
+    Promise.all([
+      db.collection('competitions').doc('senior-masculino').get(),
+      db.collection('competitions').doc('teamLogos').get()
+    ]).then(function(docs) {
+        var compDoc = docs[0];
+        var logoDoc = docs[1];
+        if (!compDoc.exists) return;
+        
+        var globalLogos = {};
+        if(logoDoc.exists) {
+          var rawData = logoDoc.data();
+          for(var key in rawData) {
+            if(!key) continue;
+            var normKey = key.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+            globalLogos[normKey] = rawData[key];
+          }
+        }
+        
+        function getCrestHtml(teamName) {
+          if(!teamName) return '';
+          var slug = teamName.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+          var isTolosa = slug.indexOf('TOLOSA') > -1;
+          var src = isTolosa ? 'escudo.png' : (globalLogos[slug] || '');
+          if(src) return '<img src="' + src + '" style="width:100%;height:100%;object-fit:contain;" alt="' + teamName + '">';
+          return '<i data-feather="shield" style="width:50%;height:50%;opacity:0.2;"></i>';
+        }
+        
+        var data = compDoc.data();
         var results = data.results || [];
         
-        // Filtrar partidos del Tolosa CF
         var tolosaMatches = results.filter(function(m) {
           var homeLower = (m.home || '').toLowerCase();
           var awayLower = (m.away || '').toLowerCase();
           return homeLower.indexOf('tolosa') > -1 || awayLower.indexOf('tolosa') > -1;
         });
         
-        // Ordenar partidos por jornada cronológicamente
         tolosaMatches.sort(function(a, b) {
           return (a.journey || 1) - (b.journey || 1);
         });
         
-        // Próximo partido (primer partido donde el score es 'vs' o no numérico o vacío)
         var nextMatch = null;
         for (var i = 0; i < tolosaMatches.length; i++) {
           var m = tolosaMatches[i];
@@ -114,7 +135,6 @@
           }
         }
         
-        // Último resultado (último partido donde el score es numérico)
         var lastResult = null;
         for (var j = tolosaMatches.length - 1; j >= 0; j--) {
           var m2 = tolosaMatches[j];
@@ -127,55 +147,48 @@
           }
         }
         
-        // Actualizar UI del Próximo Partido
-        var rivalEl = document.getElementById('fixture-rival');
-        var dateEl  = document.getElementById('fixture-date');
-        var venueEl = document.getElementById('fixture-venue');
-        
         var currentLang = typeof getLang === 'function' ? getLang() : 'es';
         var t = window.TRANSLATIONS && window.TRANSLATIONS[currentLang];
 
+        function updateAll(selector, content, isHtml) {
+          var els = document.querySelectorAll(selector);
+          for(var k=0; k<els.length; k++) {
+            if(isHtml) els[k].innerHTML = content;
+            else els[k].textContent = content;
+          }
+        }
+
         if (nextMatch) {
-          rivalEl.textContent = nextMatch.home + ' vs ' + nextMatch.away;
+          updateAll('.mc-next-home-name', nextMatch.home);
+          updateAll('#mc-next-home-crest-a, #mc-next-home-crest-b', getCrestHtml(nextMatch.home), true);
+          updateAll('.mc-next-away-name', nextMatch.away);
+          updateAll('#mc-next-away-crest-a, #mc-next-away-crest-b', getCrestHtml(nextMatch.away), true);
+          
           var dayOfWeek = typeof getDayOfWeekName === 'function' ? getDayOfWeekName(nextMatch.date, currentLang) : '';
           var dateText = dayOfWeek ? dayOfWeek + ', ' + (nextMatch.date || '') : (nextMatch.date || 'Pendiente');
           if (nextMatch.time && nextMatch.time !== 'Pendiente' && nextMatch.time !== '0:00') {
             dateText += ' • ' + nextMatch.time;
           }
-          dateEl.textContent = dateText;
-          venueEl.textContent = nextMatch.venue || 'Usabal Kiroldegia';
-        } else {
-          rivalEl.textContent = t && t['fixture.noMatches'] ? t['fixture.noMatches'] : 'Sin partidos programados';
-          dateEl.textContent = '—';
-          venueEl.textContent = '—';
+          updateAll('.mc-next-date', dateText);
+          updateAll('.mc-next-venue', nextMatch.venue || 'Usabal Kiroldegia');
         }
-        
-        // Actualizar UI del Último Resultado
-        var teamsEl  = document.getElementById('last-result-teams');
-        var scoreEl  = document.getElementById('last-result-score');
-        var journeyEl = document.getElementById('last-result-journey');
         
         if (lastResult) {
-          teamsEl.textContent = lastResult.home + ' vs ' + lastResult.away;
-          scoreEl.textContent = lastResult.score || '—';
+          updateAll('.mc-last-home-name', lastResult.home);
+          updateAll('#mc-last-home-crest-a, #mc-last-home-crest-b', getCrestHtml(lastResult.home), true);
+          updateAll('.mc-last-away-name', lastResult.away);
+          updateAll('#mc-last-away-crest-a, #mc-last-away-crest-b', getCrestHtml(lastResult.away), true);
+          
+          updateAll('.mc-last-score', lastResult.score || '—');
           var jText = t && t['fixture.journey'] ? t['fixture.journey'] : 'Jornada';
-          journeyEl.textContent = jText + ' ' + (lastResult.journey || 1);
-        } else {
-          teamsEl.textContent = t && t['fixture.noResults'] ? t['fixture.noResults'] : 'Sin resultados registrados';
-          scoreEl.textContent = '—';
-          journeyEl.textContent = '—';
+          updateAll('.mc-last-journey', jText + ' ' + (lastResult.journey || 1));
         }
         
-        // Reprocesar iconos feather por si acaso
         if (typeof feather !== 'undefined') feather.replace();
-        
-        // Aplicar traducciones para los nuevos literales dinámicos
-        if (typeof applyTranslations === 'function') {
-          applyTranslations();
-        }
+        if (typeof applyTranslations === 'function') applyTranslations();
       })
       .catch(function(err) {
-        console.error('[load-news-index] Error al cargar banner:', err.message);
+        console.warn('Error loading fixture banner:', err);
       });
   }
 
