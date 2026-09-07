@@ -17,7 +17,7 @@
   <meta property="og:description" content="Página oficial del Tolosa CF Eskubaloia.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://cdn.lightwidget.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; base-uri 'self'; object-src 'none'; form-action 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://www.gstatic.com https://cdn.lightwidget.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.emailjs.com; base-uri 'self'; object-src 'none'; form-action 'self';">
 
 <link rel="icon" type="image/png" href="escudo.png">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -226,9 +226,14 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="js/firebase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/common.js"></script>
 <script>
+if (typeof emailjs !== 'undefined') {
+  emailjs.init({ publicKey: 'NjwepdlD6Ufa-HBx8' });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   feather.replace();
 
@@ -279,28 +284,53 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true;
       btn.textContent = t ? t['contact.form.sending'] : 'Enviando...';
 
-      if (!window.db) {
-        btn.disabled = false;
-        btn.textContent = originalText;
-        feedback.textContent = 'No se ha podido conectar con el servidor. Escríbenos directamente a eskubaloia.tolosacf@gmail.com.';
-        feedback.style.cssText = 'display:block;margin-top:1rem;padding:.75rem;border-radius:8px;font-size:.85rem;text-align:center;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;';
-        return;
-      }
-
-      window.db.collection('messages').add({
-        name: name.slice(0, 200),
-        email: email.slice(0, 200),
-        subject: subject.slice(0, 300),
-        message: message.slice(0, 5000),
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        showSuccess();
-      }).catch((err) => {
+      function showFailure() {
         btn.disabled = false;
         btn.textContent = originalText;
         feedback.textContent = 'No se ha podido enviar el mensaje. Escríbenos directamente a eskubaloia.tolosacf@gmail.com.';
         feedback.style.cssText = 'display:block;margin-top:1rem;padding:.75rem;border-radius:8px;font-size:.85rem;text-align:center;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#f87171;';
-        console.error('[contacto] Error al guardar mensaje:', err);
+      }
+
+      const tasks = [];
+
+      // Guarda el mensaje en Firestore (panel "Mensajes" del admin)
+      if (window.db) {
+        tasks.push(window.db.collection('messages').add({
+          name: name.slice(0, 200),
+          email: email.slice(0, 200),
+          subject: subject.slice(0, 300),
+          message: message.slice(0, 5000),
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }));
+      } else {
+        tasks.push(Promise.reject(new Error('Firestore no disponible')));
+      }
+
+      // Envía un aviso por email directo (EmailJS)
+      if (typeof emailjs !== 'undefined') {
+        tasks.push(emailjs.send('service_exq8amo', 'template_5cj73im', {
+          name: name.slice(0, 200),
+          email: email.slice(0, 200),
+          title: subject.slice(0, 300),
+          message: message.slice(0, 5000)
+        }));
+      } else {
+        tasks.push(Promise.reject(new Error('EmailJS no disponible')));
+      }
+
+      Promise.allSettled(tasks).then((results) => {
+        const [dbResult, emailResult] = results;
+        const dbOk = dbResult.status === 'fulfilled';
+        const emailOk = emailResult.status === 'fulfilled';
+
+        if (!dbOk) console.error('[contacto] Error al guardar en Firestore:', dbResult.reason);
+        if (!emailOk) console.error('[contacto] Error al enviar email:', emailResult.reason);
+
+        if (dbOk || emailOk) {
+          showSuccess();
+        } else {
+          showFailure();
+        }
       });
     });
   }
