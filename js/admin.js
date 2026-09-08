@@ -151,8 +151,13 @@ const AdminLogic={
   //       · getMatchKey()  → deduplicación interna (no guarda nada)
   //       · findSimilarMaster() → comparación con lista maestra (no guarda nada)
   // ─────────────────────────────────────────────────────────────────────
-  // Detecta el formato "bloque VS": cada partido viene como
-  // VS / Equipo Local / marcador-o-guion / Equipo Visitante / marcador-o-guion / fecha / hora / sede / (líneas de estado a ignorar)
+  // ── Formato "bloque VS" (dos variantes de la misma web de origen) ──
+  // A) VS / Equipo / marcador-o-guion / Equipo / marcador-o-guion / fecha / hora / sede / Pending / Not available / L / V
+  // B) Vs / Equipo / - / Equipo / - / - / - / "N - N" / fecha / hora / sede
+  // Ambas empiezan igual (VS, equipo, guion, equipo, guion), así que se detectan
+  // con la misma firma. La extracción no asume una longitud de bloque fija:
+  // busca la fecha DD/MM/YYYY hacia delante y, de paso, un marcador explícito
+  // "N - N" si aparece; todo lo demás (Pending/Not available/L/V/etc.) se ignora.
   _isVsBlockFormat(lines){
     for(let i=0;i<lines.length;i++){
       if(lines[i].toUpperCase()==='VS' && lines[i+2]==='-' && lines[i+4]==='-') return true;
@@ -160,40 +165,60 @@ const AdminLogic={
     return false;
   },
 
-  _parseVsBlockText(lines, journeyNumber){
+  _extractVsBlocks(lines){
     const IGNORE_LINE=/^(pending|not available|l|v|acta)$/i;
-    const matches=[];
+    const blocks=[];
     for(let i=0;i<lines.length;i++){
       if(lines[i].toUpperCase()!=='VS') continue;
       const home=lines[i+1]||'';
       const homeScoreRaw=lines[i+2]||'';
       const away=lines[i+3]||'';
       const awayScoreRaw=lines[i+4]||'';
-      const dateLine=lines[i+5]||'';
-      const timeLine=lines[i+6]||'';
-      const venueLine=lines[i+7]||'';
       if(!home||!away||IGNORE_LINE.test(home)||IGNORE_LINE.test(away)) continue;
 
-      const homeScoreNum=parseInt(homeScoreRaw,10);
-      const awayScoreNum=parseInt(awayScoreRaw,10);
-      const isPlayed=!isNaN(homeScoreNum)&&!isNaN(awayScoreNum);
+      // Buscar la fecha (y, si aparece por el camino, un marcador "N - N" explícito)
+      let dateIdx=-1, explicitScore=null;
+      const searchLimit=Math.min(i+16, lines.length);
+      for(let k=i+4;k<searchLimit;k++){
+        if(/^\d{2}\/\d{2}\/\d{4}$/.test(lines[k])){ dateIdx=k; break; }
+        const sm=lines[k].match(/^(\d+)\s*-\s*(\d+)$/);
+        if(sm) explicitScore={home:parseInt(sm[1],10), away:parseInt(sm[2],10)};
+      }
+      if(dateIdx===-1) continue; // bloque irregular sin fecha localizable: se ignora
 
-      const dateMatch=dateLine.match(/\d{2}\/\d{2}\/\d{4}/);
-      const timeMatch=/^\d{2}:\d{2}$/.test(timeLine);
+      const timeLine=lines[dateIdx+1]||'';
+      const venueLine=lines[dateIdx+2]||'';
+      const timeOk=/^\d{2}:\d{2}$/.test(timeLine);
 
-      matches.push({
-        journey:parseInt(journeyNumber,10)||1,
-        date:dateMatch ? dateMatch[0] : 'Pendiente',
-        time:timeMatch ? timeLine : 'Pendiente',
+      let homeGoals=parseInt(homeScoreRaw,10);
+      let awayGoals=parseInt(awayScoreRaw,10);
+      let isPlayed=!isNaN(homeGoals)&&!isNaN(awayGoals);
+      if(explicitScore){
+        // "0 - 0" es el placeholder de partido no jugado en esta web (un 0-0 real no existe en balonmano)
+        if(explicitScore.home===0 && explicitScore.away===0){ isPlayed=false; }
+        else { homeGoals=explicitScore.home; awayGoals=explicitScore.away; isPlayed=true; }
+      }
+
+      blocks.push({
+        atLine:i,
+        home:home.trim(),
+        away:away.trim(),
+        date:lines[dateIdx],
+        time:timeOk ? timeLine : 'Pendiente',
         venue:(venueLine && !IGNORE_LINE.test(venueLine)) ? venueLine : 'Pabellon',
-        home: home.trim(),
-        away: away.trim(),
-        score: isPlayed ? `${homeScoreNum}-${awayScoreNum}` : 'vs',
-        status: isPlayed ? 'Finalizado' : 'Programado'
+        score:isPlayed ? `${homeGoals}-${awayGoals}` : 'vs',
+        status:isPlayed ? 'Finalizado' : 'Programado'
       });
-      i+=7; // saltar el bloque ya consumido; el bucle busca el siguiente "VS"
     }
-    return matches;
+    return blocks;
+  },
+
+  _parseVsBlockText(lines, journeyNumber){
+    const j=parseInt(journeyNumber,10)||1;
+    return this._extractVsBlocks(lines).map(b=>({
+      journey:j, date:b.date, time:b.time, venue:b.venue,
+      home:b.home, away:b.away, score:b.score, status:b.status
+    }));
   },
 
   parseJourneyText(text,journeyNumber=1){
@@ -227,8 +252,55 @@ const AdminLogic={
     return matches;
   },
 
+  // Formato nuevo de clasificación: cada equipo es un bloque
+  //   Pos / Equipo / PJ|- / PG|- / PE|- / PP|- / (5º dato sin usar) / "GF : GC" / "DG\tPTS" / (estadísticas extra a ignorar)
+  // Se detecta buscando una línea de solo número seguida, 7 líneas más abajo,
+  // de un marcador "N : N" — firma que no aparece en la tabla de una sola
+  // línea por equipo del formato antiguo.
+  _isNewClassificationFormat(lines){
+    for(let i=0;i<lines.length;i++){
+      if(/^\d+$/.test(lines[i]) && /^\d+\s*:\s*\d+$/.test(lines[i+7]||'')) return true;
+    }
+    return false;
+  },
+
+  _parseNewClassificationFormat(lines){
+    const toNum=(s)=>{ const n=parseInt(s,10); return isNaN(n) ? 0 : n; };
+    const standings=[];
+    let i=0;
+    while(i<lines.length){
+      if(!/^\d+$/.test(lines[i])){ i++; continue; }
+      const pos=parseInt(lines[i],10);
+      const team=lines[i+1]||'';
+      const gfgc=(lines[i+7]||'').match(/^(\d+)\s*:\s*(\d+)$/);
+      if(!team || !gfgc){ i++; continue; }
+
+      const dgPts=(lines[i+8]||'').split(/\t+/).map(s=>s.trim()).filter(Boolean);
+
+      standings.push({
+        pos,
+        team: team.trim(),
+        pj: toNum(lines[i+2]),
+        pg: toNum(lines[i+3]),
+        pe: toNum(lines[i+4]),
+        pp: toNum(lines[i+5]),
+        // lines[i+6]: un 5º dato de la web de origen que no usamos aquí
+        gf: toNum(gfgc[1]),
+        gc: toNum(gfgc[2]),
+        pts: dgPts.length>=2 ? toNum(dgPts[1]) : 0
+      });
+
+      // saltar hasta la siguiente línea que sea un número de posición
+      let j=i+9;
+      while(j<lines.length && !/^\d+$/.test(lines[j])) j++;
+      i=j;
+    }
+    return standings.sort((a,b)=>a.pos-b.pos);
+  },
+
   parseStandingsTable(text){
     const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    if(this._isNewClassificationFormat(lines)) return this._parseNewClassificationFormat(lines);
     const standings=[];
     lines.forEach(line=>{
       const parts=line.split(/\t|\s{2,}/);
@@ -240,48 +312,26 @@ const AdminLogic={
   },
 
   // Variante "bloque VS" del calendario completo: igual que _parseVsBlockText
-  // pero sin número de jornada fijo — lo toma de las cabeceras "JORNADA N"
-  // que debe traer el texto pegado para separar cada semana.
+  // pero sin número de jornada fijo — lo toma de las cabeceras "JORNADA N" o
+  // "matchday / N (fecha)" que debe traer el texto pegado para separar cada semana.
   _parseVsBlockCalendar(lines){
-    const IGNORE_LINE=/^(pending|not available|l|v|acta)$/i;
-    const matches=[];
-    const teamsSet=new Set();
-    let currentJourney=1;
+    const headers=[]; // {atLine, journey}
     for(let i=0;i<lines.length;i++){
-      const journeyMatch=lines[i].match(/JORNADA\s*(\d+)/i);
-      if(journeyMatch){ currentJourney=parseInt(journeyMatch[1],10); continue; }
-      if(lines[i].toUpperCase()!=='VS') continue;
-
-      const home=lines[i+1]||'';
-      const homeScoreRaw=lines[i+2]||'';
-      const away=lines[i+3]||'';
-      const awayScoreRaw=lines[i+4]||'';
-      const dateLine=lines[i+5]||'';
-      const timeLine=lines[i+6]||'';
-      const venueLine=lines[i+7]||'';
-      if(!home||!away||IGNORE_LINE.test(home)||IGNORE_LINE.test(away)) continue;
-
-      const homeScoreNum=parseInt(homeScoreRaw,10);
-      const awayScoreNum=parseInt(awayScoreRaw,10);
-      const isPlayed=!isNaN(homeScoreNum)&&!isNaN(awayScoreNum);
-      const dateMatch=dateLine.match(/\d{2}\/\d{2}\/\d{4}/);
-      const timeMatch=/^\d{2}:\d{2}$/.test(timeLine);
-
-      if(home) teamsSet.add(home.trim());
-      if(away) teamsSet.add(away.trim());
-
-      matches.push({
-        journey: currentJourney,
-        date: dateMatch ? dateMatch[0] : 'Pendiente',
-        time: timeMatch ? timeLine : 'Pendiente',
-        home: home.trim(),
-        away: away.trim(),
-        score: isPlayed ? `${homeScoreNum}-${awayScoreNum}` : 'vs',
-        venue: (venueLine && !IGNORE_LINE.test(venueLine)) ? venueLine : 'Pabellon',
-        status: isPlayed ? 'Finalizado' : 'Programado'
-      });
-      i+=7;
+      const jHeader=lines[i].match(/JORNADA\s*(\d+)/i);
+      if(jHeader){ headers.push({atLine:i, journey:parseInt(jHeader[1],10)}); continue; }
+      if(/^matchday$/i.test(lines[i])){
+        const num=(lines[i+1]||'').match(/^(\d+)/);
+        if(num) headers.push({atLine:i, journey:parseInt(num[1],10)});
+      }
     }
+    const blocks=this._extractVsBlocks(lines);
+    const teamsSet=new Set();
+    const matches=blocks.map(b=>{
+      let journey=1;
+      for(const h of headers){ if(h.atLine<=b.atLine) journey=h.journey; else break; }
+      teamsSet.add(b.home); teamsSet.add(b.away);
+      return { journey, date:b.date, time:b.time, home:b.home, away:b.away, score:b.score, venue:b.venue, status:b.status };
+    });
     return { matches, teams: Array.from(teamsSet).sort() };
   },
 
