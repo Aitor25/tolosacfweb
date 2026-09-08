@@ -77,7 +77,6 @@
   .social-btn{width:36px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);text-decoration:none;transition:all .25s;}
   .social-btn:hover{background:#1255c9;border-color:#1255c9;color:white;transform:translateY(-2px);}
 </style>
-<script type="module" src="js/noticia.js?v=1"></script>
 
   <script type="application/ld+json">
   {
@@ -254,6 +253,11 @@
 <script src="js/common.js"></script>
 <script>
 const db=window.db || firebase.firestore();
+let currentArticleData = null;
+
+window.addEventListener('langchange', () => {
+  if (currentArticleData) renderArticle(currentArticleData);
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
   // load article
@@ -277,11 +281,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function renderArticle(data) {
-  const title = data.title || data.titulo || '';
+  currentArticleData = data;
+  const lang = typeof getLang === 'function' ? getLang() : 'es';
+  const title = (lang === 'eu' && data.title_eu) || data.title || data.titulo || '';
   const date = data.date || data.fecha || '';
   const tag = data.tag || data.categoria || 'Club';
   const image = data.image || data.imagen || '';
-  const content = data.content || data.summary || data.resumen || '';
+  const content = (lang === 'eu' && (data.content_eu || data.summary_eu)) || data.content || data.summary || data.resumen || '';
 
   document.title = title + ' - TOLOSA CF ESKUBALOIA';
   document.getElementById('news-title').textContent = title;

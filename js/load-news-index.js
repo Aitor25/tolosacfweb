@@ -7,22 +7,51 @@
   'use strict';
 
   function buildCard(id, data, featured) {
-    var title = data.title || data.titulo || 'Sin titulo';
+    var lang  = typeof getLang === 'function' ? getLang() : 'es';
+    var title = (lang === 'eu' && data.title_eu) || data.title || data.titulo || 'Sin titulo';
     var date  = data.date  || data.fecha  || '';
     var tag   = data.tag   || data.categoria || 'Club';
-    var image = data.image || data.imagen || '';
-    var href  = 'noticia.html?id=' + encodeURIComponent(id);
-    var imgHtml = image
-      ? '<img class="news-card-img" src="' + image + '" alt="' + title + '" loading="lazy">'
-      : '<div class="news-card-img" style="background:rgba(18,85,201,0.15);"></div>';
-    return '<a class="news-card' + (featured ? ' featured' : '') + '" href="' + href + '">'
-      + imgHtml
-      + '<div class="news-card-overlay"></div>'
-      + '<div class="news-card-body">'
-      + '<span class="news-card-cat">' + tag + '</span>'
-      + '<h3 class="news-card-title">' + title + '</h3>'
-      + '<div class="news-card-date">' + date + '</div>'
-      + '</div></a>';
+    var image = typeof safeURL === 'function' ? safeURL(data.image || data.imagen, 'image') : (data.image || data.imagen || '');
+
+    var a = document.createElement('a');
+    a.className = 'news-card' + (featured ? ' featured' : '');
+    a.href = 'noticia.html?id=' + encodeURIComponent(id);
+
+    if (image) {
+      var img = document.createElement('img');
+      img.className = 'news-card-img';
+      img.src = image;
+      img.alt = title;
+      img.loading = 'lazy';
+      a.appendChild(img);
+    } else {
+      var ph = document.createElement('div');
+      ph.className = 'news-card-img';
+      ph.style.background = 'rgba(18,85,201,0.15)';
+      a.appendChild(ph);
+    }
+
+    var overlay = document.createElement('div');
+    overlay.className = 'news-card-overlay';
+    a.appendChild(overlay);
+
+    var body = document.createElement('div');
+    body.className = 'news-card-body';
+    var catSpan = document.createElement('span');
+    catSpan.className = 'news-card-cat';
+    catSpan.textContent = tag;
+    var h3 = document.createElement('h3');
+    h3.className = 'news-card-title';
+    h3.textContent = title;
+    var dateDiv = document.createElement('div');
+    dateDiv.className = 'news-card-date';
+    dateDiv.textContent = date;
+    body.appendChild(catSpan);
+    body.appendChild(h3);
+    body.appendChild(dateDiv);
+    a.appendChild(body);
+
+    return a;
   }
 
   function sortByDate(docs) {
@@ -35,21 +64,36 @@
     });
   }
 
+  var lastDocs = null;
+
   function render(docs) {
+    lastDocs = docs;
     var grid = document.getElementById('news-grid');
     if (!grid) return;
+    grid.innerHTML = '';
     if (!docs.length) {
       var currentLang = typeof getLang === 'function' ? getLang() : 'es';
       var t = window.TRANSLATIONS && window.TRANSLATIONS[currentLang];
       var emptyMsg = t && t['news.empty'] ? t['news.empty'] : 'Aún no hay noticias';
-      grid.innerHTML = '<div class="news-placeholder featured" style="grid-column:1/-1;"><span class="news-placeholder-text">' + emptyMsg + '</span></div>';
+      var placeholder = document.createElement('div');
+      placeholder.className = 'news-placeholder featured';
+      placeholder.style.gridColumn = '1/-1';
+      var span = document.createElement('span');
+      span.className = 'news-placeholder-text';
+      span.textContent = emptyMsg;
+      placeholder.appendChild(span);
+      grid.appendChild(placeholder);
       return;
     }
-    grid.innerHTML = docs.map(function(doc, i) {
-      return buildCard(doc.id, doc.data(), i === 0);
-    }).join('');
+    docs.forEach(function(doc, i) {
+      grid.appendChild(buildCard(doc.id, doc.data(), i === 0));
+    });
     if (typeof feather !== 'undefined') feather.replace();
   }
+
+  window.addEventListener('langchange', function() {
+    if (lastDocs) render(lastDocs);
+  });
 
   function loadNews() {
     var db = window.db;

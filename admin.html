@@ -237,6 +237,14 @@
 </div>
             <div class="form-group"><label class="form-label">Resumen corto</label><textarea id="news-summary" class="form-textarea" placeholder="Breve descripción…" style="min-height:70px;" oninput="updateNewsPreview()"></textarea></div>
             <div class="form-group"><label class="form-label">Contenido (HTML permitido)</label><textarea id="news-content" class="form-textarea" placeholder="<p>Texto aquí...</p>" style="min-height:140px;font-family:monospace;font-size:.8rem;"></textarea></div>
+
+            <div style="margin:1.25rem 0 1rem;padding-top:1rem;border-top:1px dashed rgba(255,255,255,0.15);">
+              <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent-bright);margin-bottom:.75rem;">Euskarazko bertsioa (aukerakoa)</div>
+              <div class="form-group"><label class="form-label">Titulua (EU)</label><input type="text" id="news-title-eu" class="form-input" placeholder="Hutsik utziz gero, gaztelaniazkoa erakutsiko da"></div>
+              <div class="form-group"><label class="form-label">Laburpena (EU)</label><textarea id="news-summary-eu" class="form-textarea" placeholder="Aukerakoa" style="min-height:70px;"></textarea></div>
+              <div class="form-group"><label class="form-label">Edukia (EU)</label><textarea id="news-content-eu" class="form-textarea" placeholder="Aukerakoa" style="min-height:140px;font-family:monospace;font-size:.8rem;"></textarea></div>
+            </div>
+
             <div style="display:flex;gap:.75rem;">
               <button onclick="saveNews()" id="news-save-btn" class="btn btn-primary" style="flex:1;justify-content:center;"><i data-feather="send"></i> Publicar</button>
               <button onclick="clearNewsForm()" class="btn btn-ghost"><i data-feather="x"></i></button>

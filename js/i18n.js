@@ -357,6 +357,8 @@ function setLanguage(lang) {
   localStorage.setItem('lang', lang);
   applyTranslations();
   updateLangSelector(lang);
+  // Avisa a contenido dinámico (noticias, etc.) para que se vuelva a pintar en el nuevo idioma
+  window.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
 }
 
 // ── Aplicar traducciones al DOM ──

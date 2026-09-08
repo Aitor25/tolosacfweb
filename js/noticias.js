@@ -15,12 +15,14 @@
   const PAGE_SIZE = 9;
   let lastDoc = null;
   let allLoaded = false;
+  let loadedDocs = [];
 
   // ── Construir card HTML ──
-  
+
   // --- Construir card segura ---
   function buildCard(id, data, featured) {
-    const title   = data.title   || data.titulo   || 'Sin titulo';
+    const lang    = typeof getLang === 'function' ? getLang() : 'es';
+    const title   = (lang === 'eu' && data.title_eu) || data.title || data.titulo || 'Sin titulo';
     const date    = data.date    || data.fecha    || '';
     const tag     = data.tag     || data.categoria || 'Club';
     const image   = safeURL(data.image || data.imagen, 'image');
@@ -91,6 +93,7 @@
     if (!append) {
       lastDoc = null;
       allLoaded = false;
+      loadedDocs = [];
       container.innerHTML = `<div style="grid-column:1/-1;padding:3rem;text-align:center;">
         <div style="width:28px;height:28px;border:3px solid rgba(18,85,201,.15);border-top-color:#1e6ef5;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;"></div>
       </div>`;
@@ -138,6 +141,7 @@
         const card = buildCard(doc.id, doc.data(), i === 0 && !append);
         container.appendChild(card);
       });
+      loadedDocs = loadedDocs.concat(docs);
 
 
       if (typeof feather !== 'undefined') feather.replace();
@@ -165,6 +169,15 @@
       if (typeof feather !== 'undefined') feather.replace();
     });
   };
+
+  // Al cambiar de idioma, repinta lo ya cargado sin volver a pedirlo a Firestore
+  window.addEventListener('langchange', () => {
+    const container = document.getElementById('news-container');
+    if (!container || !loadedDocs.length) return;
+    container.innerHTML = '';
+    loadedDocs.forEach((doc, i) => container.appendChild(buildCard(doc.id, doc.data(), i === 0)));
+    if (typeof feather !== 'undefined') feather.replace();
+  });
 
   // Arrancar cuando el DOM esté listo
   if (document.readyState === 'loading') {
