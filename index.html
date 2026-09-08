@@ -64,6 +64,7 @@
   .hero-content{position:relative;z-index:10;max-width:1400px;width:100%;margin:0 auto;padding:0 2rem 5rem;display:flex;align-items:center;justify-content:space-between;gap:4rem;}
   .hero-text-col{flex:1;}
   .hero-widget-col{flex:0 0 500px;display:none;opacity:0;animation:fadeUp .8s .6s forwards;}
+  @media(min-width:1024px){.hero-widget-col{display:block;}}
   @media(max-width:1024px){.hero-content{flex-direction:column;align-items:flex-start;gap:3rem;}.hero-widget-col{width:100%;flex:none;}}
   .hero-title{font-family:var(--font-display);font-weight:900;font-style:italic;font-size:clamp(3.5rem,9vw,7.5rem);line-height:.88;letter-spacing:-.02em;text-transform:uppercase;color:#fff;max-width:760px;text-shadow:0 2px 0 rgba(0,0,0,0.25),0 6px 30px rgba(0,0,0,0.5);}
   .hero-title .word{display:inline-block;overflow:hidden;vertical-align:bottom;}
@@ -93,19 +94,22 @@
   .match-center-card { display: grid; grid-template-columns: 1.2fr 1fr; background: rgba(18, 85, 201, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 24px 60px rgba(0,0,0,0.15); overflow: hidden; }
   html.dark .match-center-card { background: rgba(15, 23, 42, 0.85); border-color: rgba(255,255,255,0.08); box-shadow: 0 24px 60px rgba(0,0,0,0.4); }
   
-  /* OPCIÓN A: Más sutil y desplazada hacia abajo */
-  body.option-a-active .match-center-container { margin-top: 4rem; margin-bottom: 4rem; }
-  body.option-a-active .match-center-card { background: rgba(18, 85, 201, 0.4); border-color: rgba(255,255,255,0.08); box-shadow: none; }
-  html.dark body.option-a-active .match-center-card { background: rgba(15, 23, 42, 0.5); }
-  
-  /* OPCIÓN B: Activar el widget dentro de la portada y ocultar la franja inferior */
-  body.option-b-active .hero-widget-col { display:block; }
-  body.option-b-active #match-center-bottom { display:none; }
-  body.option-b-active .match-center-card { grid-template-columns:1fr; background: rgba(18, 85, 201, 0.4); }
-  html.dark body.option-b-active .match-center-card { background: rgba(15, 23, 42, 0.5); }
-  body.option-b-active .mc-next::after { display:none; }
-  body.option-b-active .mc-last { border-top: 1px solid rgba(255,255,255,0.1); }
-  
+  /* Escritorio (≥1024px): tarjeta compacta integrada en el hero, franja inferior oculta */
+  @media(min-width:1024px){
+    #match-center-bottom { display:none; }
+    .hero-widget-col .match-center-card { grid-template-columns:1fr; background: rgba(18, 85, 201, 0.4); }
+    html.dark .hero-widget-col .match-center-card { background: rgba(15, 23, 42, 0.5); }
+    .hero-widget-col .mc-next::after { display:none; }
+    .hero-widget-col .mc-last { border-top: 1px solid rgba(255,255,255,0.1); }
+  }
+
+  /* Móvil (<1024px): franja aparte debajo del hero, con fecha y lugar */
+  @media(max-width:1023.98px){
+    .match-center-container { margin-top: 4rem; margin-bottom: 4rem; }
+    #match-center-bottom .match-center-card { background: rgba(18, 85, 201, 0.4); border-color: rgba(255,255,255,0.08); box-shadow: none; }
+    html.dark #match-center-bottom .match-center-card { background: rgba(15, 23, 42, 0.5); }
+  }
+
   .mc-section { padding: 2.5rem; display: flex; flex-direction: column; justify-content: space-between; }
   .mc-next { position: relative; }
   .mc-next::after { content:''; position:absolute; right:0; top:2rem; bottom:2rem; width:1px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.2), transparent); }
@@ -148,9 +152,6 @@
     .match-center-container { padding: 0 1rem; }
   }
   
-  .design-toggle { position:fixed; bottom:2rem; right:2rem; z-index:9999; background:white; color:var(--navy); font-family:var(--font-display); font-weight:900; padding:1rem 2rem; border-radius:30px; box-shadow:0 10px 30px rgba(0,0,0,0.3); border:none; cursor:pointer; transition:transform 0.2s; }
-  .design-toggle:hover { transform:scale(1.05); }
-
   /* ── SECTIONS ── */
   .section{max-width:1400px;margin:0 auto;padding:5rem 2rem;}
   .section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;gap:1rem;flex-wrap:wrap;}
@@ -232,7 +233,7 @@
   }
   </script>
 </head>
-<body class="option-a-active">
+<body>
 <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
 <!-- NAVBAR -->
@@ -440,7 +441,6 @@
   </div>
 </div>
 
-<button class="design-toggle" onclick="document.body.classList.toggle('option-b-active'); document.body.classList.toggle('option-a-active');">Alternar Diseño A/B</button>
 
 <!-- NOTICIAS -->
 <div class="news-section-bg">
