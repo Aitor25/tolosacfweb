@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="eu">
 <head>
 <script>
-  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+  if (localStorage.theme === "dark") {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
@@ -51,7 +51,6 @@
   .btn::before{content:'';position:absolute;inset:0;opacity:0;background:rgba(255,255,255,.15);transition:opacity .2s;} .btn:hover{transform:translateY(-3px);} .btn:hover::before{opacity:1;}
   .btn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 15px rgba(18,85,201,.4);}
 </style>
-<script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
 
   <script type="application/ld+json">
   {

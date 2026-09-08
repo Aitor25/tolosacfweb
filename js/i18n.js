@@ -185,17 +185,17 @@ window.TRANSLATIONS = {
     'nav.news':          'Berriak',
     'nav.club':          'Kluba',
     'nav.team':          '1. Taldea',
-    'nav.sponsors':      'Babeslariak',
+    'nav.sponsors':      'Babesleak',
     'nav.contact':       'Kontaktua',
-    'nav.lightMode':     'Argi modua',
-    'nav.darkMode':      'Ilun modua',
+    'nav.lightMode':     'Modu argia',
+    'nav.darkMode':      'Modu iluna',
 
     // Hero (index)
     'hero.word1':        'Grina,',
     'hero.word2':        'indarra',
     'hero.word3':        'eta',
     'hero.word4':        'harrotasuna',
-    'hero.sub':          'Jarraitu Tolosa CF Eskubaloia-ren albiste guztiak. Emaitzak, berriak eta euskal eskubaloiaren zirrara osoa.',
+    'hero.sub':          'Jarraitu Tolosa CF Eskubaloiaren albiste guztiak. Emaitzak, berriak eta euskal eskubaloiaren zirrara osoa.',
     'hero.cta.news':     'Azken berriak',
     'hero.cta.club':     'Ezagutu kluba',
 
@@ -207,7 +207,7 @@ window.TRANSLATIONS = {
     // Secciones index
     'section.news.eyebrow':  'Albisteak',
     'section.news.title':    'Azken\nBerriak',
-    'section.news.cta':      'Denak ikusi',
+    'section.news.cta':      'Ikusi denak',
 
     // Stats
     'stats.years':       'Urteko historia',
@@ -219,10 +219,10 @@ window.TRANSLATIONS = {
     'insta.eyebrow':     'Sare sozialak',
     'insta.title':       'Jarraitu\nInstagramen',
     'insta.desc':        'Argazkiak, bideoak eta klubaren albisteak denbora errealean.',
-    'insta.btn':         'Instagramen jarraitu',
+    'insta.btn':         'Jarraitu Instagramen',
 
     // Partners
-    'partners.eyebrow':  'Gure babeslariak',
+    'partners.eyebrow':  'Gure babesleak',
 
     // Footer
     'footer.about':      'Kluba baino gehiago, eskubaloiak batutako familia, 100 urte baino gehiagoz.',
@@ -240,62 +240,64 @@ window.TRANSLATIONS = {
 
     // Botones generales
     'btn.seeTeam':       'Ikusi taldea →',
-    'btn.seeAll':        'Denak ikusi',
-    'btn.followIg':      'Instagramen jarraitu',
+    'btn.seeAll':        'Ikusi denak',
+    'btn.followIg':      'Jarraitu Instagramen',
     'btn.contact':       'Kontaktatu orain',
     'btn.seeStats':      'Ikusi estatistikak',
 
     // Club page
     'club.eyebrow':      'Gure filosofia',
     'club.title':        'Etorkizuna prestatzen',
-    'club.p1':           'Gure klubaren arrakastaren giltza jokalari eta jokalarien prestakuntza da. Ez soilik kirol aldetik, baita gure balioen arabera ere heztea.',
-    'club.p2':           'Talde lana, lagunartea eta errespetua sustatzen ditugu Usabal kiroldegiaren entrenamendu eta partida guztietan.',
+    'club.p1':           'Gure klubaren arrakastaren gakoa gure jokalarien prestakuntza da. Ez gara kirol arloan soilik oinarritzen; gure balioetan oinarrituta ere heztu nahi ditugu.',
+    'club.p2':           'Talde lana, lagunartea eta elkarren arteko errespetua sustatzen ditugu Usabal kiroldegiko entrenamendu eta partida guztietan.',
     'club.p3':           'Hamar talde baino gehiago ditugu kategoria guztietan, eskubaloia eskolatik 1. Nazio Mailako taldera arte sustatzen.',
     'club.cta.label':    'Lehen Nazio Maila',
     'club.cta.title':    'Jarraitu Lehen Taldea',
-    'club.cta.sub':      'Kontsultatu sailkapen, emaitza eta egutegi ofiziala.',
+    'club.cta.sub':      'Kontsultatu sailkapena, emaitzak eta egutegi ofiziala.',
     'club.values.eyebrow': 'Gu definitzen gaituena',
     'club.values.title': 'Gure Balioak',
     'club.val1.title':   'Grina',
-    'club.val1.text':    'Partida bakoitza bizipen handiz bizi dugu eta ariman ematen dugu.',
+    'club.val1.text':    'Partida bakoitza bizipen handiz bizi dugu eta gure arima ematen dugu pistan.',
     'club.val2.title':   'Komunitatea',
     'club.val2.text':    'Zelaian zein kanpoan kideak babesten dituen familia batua gara.',
     'club.val3.title':   'Errespetua',
-    'club.val3.text':    'Kirol balioak lehenik: joko garbia aurkari, arbitro eta zaleen aurrean.',
+    'club.val3.text':    'Kirol balioak lehenik: joko garbia aurkari, epaile eta zaleen aurrean.',
     'club.loading':      'Datuak kargatzen...',
     'team.loading':      'Datuak kargatzen...',
     'club.page.title':   'Gure Kluba',
-    'club.page.subtitle':'Tolosa bihotzean mende bat baino gehiagoz kirola eta balioak biltzen dituen taldea.',
+    'club.page.subtitle':'Ehun urte baino gehiagoko historia, kirola eta balioak Tolosaren bihotzean.',
     'team.page.eyebrow': 'Lehiaketa',
     'team.page.title':   'Lehen Taldea',
     'competition.name':  '1. Nazionala, C Taldea',
     'team.tab.standings': 'Sailkapena',
     'team.tab.results':   'Emaitzak',
-    'contact.form.heading': 'Bidali mezua',
+    'team.tab.calendar':  'Egutegia',
+    'fixture.lastResult': 'Azken emaitza',
+    'contact.form.heading': 'Bidali mezu bat',
     'contact.form.namePlaceholder': 'Zure izena',
     'contact.form.emailPlaceholder': 'zure@email.com',
-    'contact.form.subjectPlaceholder': 'Zer buruz da?',
+    'contact.form.subjectPlaceholder': 'Zeren buruz da?',
     'contact.form.messagePlaceholder': 'Idatzi zure mezua hemen...',
     'news.page.title':   'Eguneko<br><em>Albisteak</em>',
-    'news.page.subtitle':'Jarrai ezazu taldeen nobedadeak, emaitzak eta ekitaldiak egunerokoan.',
+    'news.page.subtitle':'Egon eguneratuta klubaren berri guztiekin, emaitzekin eta ekitaldiekin.',
     'news.loading':      'Albisteak kargatzen...',
     'news.loadMore':     'Albiste gehiago kargatu',
     'article.backToNews': 'Itzuli berrietara',
     'article.backToAll':  'Itzuli albiste guztietara',
-    'sponsors.page.title':'Gure<br><em>Babeslariak</em>',
-    'sponsors.page.subtitle':'Laguntza eskertuz, Tolosa eskubaloia egunero hazten ari da.',
-    'sponsors.eyebrow':  'Zure laguntzarekin',
-    'sponsors.cta.label': 'Eman izena gure familiarekin',
+    'sponsors.page.title':'Gure<br><em>Babesleak</em>',
+    'sponsors.page.subtitle':'Haien laguntzari esker, eskubaloia Tolosan egunetik egunera hazten ari da.',
+    'sponsors.eyebrow':  'Zuen laguntzarekin',
+    'sponsors.cta.label': 'Egin bat gure familiarekin',
     'sponsors.cta.title':'Babeslea izan nahi duzu?',
     'sponsors.cta.sub':  'Jarri gurekin harremanetan eta azalduko dizugu klubarekin nola lan egin.',
-    'legal.cookies.title':'Cookie politika',
-    'legal.terms.title': 'Erabilera-baldintzak',
-    'legal.privacy.title':'Pribatutasun politika',
+    'legal.cookies.title':'Cookien<br><em>Politika</em>',
+    'legal.terms.title': 'Erabilera<br><em>Baldintzak</em>',
+    'legal.privacy.title':'Pribatutasun<br><em>Politika</em>',
 
     // Contacto page
     'contact.page.title': 'Jar zaitez gurekin harremanetan',
     'contact.page.subtitle': 'Galderarik baduzu edo bat egin nahi baduzu, hemen gaude zuretzat.',
-    'contact.eyebrow':   'Aurkitu gu',
+    'contact.eyebrow':   'Aurki gaitzazu',
     'contact.title':     'Hitz egin dezagun',
     'contact.loc.label': 'Kokapena',
     'contact.email.label':'Email',
@@ -305,17 +307,13 @@ window.TRANSLATIONS = {
     'contact.form.email':'Email',
     'contact.form.subject':'Gaia',
     'contact.form.message':'Mezua',
-    'contact.form.send': 'Mezua bidali',
+    'contact.form.send': 'Bidali mezua',
     'lang.es': 'Gaztelania',
     'lang.eu': 'Euskara',
     'footer.aboutSimple': 'Tolosa CF Eskubaloia. Kluba baino gehiago, eskubaloiak batutako familia.',
     'footer.aboutShort': 'Tolosa CF Eskubaloia. Kluba baino gehiago.',
     'sponsors.mainTitle': 'Babesle nagusiak',
     'club.yearsInDivision': 'Urteak 1. Nazio Mailan',
-    'team.tab.standings': 'Sailkapena',
-    'team.tab.results': 'Emaitzak',
-    'team.tab.calendar':  'Egutegia',
-    'fixture.lastResult': 'Azken emaitza',
     'fixture.noMatches': 'Ez dago partidarik programatuta',
     'fixture.noResults': 'Ez dago emaitzarik erregistratuta',
     'fixture.journey': 'Jardunaldia',
@@ -331,14 +329,14 @@ window.TRANSLATIONS = {
 
     // Sub-navegación 1. Equipo
     'team.subnav.season': 'Denboraldia',
-    'team.subnav.squad':  'Plantila',
+    'team.subnav.squad':  'Jokalariak',
 
     // Plantilla page
     'squad.page.eyebrow':  'Lehen Taldea',
-    'squad.page.title':    'Plantila',
+    'squad.page.title':    'Jokalariak',
     'squad.page.subtitle': 'Ezagutu denboraldi honetan lehen taldea osatzen duten jokalariak.',
-    'squad.loading':       'Plantila kargatzen...',
-    'squad.empty':         'Ez dago jokalaririk plantilan erregistratuta.',
+    'squad.loading':       'Jokalariak kargatzen...',
+    'squad.empty':         'Ez dago jokalaririk erregistratuta.',
     'squad.pos.label':     'Posizioa',
     'squad.dorsal.label':  'Dorsala',
 
@@ -350,7 +348,7 @@ window.TRANSLATIONS = {
 
 // ── Obtener idioma actual ──
 function getLang() {
-  return localStorage.getItem('lang') || 'es';
+  return localStorage.getItem('lang') || 'eu';
 }
 
 // ── Cambiar idioma y aplicar ──

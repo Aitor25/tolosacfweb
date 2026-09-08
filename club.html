@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="eu">
 <head>
 <script>
-  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+  if (localStorage.theme === "dark") {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
@@ -43,7 +43,6 @@
   .btn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 15px rgba(18,85,201,.4);} .btn-primary:hover{box-shadow:0 8px 25px rgba(18,85,201,.5);}
   @media(max-width:768px){.club-grid{grid-template-columns:1fr!important;gap:3rem!important;}}
 </style>
-<script>(function(){const t=localStorage.getItem('theme');if(t==='light')document.documentElement.classList.remove('dark');else document.documentElement.classList.add('dark');})();</script>
 
   <script type="application/ld+json">
   {

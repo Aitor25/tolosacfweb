@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="eu">
 <head>
 <script>
-  if (localStorage.theme === "dark" || (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+  if (localStorage.theme === "dark") {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
@@ -225,14 +225,6 @@
     .footer-col:first-child{grid-column:span 1;}
   }
 </style>
-<script>
-  (function(){
-    const t=localStorage.getItem('theme');
-    if(t==='light')document.documentElement.classList.remove('dark');
-    else document.documentElement.classList.add('dark');
-  })();
-</script>
-
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
