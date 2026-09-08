@@ -143,7 +143,7 @@ function escapeHtml(str){
 // Firebase inline
 const db=window.db || firebase.firestore();
 
-let currentData=null,activeTab='standings',selectedJourney=null;
+let currentData=null,activeTab='standings',selectedResultsJourney=null,selectedCalendarJourney=null;
 let globalTeamLogos = {};
 const competitionId='senior-masculino';
 
@@ -287,9 +287,11 @@ function parseMatchDate(dateStr){
   return isNaN(d.getTime()) ? null : d;
 }
 
-// Jornada por defecto: la más reciente ya jugada (o en curso); si la temporada
-// no ha empezado, la próxima; si no hay fechas válidas, la primera de la lista.
-function getDefaultJourney(results, journeys){
+// Busca, entre las jornadas con fecha válida, la más reciente ya jugada (o de
+// hoy) y la próxima por jugar. Cada pestaña usa la que le corresponde, así que
+// en cuanto pasa el partido del fin de semana, Resultados salta a esa jornada
+// y Calendario avanza a la siguiente, de forma independiente.
+function findPastAndFutureJourneys(results, journeys){
   const today=new Date(); today.setHours(0,0,0,0);
   let bestPast=null, bestPastDiff=Infinity;
   let bestFuture=null, bestFutureDiff=Infinity;
@@ -301,8 +303,22 @@ function getDefaultJourney(results, journeys){
     if(diff<=0){ if(-diff<bestPastDiff){ bestPastDiff=-diff; bestPast=j; } }
     else{ if(diff<bestFutureDiff){ bestFutureDiff=diff; bestFuture=j; } }
   });
-  if(bestPast!==null) return bestPast;
+  return {bestPast, bestFuture};
+}
+
+// Resultados: por defecto, la última jornada ya jugada. Si aún no se ha
+// jugado ninguna (pretemporada), la primera de la lista.
+function getDefaultResultsJourney(results, journeys){
+  const {bestPast}=findPastAndFutureJourneys(results, journeys);
+  return bestPast!==null ? bestPast : journeys[0];
+}
+
+// Calendario: por defecto, la próxima jornada por jugar. Si la temporada ya
+// terminó, la última jugada; si no hay fechas válidas, la primera de la lista.
+function getDefaultCalendarJourney(results, journeys){
+  const {bestPast, bestFuture}=findPastAndFutureJourneys(results, journeys);
   if(bestFuture!==null) return bestFuture;
+  if(bestPast!==null) return bestPast;
   return journeys[0];
 }
 
@@ -313,11 +329,11 @@ function renderResults(){
     return;
   }
   const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>a-b);
-  if(selectedJourney===null)selectedJourney=getDefaultJourney(results, journeys);
+  if(selectedResultsJourney===null)selectedResultsJourney=getDefaultResultsJourney(results, journeys);
 
-  let html=buildJourneySelector(journeys, selectedJourney);
+  let html=buildJourneySelector(journeys, selectedResultsJourney, 'results');
 
-  const filtered=results.filter(m=>(m.journey||1)==selectedJourney);
+  const filtered=results.filter(m=>(m.journey||1)==selectedResultsJourney);
   filtered.sort((a,b)=>{
     const aTol=a.home?.toLowerCase().includes('tolosa')||a.away?.toLowerCase().includes('tolosa');
     const bTol=b.home?.toLowerCase().includes('tolosa')||b.away?.toLowerCase().includes('tolosa');
@@ -330,7 +346,7 @@ function renderResults(){
     const currentLang = typeof getLang === 'function' ? getLang() : 'es';
     const dayOfWeek = getDayOfWeekName(m.date, currentLang);
     const dateDisplay = dayOfWeek ? `${dayOfWeek}, ${escapeHtml(m.date || '')}` : escapeHtml(m.date || '');
-    
+
     const score=m.score||'';
     const parts=score.split('-').map(s=>parseInt(s.trim(),10));
     const isPlayed=parts.length===2&&!isNaN(parts[0])&&!isNaN(parts[1]);
@@ -358,11 +374,11 @@ function renderResults(){
   document.getElementById('tab-content').innerHTML = html;
 }
 
-function buildJourneySelector(journeys, selected){
+function buildJourneySelector(journeys, selected, kind){
   // Desktop/tablet: grid de botones
   let desktop=`<div class="journey-selector">`;
   journeys.forEach(j=>{
-    desktop+=`<button class="journey-btn ${j==selected?'active':''}" onclick="selectJourney(${j})">J${j}</button>`;
+    desktop+=`<button class="journey-btn ${j==selected?'active':''}" onclick="selectJourney('${kind}', ${j})">J${j}</button>`;
   });
   desktop+=`</div>`;
 
@@ -372,16 +388,17 @@ function buildJourneySelector(journeys, selected){
   const prevJ=idx>0?journeys[idx-1]:null;
   const nextJ=idx<total-1?journeys[idx+1]:null;
   const mobile=`<div class="journey-selector-mobile">
-    <button class="journey-nav-btn" ${prevJ===null?'disabled':''} onclick="selectJourney(${prevJ})" aria-label="Jornada anterior">&#8249;</button>
+    <button class="journey-nav-btn" ${prevJ===null?'disabled':''} onclick="selectJourney('${kind}', ${prevJ})" aria-label="Jornada anterior">&#8249;</button>
     <div class="journey-nav-label">J${selected}<span class="journey-nav-counter">${idx+1} / ${total}</span></div>
-    <button class="journey-nav-btn" ${nextJ===null?'disabled':''} onclick="selectJourney(${nextJ})" aria-label="Jornada siguiente">&#8250;</button>
+    <button class="journey-nav-btn" ${nextJ===null?'disabled':''} onclick="selectJourney('${kind}', ${nextJ})" aria-label="Jornada siguiente">&#8250;</button>
   </div>`;
 
   return desktop+mobile+`<div style="display:flex;flex-direction:column;gap:1rem;">`;
 }
 
-function selectJourney(j){
-  selectedJourney=j;
+function selectJourney(kind, j){
+  if(kind==='calendar') selectedCalendarJourney=j;
+  else selectedResultsJourney=j;
   renderActiveTab();
 }
 
@@ -393,11 +410,11 @@ function renderCalendar(){
   }
   
   const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>a-b);
-  if(selectedJourney===null)selectedJourney=getDefaultJourney(results, journeys);
+  if(selectedCalendarJourney===null)selectedCalendarJourney=getDefaultCalendarJourney(results, journeys);
 
-  let html=buildJourneySelector(journeys, selectedJourney);
+  let html=buildJourneySelector(journeys, selectedCalendarJourney, 'calendar');
 
-  const filtered=results.filter(m=>(m.journey||1)==selectedJourney);
+  const filtered=results.filter(m=>(m.journey||1)==selectedCalendarJourney);
   filtered.sort((a,b)=>{
     const aTol=a.home?.toLowerCase().includes('tolosa')||a.away?.toLowerCase().includes('tolosa');
     const bTol=b.home?.toLowerCase().includes('tolosa')||b.away?.toLowerCase().includes('tolosa');
@@ -405,7 +422,7 @@ function renderCalendar(){
     if(!aTol && bTol) return 1;
     return 0;
   });
-  
+
   filtered.forEach(m=>{
     const isTolosa=m.home?.toLowerCase().includes('tolosa')||m.away?.toLowerCase().includes('tolosa');
     const score=m.score||'';
