@@ -449,20 +449,22 @@ const AdminLogic={
   },
 
   generateCategoryData(name,competition,season,results,standings,teams){
-    const uniqueTeams = new Set(teams || []);
+    // ✅ Se guarda siempre el nombre ORIGINAL (con puntos, mayúsculas tal cual).
+    // normalizeTeamName() solo se usa aquí para comprobar si ya existe una
+    // variante equivalente — nunca para decidir qué texto se guarda, porque
+    // si no, un equipo como "TOLOSA C.F. ESKUBALOIA" acaba duplicado como
+    // "TOLOSA CF ESKUBALOIA" (sin puntos) cada vez que se guarda.
+    const finalTeams = [...(teams || [])];
+    const hasEquivalent = (raw) => finalTeams.some(t => AdminLogic.normalizeTeamName(t) === AdminLogic.normalizeTeamName(raw));
+    const addIfNew = (raw) => { if (raw && !hasEquivalent(raw)) finalTeams.push(raw); };
+
     if (results && results.length) {
-      results.forEach(r => {
-        if (r.home) uniqueTeams.add(AdminLogic.normalizeTeamName(r.home));
-        if (r.away) uniqueTeams.add(AdminLogic.normalizeTeamName(r.away));
-      });
+      results.forEach(r => { addIfNew(r.home); addIfNew(r.away); });
     }
     if (standings && standings.length) {
-      standings.forEach(s => {
-        if (s.team) uniqueTeams.add(AdminLogic.normalizeTeamName(s.team));
-      });
+      standings.forEach(s => addIfNew(s.team));
     }
-    const finalTeams = Array.from(uniqueTeams).filter(Boolean);
-    return{name,competition,season,lastUpdate:new Date().toISOString(),results,standings,teams:finalTeams};
+    return{name,competition,season,lastUpdate:new Date().toISOString(),results,standings,teams:finalTeams.filter(Boolean)};
   }
 };
 
@@ -766,6 +768,7 @@ function renderMasterTeams(teams){
   el.innerHTML=teams.map((t,i)=>`
     <div style="display:inline-flex;align-items:center;gap:.4rem;background:rgba(18,85,201,0.12);border:1px solid rgba(18,85,201,0.25);border-radius:20px;padding:.25rem .75rem .25rem .65rem;font-size:.8rem;color:rgba(255,255,255,0.85);">
       ${t}
+      <button onclick="renameMasterTeam('${t.replace(/'/g,"\\'")}')" style="background:none;border:none;color:rgba(255,255,255,0.35);cursor:pointer;padding:0;display:flex;align-items:center;" title="Renombrar (p.ej. cambio de patrocinador)"><i data-feather="edit-2" style="width:12px;height:12px;"></i></button>
       <button onclick="removeMasterTeam(${i})" style="background:none;border:none;color:rgba(255,255,255,0.35);cursor:pointer;padding:0;display:flex;align-items:center;" title="Eliminar"><i data-feather="x" style="width:12px;height:12px;"></i></button>
     </div>
   `).join('');
@@ -788,6 +791,61 @@ async function addMasterTeam(){
     renderMasterTeams(teams);
     document.getElementById('add-team-modal').style.display='none';
     toast(`"${name}" añadido a la lista maestra`,'success');
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+// Renombra un equipo en todo: lista maestra, partidos ya guardados, clasificación
+// (se recalcula) y el escudo en competitions/teamLogos. Útil cuando un equipo
+// cambia de patrocinador/nombre y se sube así en la siguiente jornada, en vez
+// de crear un equipo nuevo sin historial.
+async function renameMasterTeam(oldName){
+  if(!currentDBData)return;
+  const input=prompt(`Nuevo nombre para "${oldName}":\n\n(Usa esto cuando un equipo cambie de nombre por patrocinador, no crees uno nuevo.)`, oldName);
+  if(input===null)return;
+  const newName=input.trim();
+  if(!newName||newName===oldName)return;
+
+  const catId=document.getElementById('comp-category').value;
+  const teams=[...(currentDBData.teams||[])];
+  const mergingIntoExisting=teams.includes(newName);
+  const newTeams=teams.filter(t=>t!==oldName);
+  if(!mergingIntoExisting)newTeams.push(newName);
+
+  const newResults=(currentDBData.results||[]).map(m=>({
+    ...m,
+    home: m.home===oldName ? newName : m.home,
+    away: m.away===oldName ? newName : m.away
+  }));
+
+  const newStandings=AdminLogic.calculateStandings(newResults, newTeams);
+
+  try{
+    await db.collection('competitions').doc(catId).set(
+      AdminLogic.generateCategoryData(currentDBData.name,currentDBData.competition,currentDBData.season,newResults,newStandings,newTeams)
+    );
+
+    // Trasladar el escudo guardado bajo el nombre antiguo, si lo hay
+    try{
+      const logoDoc=await db.collection('competitions').doc('teamLogos').get();
+      if(logoDoc.exists){
+        const logos=logoDoc.data();
+        if(logos[oldName]!==undefined){
+          const update={};
+          update[oldName]=firebase.firestore.FieldValue.delete();
+          if(logos[newName]===undefined)update[newName]=logos[oldName];
+          await db.collection('competitions').doc('teamLogos').update(update);
+        }
+      }
+    }catch(e){console.warn('[renameMasterTeam] No se pudo actualizar el escudo:',e.message);}
+
+    currentDBData.teams=newTeams;
+    currentDBData.results=newResults;
+    currentDBData.standings=newStandings;
+    renderMasterTeams(newTeams);
+    renderResultsTable(newResults);
+    toast(mergingIntoExisting
+      ? `"${oldName}" fusionado con "${newName}" (partidos, clasificación y escudo actualizados)`
+      : `"${oldName}" renombrado a "${newName}" en todo`,'success');
   }catch(e){toast('Error: '+e.message,'error');}
 }
 
