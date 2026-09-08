@@ -252,8 +252,12 @@ const AdminLogic={
     return matches;
   },
 
-  // Formato nuevo de clasificación: cada equipo es un bloque
-  //   Pos / Equipo / PJ|- / PG|- / PE|- / PP|- / (5º dato sin usar) / "GF : GC" / "DG\tPTS" / (estadísticas extra a ignorar)
+  // Formato nuevo de clasificación (confirmado contra las cabeceras reales de
+  // resultadosbalonmano.isquad.es: Posición, Equipo, Racha(5), PT, PJ, PG, PE, PP, GF, GC, DIF).
+  // Cada equipo es un bloque:
+  //   Pos / Equipo / 5 datos de "racha" (se ignoran) / "PT" tipo "N : N" (se ignora,
+  //   los puntos se recalculan con las reglas del club) / "PJ\tPG" / "PG%" / PE / "PE%" /
+  //   PP / "PP%" / GF / "GF Gol/partido" / GC / "GC Gol/partido" / DIF (se ignora)
   // Se detecta buscando una línea de solo número seguida, 7 líneas más abajo,
   // de un marcador "N : N" — firma que no aparece en la tabla de una sola
   // línea por equipo del formato antiguo.
@@ -272,26 +276,27 @@ const AdminLogic={
       if(!/^\d+$/.test(lines[i])){ i++; continue; }
       const pos=parseInt(lines[i],10);
       const team=lines[i+1]||'';
-      const gfgc=(lines[i+7]||'').match(/^(\d+)\s*:\s*(\d+)$/);
-      if(!team || !gfgc){ i++; continue; }
+      if(!team || !/^\d+\s*:\s*\d+$/.test(lines[i+7]||'')){ i++; continue; }
 
-      const dgPts=(lines[i+8]||'').split(/\t+/).map(s=>s.trim()).filter(Boolean);
+      // "PJ\tPG" suelen venir en la misma línea (celdas estrechas pegadas al copiar)
+      const pjPg=(lines[i+8]||'').split(/\t+/).map(s=>s.trim()).filter(Boolean);
+      const pj=toNum(pjPg[0]);
+      const pg=pjPg.length>=2 ? toNum(pjPg[1]) : 0;
+      const pe=toNum(lines[i+10]);
+      const pp=toNum(lines[i+12]);
+      const gf=toNum(lines[i+14]);
+      const gc=toNum(lines[i+16]);
 
       standings.push({
         pos,
         team: team.trim(),
-        pj: toNum(lines[i+2]),
-        pg: toNum(lines[i+3]),
-        pe: toNum(lines[i+4]),
-        pp: toNum(lines[i+5]),
-        // lines[i+6]: un 5º dato de la web de origen que no usamos aquí
-        gf: toNum(gfgc[1]),
-        gc: toNum(gfgc[2]),
-        pts: dgPts.length>=2 ? toNum(dgPts[1]) : 0
+        pj, pg, pe, pp, gf, gc,
+        // Puntos recalculados con la fórmula del club (no el ambiguo "PT" de la web de origen)
+        pts: pg*this.config.pointsWin + pe*this.config.pointsDraw + pp*this.config.pointsLoss
       });
 
       // saltar hasta la siguiente línea que sea un número de posición
-      let j=i+9;
+      let j=i+18;
       while(j<lines.length && !/^\d+$/.test(lines[j])) j++;
       i=j;
     }
