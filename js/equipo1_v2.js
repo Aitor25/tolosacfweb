@@ -277,6 +277,35 @@ function getDayOfWeekName(dateStr, lang='es') {
   return lang === 'eu' ? daysEu[date.getDay()] : daysEs[date.getDay()];
 }
 
+// Convierte "DD-MM-YYYY" (o con "/") en Date. Devuelve null si falta o es "Pendiente".
+function parseMatchDate(dateStr){
+  if(!dateStr || dateStr.toLowerCase().includes('pendiente')) return null;
+  const parts=dateStr.split(/[-/]/);
+  if(parts.length!==3) return null;
+  const day=parseInt(parts[0],10), month=parseInt(parts[1],10)-1, year=parseInt(parts[2],10);
+  const d=new Date(year,month,day);
+  return isNaN(d.getTime()) ? null : d;
+}
+
+// Jornada por defecto: la más reciente ya jugada (o en curso); si la temporada
+// no ha empezado, la próxima; si no hay fechas válidas, la primera de la lista.
+function getDefaultJourney(results, journeys){
+  const today=new Date(); today.setHours(0,0,0,0);
+  let bestPast=null, bestPastDiff=Infinity;
+  let bestFuture=null, bestFutureDiff=Infinity;
+  journeys.forEach(j=>{
+    const dates=results.filter(m=>(m.journey||1)==j).map(m=>parseMatchDate(m.date)).filter(Boolean);
+    if(!dates.length) return;
+    const journeyDate=new Date(Math.min(...dates.map(d=>d.getTime())));
+    const diff=journeyDate-today;
+    if(diff<=0){ if(-diff<bestPastDiff){ bestPastDiff=-diff; bestPast=j; } }
+    else{ if(diff<bestFutureDiff){ bestFutureDiff=diff; bestFuture=j; } }
+  });
+  if(bestPast!==null) return bestPast;
+  if(bestFuture!==null) return bestFuture;
+  return journeys[0];
+}
+
 function renderResults(){
   const results=currentData.results||[];
   if(!results.length){
@@ -284,7 +313,7 @@ function renderResults(){
     return;
   }
   const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>a-b);
-  if(selectedJourney===null)selectedJourney=journeys[0];
+  if(selectedJourney===null)selectedJourney=getDefaultJourney(results, journeys);
 
   let html=buildJourneySelector(journeys, selectedJourney);
 
@@ -364,7 +393,7 @@ function renderCalendar(){
   }
   
   const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>a-b);
-  if(selectedJourney===null)selectedJourney=journeys[0];
+  if(selectedJourney===null)selectedJourney=getDefaultJourney(results, journeys);
 
   let html=buildJourneySelector(journeys, selectedJourney);
 
