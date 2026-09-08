@@ -239,12 +239,59 @@ const AdminLogic={
     return standings.sort((a,b)=>a.pos-b.pos);
   },
 
+  // Variante "bloque VS" del calendario completo: igual que _parseVsBlockText
+  // pero sin número de jornada fijo — lo toma de las cabeceras "JORNADA N"
+  // que debe traer el texto pegado para separar cada semana.
+  _parseVsBlockCalendar(lines){
+    const IGNORE_LINE=/^(pending|not available|l|v|acta)$/i;
+    const matches=[];
+    const teamsSet=new Set();
+    let currentJourney=1;
+    for(let i=0;i<lines.length;i++){
+      const journeyMatch=lines[i].match(/JORNADA\s*(\d+)/i);
+      if(journeyMatch){ currentJourney=parseInt(journeyMatch[1],10); continue; }
+      if(lines[i].toUpperCase()!=='VS') continue;
+
+      const home=lines[i+1]||'';
+      const homeScoreRaw=lines[i+2]||'';
+      const away=lines[i+3]||'';
+      const awayScoreRaw=lines[i+4]||'';
+      const dateLine=lines[i+5]||'';
+      const timeLine=lines[i+6]||'';
+      const venueLine=lines[i+7]||'';
+      if(!home||!away||IGNORE_LINE.test(home)||IGNORE_LINE.test(away)) continue;
+
+      const homeScoreNum=parseInt(homeScoreRaw,10);
+      const awayScoreNum=parseInt(awayScoreRaw,10);
+      const isPlayed=!isNaN(homeScoreNum)&&!isNaN(awayScoreNum);
+      const dateMatch=dateLine.match(/\d{2}\/\d{2}\/\d{4}/);
+      const timeMatch=/^\d{2}:\d{2}$/.test(timeLine);
+
+      if(home) teamsSet.add(home.trim());
+      if(away) teamsSet.add(away.trim());
+
+      matches.push({
+        journey: currentJourney,
+        date: dateMatch ? dateMatch[0] : 'Pendiente',
+        time: timeMatch ? timeLine : 'Pendiente',
+        home: home.trim(),
+        away: away.trim(),
+        score: isPlayed ? `${homeScoreNum}-${awayScoreNum}` : 'vs',
+        venue: (venueLine && !IGNORE_LINE.test(venueLine)) ? venueLine : 'Pabellon',
+        status: isPlayed ? 'Finalizado' : 'Programado'
+      });
+      i+=7;
+    }
+    return { matches, teams: Array.from(teamsSet).sort() };
+  },
+
   parseCalendarText(text){
     try {
       const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+      if(this._isVsBlockFormat(lines)) return this._parseVsBlockCalendar(lines);
       const matches=[];let currentJourney=1,currentDate='';
       const teamsSet=new Set();
-      
+
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
         
