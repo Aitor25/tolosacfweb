@@ -151,8 +151,54 @@ const AdminLogic={
   //       · getMatchKey()  → deduplicación interna (no guarda nada)
   //       · findSimilarMaster() → comparación con lista maestra (no guarda nada)
   // ─────────────────────────────────────────────────────────────────────
+  // Detecta el formato "bloque VS": cada partido viene como
+  // VS / Equipo Local / marcador-o-guion / Equipo Visitante / marcador-o-guion / fecha / hora / sede / (líneas de estado a ignorar)
+  _isVsBlockFormat(lines){
+    for(let i=0;i<lines.length;i++){
+      if(lines[i].toUpperCase()==='VS' && lines[i+2]==='-' && lines[i+4]==='-') return true;
+    }
+    return false;
+  },
+
+  _parseVsBlockText(lines, journeyNumber){
+    const IGNORE_LINE=/^(pending|not available|l|v|acta)$/i;
+    const matches=[];
+    for(let i=0;i<lines.length;i++){
+      if(lines[i].toUpperCase()!=='VS') continue;
+      const home=lines[i+1]||'';
+      const homeScoreRaw=lines[i+2]||'';
+      const away=lines[i+3]||'';
+      const awayScoreRaw=lines[i+4]||'';
+      const dateLine=lines[i+5]||'';
+      const timeLine=lines[i+6]||'';
+      const venueLine=lines[i+7]||'';
+      if(!home||!away||IGNORE_LINE.test(home)||IGNORE_LINE.test(away)) continue;
+
+      const homeScoreNum=parseInt(homeScoreRaw,10);
+      const awayScoreNum=parseInt(awayScoreRaw,10);
+      const isPlayed=!isNaN(homeScoreNum)&&!isNaN(awayScoreNum);
+
+      const dateMatch=dateLine.match(/\d{2}\/\d{2}\/\d{4}/);
+      const timeMatch=/^\d{2}:\d{2}$/.test(timeLine);
+
+      matches.push({
+        journey:parseInt(journeyNumber,10)||1,
+        date:dateMatch ? dateMatch[0] : 'Pendiente',
+        time:timeMatch ? timeLine : 'Pendiente',
+        venue:(venueLine && !IGNORE_LINE.test(venueLine)) ? venueLine : 'Pabellon',
+        home: home.trim(),
+        away: away.trim(),
+        score: isPlayed ? `${homeScoreNum}-${awayScoreNum}` : 'vs',
+        status: isPlayed ? 'Finalizado' : 'Programado'
+      });
+      i+=7; // saltar el bloque ya consumido; el bucle busca el siguiente "VS"
+    }
+    return matches;
+  },
+
   parseJourneyText(text,journeyNumber=1){
     const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+    if(this._isVsBlockFormat(lines)) return this._parseVsBlockText(lines, journeyNumber);
     const matches=[];let currentJourney=journeyNumber,currentDate='',currentTime='',currentVenue='';
     for(let i=0;i<lines.length;i++){
       const line=lines[i];
