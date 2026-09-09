@@ -25,10 +25,10 @@ window.TRANSLATIONS = {
     'nav.darkMode':      'Modo oscuro',
 
     // Hero (index)
-    'hero.word1':        'Pasión,',
-    'hero.word2':        'fuerza',
-    'hero.word3':        'y',
-    'hero.word4':        'orgullo',
+    'hero.word1':        'Ongi',
+    'hero.word2':        'etorri',
+    'hero.word3':        'familia',
+    'hero.word4':        'urdiña!',
     'hero.sub':          'Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la emoción del balonmano vasco.',
     'hero.cta.news':     'Últimas noticias',
     'hero.cta.club':     'Conoce el club',
@@ -191,10 +191,10 @@ window.TRANSLATIONS = {
     'nav.darkMode':      'Modu iluna',
 
     // Hero (index)
-    'hero.word1':        'Grina,',
-    'hero.word2':        'indarra',
-    'hero.word3':        'eta',
-    'hero.word4':        'harrotasuna',
+    'hero.word1':        'Ongi',
+    'hero.word2':        'etorri',
+    'hero.word3':        'familia',
+    'hero.word4':        'urdiña!',
     'hero.sub':          'Jarraitu Tolosa CF Eskubaloiaren albiste guztiak. Emaitzak, berriak eta euskal eskubaloiaren zirrara osoa.',
     'hero.cta.news':     'Azken berriak',
     'hero.cta.club':     'Ezagutu kluba',
