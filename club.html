@@ -35,7 +35,7 @@
   .page-title em{color:var(--accent-bright);font-style:normal;}
   .page-subtitle{font-size:1rem;color:var(--header-sub);max-width:480px;line-height:1.6;margin-top:1rem;font-weight:500;}
   .page-rule{width:3rem;height:3px;background:var(--accent);margin-top:1.25rem;border-radius:2px;}
-  .cta-band{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);color:white;padding:4rem 2rem;position:relative;overflow:hidden;}
+  .cta-band{background:var(--header-bg);color:var(--header-text);padding:4rem 2rem;position:relative;overflow:hidden;border-top:1px solid var(--border);}
   .cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 100% at 100% 50%,rgba(18,85,201,.25) 0%,transparent 60%);pointer-events:none;}
   .cta-band-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2rem;position:relative;}
   .btn{font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.8rem 1.8rem;border-radius:6px;border:2px solid transparent;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s;position:relative;overflow:hidden;}
@@ -170,9 +170,9 @@
 <div class="cta-band reveal">
   <div class="cta-band-inner">
     <div>
-      <div style="font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem;" data-i18n="club.cta.label">Primera División Nacional</div>
-      <h2 style="font-family:var(--font-display);font-weight:900;font-size:clamp(1.5rem,4vw,2.5rem);text-transform:uppercase;line-height:.95;color:white;" data-i18n="club.cta.title">Sigue al <em style="color:var(--accent-bright);font-style:normal;">Primer Equipo</em></h2>
-      <p style="color:rgba(255,255,255,.55);margin-top:.5rem;font-size:.95rem;" data-i18n="club.cta.sub">Consulta la clasificación, resultados y calendario oficial.</p>
+      <div style="font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-bright);margin-bottom:.5rem;" data-i18n="club.cta.label">Primera División Nacional</div>
+      <h2 style="font-family:var(--font-display);font-weight:900;font-size:clamp(1.5rem,4vw,2.5rem);text-transform:uppercase;line-height:.95;color:var(--header-text);" data-i18n="club.cta.title">Sigue al <em style="color:var(--accent-bright);font-style:normal;">Primer Equipo</em></h2>
+      <p style="color:var(--header-sub);margin-top:.5rem;font-size:.95rem;" data-i18n="club.cta.sub">Consulta la clasificación, resultados y calendario oficial.</p>
     </div>
     <a href="equipo1.html" class="btn btn-primary" data-ripple data-i18n="btn.seeStats">Ver estadísticas <i data-feather="bar-chart-2" style="width:16px;height:16px;"></i></a>
   </div>

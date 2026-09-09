@@ -226,9 +226,14 @@
   .partners-track::after{right:0;background:linear-gradient(to left,#f8faff,transparent);}html.dark .partners-track::after{background:linear-gradient(to left,var(--navy),transparent);}
   .partners-row{display:flex;gap:4rem;align-items:center;animation:marquee 30s linear infinite;width:max-content;}.partners-row:hover{animation-play-state:paused;}
   @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .partner-slot{flex:0 0 auto;height:44px;display:flex;align-items:center;opacity:.3;filter:grayscale(1);transition:opacity .3s,filter .3s;}.partner-slot:hover{opacity:.9;filter:none;}
+  .partner-slot{flex:0 0 auto;height:60px;display:flex;align-items:center;opacity:.55;transition:opacity .3s;}.partner-slot:hover{opacity:1;}
   .partner-slot-text{font-family:var(--font-display);font-weight:900;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);white-space:nowrap;}html.dark .partner-slot-text{color:rgba(255,255,255,0.6);}
+  /* Mismo tratamiento que .sponsor-card img en patrocinadores.html: el logo
+     se convierte en silueta solida (negra en claro, blanca en oscuro) para
+     que siempre se lea bien, sea cual sea el color/fondo original del logo. */
   .partner-logo{height:100%;width:auto;max-width:160px;object-fit:contain;}
+  html:not(.dark) .partner-logo{filter:brightness(0) invert(0);}
+  html.dark .partner-logo{filter:brightness(0) invert(1);}
   /* ── FOOTER ── */
 
 
