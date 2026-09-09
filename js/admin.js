@@ -481,7 +481,7 @@ function toast(msg,type='info'){
   setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(100%)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},4000);
 }
 
-const sectionTitles={dashboard:'Dashboard',noticias:'Noticias',mensajes:'Mensajes',imagenes:'Imagenes',resultados:'Resultados',clasificacion:'Clasificacion',equipos:'Equipos',jugadores:'Jugadores',patrocinadores:'Patrocinadores'};
+const sectionTitles={dashboard:'Dashboard',noticias:'Noticias',mensajes:'Mensajes',imagenes:'Imagenes',resultados:'Resultados',clasificacion:'Clasificacion',equipos:'Equipos',jugadores:'Jugadores',patrocinadores:'Patrocinadores',baseteams:'Equipos de Base'};
 
 function showSection(name){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
@@ -496,6 +496,7 @@ function showSection(name){
   if(name==='equipos')loadTeams();
   if(name==='jugadores'){loadPlayers();loadStaffAdmin();}
   if(name==='patrocinadores')loadSponsors();
+  if(name==='baseteams')loadBaseTeams();
   if(name==='imagenes')renderImageGallery();
   closeSidebar();
 }
@@ -1544,6 +1545,99 @@ async function editSponsor(id){
 }
 async function deleteSponsor(id){if(!confirm('Eliminar este patrocinador?'))return;await db.collection('sponsors').doc(id).delete();toast('Patrocinador eliminado','success');loadSponsors();loadDashboardStats();}
 function clearSponsorForm(){['sponsor-edit-id','sponsor-name','sponsor-logo','sponsor-url','sponsor-logo-file'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const lbl=document.getElementById('sponsor-logo-filename');if(lbl)lbl.textContent='';document.getElementById('sponsor-category').value='principal';document.getElementById('sponsor-form-title').textContent='Nuevo patrocinador';}
+
+// ── EQUIPOS DE BASE ──
+// Enlaces a las ligas de cada categoría (cantera), gestionados igual que
+// Patrocinadores. "url" puede quedar vacío hasta que se tenga el enlace real:
+// la web pública lo muestra igualmente, solo que sin botón activo.
+async function saveBaseTeam(){
+  const name=document.getElementById('baseteam-name').value?.trim();
+  if(!name){toast('El nombre es obligatorio','error');return;}
+  const data={
+    name,
+    url:document.getElementById('baseteam-url').value?.trim()||'',
+    order:parseInt(document.getElementById('baseteam-order').value,10)||0
+  };
+  const editId=document.getElementById('baseteam-edit-id').value;
+  try{
+    if(editId) await db.collection('baseTeams').doc(editId).update(data);
+    else await db.collection('baseTeams').add(data);
+    toast(editId?'Equipo actualizado':'Equipo añadido','success');
+    clearBaseTeamForm();loadBaseTeams();
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+async function bulkAddBaseTeams(){
+  const raw=document.getElementById('baseteam-bulk').value;
+  const names=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!names.length){toast('Pega al menos un nombre','error');return;}
+  try{
+    const snap=await db.collection('baseTeams').get();
+    let order=snap.size;
+    for(const name of names){
+      await db.collection('baseTeams').add({name,url:'',order:order++});
+    }
+    toast(`${names.length} equipo(s) añadido(s)`,'success');
+    document.getElementById('baseteam-bulk').value='';
+    loadBaseTeams();
+  }catch(e){toast('Error: '+e.message,'error');}
+}
+
+async function loadBaseTeams(){
+  const list=document.getElementById('baseteams-list');
+  list.innerHTML='<div style="text-align:center;padding:2rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
+  try{
+    const snap=await db.collection('baseTeams').get();
+    if(snap.empty){list.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-size:.82rem;">Sin equipos de base registrados</div>';return;}
+
+    const docs=snap.docs.slice().sort((a,b)=>(a.data().order||0)-(b.data().order||0));
+
+    list.innerHTML='';
+    docs.forEach(doc=>{
+      const t=doc.data();
+      const row=document.createElement('div');
+      row.style.cssText="display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:.5rem;gap:1rem;";
+
+      const info=document.createElement('div');
+      const nameDiv=document.createElement('div'); nameDiv.style.cssText="font-weight:700;color:white;font-size:.9rem;"; nameDiv.textContent=t.name;
+      const urlDiv=document.createElement('div'); urlDiv.style.cssText="font-size:.78rem;color:rgba(255,255,255,0.4);margin-top:.15rem;word-break:break-all;";
+      urlDiv.textContent=t.url ? t.url : 'Sin enlace todavía';
+      info.appendChild(nameDiv); info.appendChild(urlDiv);
+
+      const actions=document.createElement('div'); actions.style.cssText="display:flex;gap:.4rem;flex-shrink:0;";
+      const btnEdit=document.createElement('button'); btnEdit.className="btn btn-ghost btn-sm"; btnEdit.onclick=()=>editBaseTeam(doc.id);
+      const iconEdit=document.createElement('i'); iconEdit.setAttribute('data-feather','edit-2'); btnEdit.appendChild(iconEdit);
+      const btnDelete=document.createElement('button'); btnDelete.className="btn btn-danger btn-sm"; btnDelete.onclick=()=>deleteBaseTeam(doc.id);
+      const iconDelete=document.createElement('i'); iconDelete.setAttribute('data-feather','trash-2'); btnDelete.appendChild(iconDelete);
+      actions.appendChild(btnEdit); actions.appendChild(btnDelete);
+
+      row.appendChild(info); row.appendChild(actions);
+      list.appendChild(row);
+    });
+
+    feather.replace();
+  }catch(e){list.innerHTML=`<div style="color:#f87171;font-size:.8rem;padding:1rem;">Error: ${e.message}</div>`;}
+}
+
+async function editBaseTeam(id){
+  const doc=await db.collection('baseTeams').doc(id).get();if(!doc.exists)return;const t=doc.data();
+  document.getElementById('baseteam-edit-id').value=id;
+  document.getElementById('baseteam-name').value=t.name||'';
+  document.getElementById('baseteam-url').value=t.url||'';
+  document.getElementById('baseteam-order').value=t.order||0;
+  document.getElementById('baseteam-form-title').textContent='Editar equipo de base';
+}
+
+async function deleteBaseTeam(id){
+  if(!confirm('¿Eliminar este equipo de base?'))return;
+  await db.collection('baseTeams').doc(id).delete();
+  toast('Equipo eliminado','success');loadBaseTeams();
+}
+
+function clearBaseTeamForm(){
+  ['baseteam-edit-id','baseteam-name','baseteam-url','baseteam-order'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('baseteam-form-title').textContent='Nuevo equipo de base';
+}
 
 // ── IMÁGENES ──
 let savedImages=JSON.parse(localStorage.getItem('admin-images')||'[]');

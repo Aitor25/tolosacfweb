@@ -176,6 +176,7 @@
       <a class="nav-item" data-section="equipos" onclick="showSection('equipos')"><i data-feather="shield"></i> Equipos</a>
       <a class="nav-item" data-section="jugadores" onclick="showSection('jugadores')"><i data-feather="users"></i> Jugadores</a>
       <a class="nav-item" data-section="patrocinadores" onclick="showSection('patrocinadores')"><i data-feather="star"></i> Patrocinadores</a>
+      <a class="nav-item" data-section="baseteams" onclick="showSection('baseteams')"><i data-feather="git-branch"></i> Equipos de Base</a>
       <div class="nav-section-label">Sistema</div>
       <a class="nav-item" href="index.html" target="_blank"><i data-feather="external-link"></i> Ver Web</a>
       <a class="nav-item" onclick="doLogout()" style="cursor:pointer;"><i data-feather="log-out"></i> Cerrar sesión</a>
@@ -493,6 +494,31 @@
         </div>
       </div>
 
+      </div>
+
+      <!-- SECTION: EQUIPOS DE BASE -->
+      <div id="section-baseteams" class="section">
+        <div style="display:grid;grid-template-columns:380px 1fr;gap:1.5rem;" class="grid-sidebar">
+          <div style="display:flex;flex-direction:column;gap:1.5rem;">
+            <div class="card">
+              <div class="card-title"><i data-feather="git-branch"></i> <span id="baseteam-form-title">Nuevo equipo de base</span></div>
+              <input type="hidden" id="baseteam-edit-id">
+              <div class="form-group"><label class="form-label">Nombre / categoría *</label><input type="text" id="baseteam-name" class="form-input" placeholder="Ej: Cadete Femenino"></div>
+              <div class="form-group"><label class="form-label">Enlace a su liga (opcional)</label><input type="text" id="baseteam-url" class="form-input" placeholder="https://resultadosbalonmano.isquad.es/..."></div>
+              <div class="form-group"><label class="form-label">Orden</label><input type="number" id="baseteam-order" class="form-input" placeholder="0" style="max-width:120px;"></div>
+              <div style="display:flex;gap:.75rem;"><button onclick="saveBaseTeam()" id="baseteam-save-btn" class="btn btn-primary" style="flex:1;justify-content:center;"><i data-feather="save"></i> Guardar</button><button onclick="clearBaseTeamForm()" class="btn btn-ghost"><i data-feather="x"></i></button></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><i data-feather="clipboard"></i> Añadir varios de golpe</div>
+              <p style="color:var(--text-secondary);font-size:.82rem;line-height:1.5;margin-bottom:.75rem;">Pega un nombre de categoría por línea (sin enlace; lo añades luego editando cada uno).</p>
+              <textarea id="baseteam-bulk" class="form-textarea" style="min-height:160px;" placeholder="Senior masculino&#10;Senior femenino&#10;Juvenil femenino&#10;..."></textarea>
+              <button onclick="bulkAddBaseTeams()" class="btn btn-ghost" style="margin-top:.75rem;width:100%;justify-content:center;"><i data-feather="plus"></i> Añadir todos</button>
+            </div>
+          </div>
+          <div class="card"><div class="card-title" style="justify-content:space-between;"><span><i data-feather="list"></i> Equipos de base</span><button onclick="loadBaseTeams()" class="btn btn-ghost btn-sm"><i data-feather="refresh-cw"></i></button></div>
+            <div id="baseteams-list"></div>
+          </div>
+        </div>
       </div>
 
       <!-- SECTION: ESCUDOS RIVALES -->
