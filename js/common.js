@@ -259,6 +259,7 @@ function _buildCard(n, i, append) {
 }
 
 function _renderDocs(docs, container, append, limit) {
+  docs = docs.filter(doc => !(typeof doc.data === 'function' ? doc.data() : doc).hidden);
   if (!append) container.textContent = '';
   docs.forEach((doc, i) => {
     const d = typeof doc.data === 'function' ? doc.data() : doc;

@@ -125,6 +125,9 @@
         }
       }
 
+      // Las noticias ocultas no se listan nunca en la web publica
+      docs = docs.filter(doc => !doc.data().hidden);
+
       if (!docs.length) {
         if (!append) {
           container.innerHTML = `<div style="grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;">

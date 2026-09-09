@@ -67,6 +67,7 @@
   var lastDocs = null;
 
   function render(docs) {
+    docs = docs.filter(function(doc) { return !doc.data().hidden; });
     lastDocs = docs;
     var grid = document.getElementById('news-grid');
     if (!grid) return;

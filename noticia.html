@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const doc = await db.collection('news').doc(id).get();
-    if (doc.exists) {
+    if (doc.exists && !doc.data().hidden) {
       renderArticle(doc.data());
       return;
     }

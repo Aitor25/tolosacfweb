@@ -599,27 +599,38 @@ async function loadNewsList(){
       const div = document.createElement('div');
       div.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:1rem;background:rgba(255,255,255,0.03);border-radius:8px;margin-bottom:.5rem;";
       
+      if (d.hidden) div.style.opacity = '.5';
+
       const infoDiv = document.createElement('div');
       const titleDiv = document.createElement('div'); titleDiv.style.cssText = "font-weight:700;color:white;margin-bottom:.25rem;"; titleDiv.textContent = d.title;
       const metaDiv = document.createElement('div'); metaDiv.style.cssText = "font-size:.8rem;color:rgba(255,255,255,0.4);display:flex;gap:1rem;";
-      
+
       const dateSpan = document.createElement('span');
       const dVal = d.timestamp ? new Date(d.timestamp.seconds * 1000).toLocaleDateString() : '';
       dateSpan.textContent = dVal;
-      
+
       const tagSpan = document.createElement('span');
       tagSpan.className = "badge badge-blue"; tagSpan.textContent = d.tag || '';
-      
+
       metaDiv.appendChild(dateSpan); metaDiv.appendChild(tagSpan);
+      if (d.hidden) {
+        const hiddenSpan = document.createElement('span');
+        hiddenSpan.className = "badge"; hiddenSpan.style.cssText = "background:rgba(248,113,113,0.15);color:#f87171;";
+        hiddenSpan.textContent = 'Oculta';
+        metaDiv.appendChild(hiddenSpan);
+      }
       infoDiv.appendChild(titleDiv); infoDiv.appendChild(metaDiv);
-      
+
       const actionDiv = document.createElement('div'); actionDiv.style.cssText = "display:flex;gap:.5rem;";
+      const btnToggle = document.createElement('button'); btnToggle.className = "btn btn-ghost btn-sm"; btnToggle.title = d.hidden ? 'Mostrar en la web' : 'Ocultar de la web';
+      btnToggle.onclick = () => toggleNewsVisibility(doc.id, !!d.hidden);
+      const iconToggle = document.createElement('i'); iconToggle.setAttribute('data-feather', d.hidden ? 'eye' : 'eye-off'); btnToggle.appendChild(iconToggle);
       const btnEdit = document.createElement('button'); btnEdit.className = "btn btn-ghost btn-sm"; btnEdit.onclick = () => editNews(doc.id);
       const iconEdit = document.createElement('i'); iconEdit.setAttribute('data-feather', 'edit-2'); btnEdit.appendChild(iconEdit);
       const btnDelete = document.createElement('button'); btnDelete.className = "btn btn-danger btn-sm"; btnDelete.onclick = () => deleteNews(doc.id);
       const iconDelete = document.createElement('i'); iconDelete.setAttribute('data-feather', 'trash-2'); btnDelete.appendChild(iconDelete);
-      
-      actionDiv.appendChild(btnEdit); actionDiv.appendChild(btnDelete);
+
+      actionDiv.appendChild(btnToggle); actionDiv.appendChild(btnEdit); actionDiv.appendChild(btnDelete);
       div.appendChild(infoDiv); div.appendChild(actionDiv);
       container.appendChild(div);
     });
@@ -665,6 +676,15 @@ async function editNews(id){
 async function deleteNews(id){
   if(!confirm('Eliminar esta noticia?'))return;
   await db.collection('news').doc(id).delete();toast('Noticia eliminada','success');loadNewsList();loadDashboardStats();
+}
+// Oculta/muestra una noticia sin borrarla: las noticias ocultas no aparecen
+// en el inicio, en la lista de noticias ni son accesibles por enlace directo.
+async function toggleNewsVisibility(id, currentlyHidden){
+  try{
+    await db.collection('news').doc(id).update({hidden: !currentlyHidden});
+    toast(currentlyHidden ? 'Noticia visible de nuevo' : 'Noticia ocultada de la web', 'success');
+    loadNewsList();
+  }catch(e){toast('Error: '+e.message,'error');}
 }
 function clearNewsForm(){
   ['news-edit-id','news-title','news-date','news-tag','news-image','news-summary','news-content','news-image-file','news-title-eu','news-summary-eu','news-content-eu'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
