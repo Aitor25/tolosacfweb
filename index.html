@@ -228,6 +228,7 @@
   @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .partner-slot{flex:0 0 auto;height:44px;display:flex;align-items:center;opacity:.3;filter:grayscale(1);transition:opacity .3s,filter .3s;}.partner-slot:hover{opacity:.9;filter:none;}
   .partner-slot-text{font-family:var(--font-display);font-weight:900;font-size:1.1rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);white-space:nowrap;}html.dark .partner-slot-text{color:rgba(255,255,255,0.6);}
+  .partner-logo{height:100%;width:auto;max-width:160px;object-fit:contain;}
   /* ── FOOTER ── */
 
 
@@ -513,7 +514,7 @@
     <div class="section-eyebrow" style="justify-content:center;" data-i18n="partners.eyebrow">Nuestros patrocinadores</div>
   </div>
   <div class="partners-track">
-    <div class="partners-row">
+    <div class="partners-row" id="partners-row">
       <div class="partner-slot"><span class="partner-slot-text">Patrocinador A</span></div>
       <div class="partner-slot"><span class="partner-slot-text">Patrocinador B</span></div>
       <div class="partner-slot"><span class="partner-slot-text">Patrocinador C</span></div>

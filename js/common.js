@@ -356,3 +356,59 @@ function safeURL(urlStr, type = 'link') {
     return '';
   }
 }
+
+// ── PARTNERS MARQUEE (home) ──
+// Rellena el carrusel de patrocinadores del inicio con los datos reales de
+// Firestore (misma colección 'sponsors' que patrocinadores.html). Si no hay
+// #partners-row en la página, o no hay datos, se deja el marcador de
+// posición estático que ya trae el HTML.
+document.addEventListener('DOMContentLoaded', async () => {
+  const row = document.getElementById('partners-row');
+  if (!row || !window.db) return;
+  try {
+    const snap = await window.db.collection('sponsors').get();
+    if (snap.empty) return;
+
+    const items = [];
+    snap.docs.forEach(doc => {
+      const s = doc.data();
+      const logo = safeURL(s.logo || s.imagen, 'image');
+      if (!logo) return; // sin logo no hay nada que mostrar en el carrusel
+      items.push({
+        name: s.name || s.nombre || 'Patrocinador',
+        href: safeURL(s.link || s.enlace, 'link'),
+        logo
+      });
+    });
+    if (!items.length) return;
+
+    // Repetir el set real hasta tener un mínimo de piezas, para que el
+    // carrusel no se vea vacío/entrecortado si hay pocos patrocinadores.
+    let set = [];
+    while (set.length < 8) set = set.concat(items);
+
+    function buildSlot(item, hidden) {
+      const el = document.createElement(item.href ? 'a' : 'div');
+      el.className = 'partner-slot';
+      if (hidden) el.setAttribute('aria-hidden', 'true');
+      if (item.href) { el.href = item.href; el.target = '_blank'; el.rel = 'noopener noreferrer'; }
+      const img = document.createElement('img');
+      img.src = item.logo;
+      img.alt = item.name;
+      img.loading = 'lazy';
+      img.className = 'partner-logo';
+      img.onerror = () => { el.style.display = 'none'; };
+      el.appendChild(img);
+      return el;
+    }
+
+    row.innerHTML = '';
+    set.forEach(item => row.appendChild(buildSlot(item, false)));
+    // Duplicado exacto del mismo set: el keyframe "marquee" desplaza
+    // translateX(-50%), así que la segunda mitad debe ser idéntica a la
+    // primera para que el bucle sea continuo.
+    set.forEach(item => row.appendChild(buildSlot(item, true)));
+  } catch(e) {
+    console.warn('Partners marquee:', e.message);
+  }
+});
