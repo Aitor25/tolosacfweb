@@ -146,10 +146,14 @@ const AdminLogic={
   // parseJourneyText: extrae partidos del texto pegado.
   //
   // REGLA DE NOMBRES:
-  //   - home / away se guardan con el nombre ORIGINAL del texto (trimmed).
-  //   - normalizeTeamName() NO se aplica aquí. Solo se usa en:
-  //       · getMatchKey()  → deduplicación interna (no guarda nada)
-  //       · findSimilarMaster() → comparación con lista maestra (no guarda nada)
+  //   - home / away se guardan aquí con el nombre ORIGINAL del texto (trimmed).
+  //     normalizeTeamName() no se aplica en este parser.
+  //   - La corrección de nombres contra la lista maestra pasa DESPUÉS, en
+  //     checkDuplicatesAndProceed()/processStandingsInput() (admin.js):
+  //       · findExactMaster()   → variante exacta (puntos/mayúsculas) → se
+  //         corrige SIEMPRE en silencio al nombre oficial, sin preguntar.
+  //       · findSimilarMaster() → variante parecida pero no exacta → se
+  //         pregunta al admin con el modal de duplicados.
   // ─────────────────────────────────────────────────────────────────────
   // ── Formato "bloque VS" (dos variantes de la misma web de origen) ──
   // A) VS / Equipo / marcador-o-guion / Equipo / marcador-o-guion / fecha / hora / sede / Pending / Not available / L / V
@@ -882,16 +886,39 @@ function findSimilarMaster(rawName, masterTeams){
   return (!exactNormMatch && bestSim>=SIM_THRESHOLD && best) ? {match:best, sim:bestSim} : null;
 }
 
-let _dupPendingMatches=null, _dupPendingAllResults=null, _dupPendingStandings=null;
+// Coincidencia EXACTA tras normalizar (mismos caracteres salvo puntos/mayúsculas/espacios),
+// p.ej. "BM Loyola" vs "BM. LOYOLA". Esto se corrige SIEMPRE en silencio al nombre oficial,
+// sin preguntar, porque no hay ambigüedad posible.
+function findExactMaster(rawName, masterTeams){
+  const normRaw = AdminLogic.normalizeTeamName(rawName);
+  return masterTeams.find(t => AdminLogic.normalizeTeamName(t) === normRaw) || null;
+}
+
+let _dupPendingMatches=null, _dupPendingAllResults=null, _dupPendingStandings=null, _dupPendingStandingsRows=null, _dupMode='journey';
 
 function checkDuplicatesAndProceed(matches, allResults, standings){
+  _dupMode='journey';
   const masterTeams=currentDBData.teams||[];
   if(!masterTeams.length){
     _finalizeSave(matches, allResults, standings, []);
     return;
   }
 
-  const allNames=[...new Set(matches.flatMap(m=>[m.home,m.away]))];
+  // 1) Autocorrección silenciosa de coincidencias exactas (solo difieren en puntos/mayúsculas)
+  const autoMap={};
+  for(const name of [...new Set(matches.flatMap(m=>[m.home,m.away]))]){
+    if(masterTeams.includes(name))continue;
+    const exact=findExactMaster(name, masterTeams);
+    if(exact)autoMap[name]=exact;
+  }
+  const hasAuto=Object.keys(autoMap).length>0;
+  const applyAuto=n=>autoMap[n]||n;
+  const fixedMatches=hasAuto?matches.map(m=>({...m,home:applyAuto(m.home),away:applyAuto(m.away)})):matches;
+  const fixedAllResults=hasAuto?allResults.map(m=>({...m,home:applyAuto(m.home),away:applyAuto(m.away)})):allResults;
+  const fixedStandings=hasAuto?AdminLogic.calculateStandings(fixedAllResults,currentDBData.teams):standings;
+
+  // 2) Detección de variantes NO exactas (requieren confirmación del admin)
+  const allNames=[...new Set(fixedMatches.flatMap(m=>[m.home,m.away]))];
   const suspectRows=[];
   for(const name of allNames){
     // Coincidencia exacta de string → no avisar
@@ -901,13 +928,14 @@ function checkDuplicatesAndProceed(matches, allResults, standings){
   }
 
   if(!suspectRows.length){
-    _finalizeSave(matches, allResults, standings, []);
+    if(hasAuto)toast(`Nombres corregidos automáticamente: ${Object.entries(autoMap).map(([o,n])=>`"${o}"→"${n}"`).join(', ')}`,'success');
+    _finalizeSave(fixedMatches, fixedAllResults, fixedStandings, []);
     return;
   }
 
-  _dupPendingMatches=matches;
-  _dupPendingAllResults=allResults;
-  _dupPendingStandings=standings;
+  _dupPendingMatches=fixedMatches;
+  _dupPendingAllResults=fixedAllResults;
+  _dupPendingStandings=fixedStandings;
   showDupModal(suspectRows, masterTeams);
 }
 
@@ -927,12 +955,23 @@ function showDupModal(rows, masterTeams){
 
 function closeDupModal(){
   document.getElementById('dup-modal').style.display='none';
-  _dupPendingMatches=null;
+  _dupPendingMatches=null;_dupPendingAllResults=null;_dupPendingStandings=null;_dupPendingStandingsRows=null;
   toast('Importación cancelada','info');
 }
 
+// Si tras el mapeo dos filas de clasificación quedan con el mismo equipo
+// (mismo problema que se está arreglando: filas duplicadas por variantes de nombre),
+// nos quedamos con la más completa (más partidos jugados) y descartamos la otra.
+function mergeDuplicateStandingsRows(rows){
+  const byTeam=new Map();
+  for(const r of rows){
+    const existing=byTeam.get(r.team);
+    if(!existing||(r.pj||0)>(existing.pj||0))byTeam.set(r.team,r);
+  }
+  return Array.from(byTeam.values()).sort((a,b)=>a.pos-b.pos).map((r,i)=>({...r,pos:i+1}));
+}
+
 function applyDupMappings(){
-  if(!_dupPendingMatches)return;
   const selects=document.querySelectorAll('.team-map-select');
   const mapping={};
   selects.forEach(sel=>{
@@ -941,15 +980,23 @@ function applyDupMappings(){
     // __keep__ = conservar el nombre original tal cual (sin reemplazar)
     if(chosen!=='__keep__')mapping[detected]=chosen;
   });
-
-  // Aplicar mapeo: sustituir nombre detectado → nombre oficial elegido
   function applyMap(name){return mapping[name]||name;}
+  document.getElementById('dup-modal').style.display='none';
+  const applied=Object.keys(mapping);
+
+  if(_dupMode==='standings'){
+    if(!_dupPendingStandingsRows)return;
+    const fixedRows=mergeDuplicateStandingsRows(_dupPendingStandingsRows.map(r=>({...r,team:applyMap(r.team)})));
+    _dupPendingStandingsRows=null;
+    finalizeStandingsOnly(fixedRows, applied);
+    return;
+  }
+
+  if(!_dupPendingMatches)return;
   const fixedMatches=_dupPendingMatches.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
   const fixedAllResults=_dupPendingAllResults.map(m=>({...m,home:applyMap(m.home),away:applyMap(m.away)}));
   const fixedStandings=AdminLogic.calculateStandings(fixedAllResults, currentDBData.teams);
-
-  document.getElementById('dup-modal').style.display='none';
-  const applied=Object.keys(mapping);
+  _dupPendingMatches=null;_dupPendingAllResults=null;_dupPendingStandings=null;
   _finalizeSave(fixedMatches, fixedAllResults, fixedStandings, applied);
 }
 
@@ -1082,7 +1129,7 @@ function processInput(){
   }else if(compMode==='standings'){
     const newStandings=AdminLogic.parseStandingsTable(text);
     if(!newStandings.length){toast('No se pudo procesar la tabla','error');return;}
-    displayPreviewStandingsOnly(newStandings);
+    processStandingsInput(newStandings);
   }else{
     const data=AdminLogic.parseCalendarText(text);
     if(!data.matches.length){toast('No se pudo procesar el calendario completo','error');return;}
@@ -1103,6 +1150,46 @@ function displayPreview(matches, standings, allResults){
   const tolosa=standings.find(t=>t.team?.toLowerCase().includes('tolosa'));
   document.getElementById('standings-summary').textContent=tolosa?`Tolosa CF queda en #${tolosa.pos} con ${tolosa.pts} puntos.`:`${standings.length} equipos en la clasificación.`;
   window.finalData=AdminLogic.generateCategoryData(currentDBData.name||'Categoría',currentDBData.competition||'Competición',currentDBData.season||'2025/26',allResults,standings,currentDBData.teams);
+}
+
+// Igual que checkDuplicatesAndProceed pero para una clasificación pegada entera:
+// corrige en silencio las variantes exactas (puntos/mayúsculas) contra la lista
+// maestra, funde filas que queden duplicadas y solo pregunta ante variantes ambiguas.
+function processStandingsInput(rows){
+  _dupMode='standings';
+  const masterTeams=currentDBData.teams||[];
+  if(!masterTeams.length){finalizeStandingsOnly(rows, []);return;}
+
+  const autoMap={};
+  for(const row of rows){
+    if(masterTeams.includes(row.team))continue;
+    const exact=findExactMaster(row.team, masterTeams);
+    if(exact)autoMap[row.team]=exact;
+  }
+  const hasAuto=Object.keys(autoMap).length>0;
+  let fixedRows=hasAuto?mergeDuplicateStandingsRows(rows.map(r=>({...r,team:autoMap[r.team]||r.team}))):rows;
+
+  const allNames=[...new Set(fixedRows.map(r=>r.team))];
+  const suspectRows=[];
+  for(const name of allNames){
+    if(masterTeams.includes(name))continue;
+    const found=findSimilarMaster(name, masterTeams);
+    if(found)suspectRows.push({detected:name, suggested:found.match, sim:found.sim});
+  }
+
+  if(!suspectRows.length){
+    if(hasAuto)toast(`Nombres corregidos automáticamente: ${Object.entries(autoMap).map(([o,n])=>`"${o}"→"${n}"`).join(', ')}`,'success');
+    finalizeStandingsOnly(fixedRows, []);
+    return;
+  }
+
+  _dupPendingStandingsRows=fixedRows;
+  showDupModal(suspectRows, masterTeams);
+}
+
+function finalizeStandingsOnly(standings, mappingsApplied){
+  if(mappingsApplied.length)toast(`Nombres corregidos: ${mappingsApplied.join(', ')}`,'success');
+  displayPreviewStandingsOnly(standings);
 }
 
 function displayPreviewStandingsOnly(standings){
