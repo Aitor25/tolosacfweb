@@ -29,7 +29,7 @@ window.TRANSLATIONS = {
     'hero.word2':        'etorri',
     'hero.word3':        'familia',
     'hero.word4':        'urdiña!',
-    'hero.sub':          'Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la emoción del balonmano vasco.',
+    'hero.sub':          'Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la información del balonmano Tolosarra.',
     'hero.cta.news':     'Últimas noticias',
     'hero.cta.club':     'Conoce el club',
 
@@ -195,7 +195,7 @@ window.TRANSLATIONS = {
     'hero.word2':        'etorri',
     'hero.word3':        'familia',
     'hero.word4':        'urdiña!',
-    'hero.sub':          'Jarraitu Tolosa CF Eskubaloiaren albiste guztiak. Emaitzak, berriak eta euskal eskubaloiaren zirrara osoa.',
+    'hero.sub':          'Jarraitu Tolosa CF Eskubaloiaren albiste guztiak. Emaitzak, berriak eta eskubaloi tolosarraren informazio guztia.',
     'hero.cta.news':     'Azken berriak',
     'hero.cta.club':     'Ezagutu kluba',
 
