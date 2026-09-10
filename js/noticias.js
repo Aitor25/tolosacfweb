@@ -34,9 +34,11 @@
     if(image) {
       const img = document.createElement('img');
       img.className = 'news-card-img';
-      img.src = image;
       img.loading = 'lazy';
       img.alt = title;
+      // Fotos verticales: no recortarlas a la fuerza al marco horizontal de la tarjeta.
+      img.onload = () => { if (img.naturalHeight > img.naturalWidth) img.style.objectFit = 'contain'; };
+      img.src = image;
       a.appendChild(img);
     } else {
       const div = document.createElement('div');
