@@ -280,6 +280,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('news-body').textContent = 'Lo sentimos, no hemos podido encontrar esta noticia.';
 });
 
+// La cabecera de la noticia asume por defecto una foto horizontal (banner
+// ancho de 55vh, recortada con object-fit:cover). Si la foto es vertical,
+// ese recorte se come casi toda la imagen, así que en su lugar ajustamos
+// la altura del hueco a la proporción real de la foto (sin recortarla) y
+// dejamos algo de margen para que el título siga siendo legible encima.
+function setArticleImage(src) {
+  const heroEl = document.getElementById('article-hero');
+  const imgEl = document.getElementById('news-image');
+  imgEl.onload = () => {
+    const isPortrait = imgEl.naturalHeight > imgEl.naturalWidth;
+    if (isPortrait) {
+      const ratioHeight = heroEl.clientWidth * (imgEl.naturalHeight / imgEl.naturalWidth);
+      const targetHeight = Math.min(Math.max(ratioHeight, 420), window.innerHeight * 0.9);
+      heroEl.style.height = targetHeight + 'px';
+      heroEl.style.minHeight = '0';
+      imgEl.style.objectFit = 'contain';
+    } else {
+      heroEl.style.height = '55vh';
+      heroEl.style.minHeight = '320px';
+      imgEl.style.objectFit = 'cover';
+    }
+  };
+  imgEl.src = src;
+}
+
 // Si el contenido no trae ya etiquetas de bloque (quien escribe HTML a mano
 // sigue funcionando igual), lo tratamos como texto plano: las líneas en
 // blanco separan párrafos y los saltos de línea sueltos se convierten en
@@ -316,7 +341,7 @@ function renderArticle(data) {
   tagSpan.textContent = tag;
   tagContainer.appendChild(tagSpan);
   
-  if (image) document.getElementById('news-image').src = image;
+  if (image) setArticleImage(image);
 
   const safeContent = DOMPurify.sanitize(autoFormatContent(content) || '<p>Sin contenido disponible.</p>', {
     ALLOWED_TAGS: ['b','i','em','strong','a','p','br','ul','ol','li'],
