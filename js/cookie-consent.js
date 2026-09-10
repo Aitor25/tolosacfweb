@@ -33,6 +33,9 @@
     if (!src) return;
     wrap.dataset.igLoaded = 'true';
     wrap.innerHTML = '';
+    // Reservamos una altura mínima similar a la del recuadro anterior, para que
+    // el widget de Instagram no cambie bruscamente el tamaño de la página al cargar.
+    if (!wrap.style.minHeight) wrap.style.minHeight = '200px';
     var script = document.createElement('script');
     script.src = 'https://cdn.lightwidget.com/widgets/lightwidget.js';
     var iframe = document.createElement('iframe');
@@ -69,10 +72,14 @@
   }
 
   function applyConsent(status) {
+    // Guardamos la posición de scroll: aceptar/rechazar no debe mover al
+    // visitante de donde está (ni al widget de Instagram ni a ningún sitio).
+    var scrollY = window.scrollY;
     localStorage.setItem(CONSENT_KEY, status);
     hideBanner();
     if (status === 'accepted') injectInstagramWidget();
     else showInstagramPlaceholder();
+    window.scrollTo(0, scrollY);
   }
 
   function buildBanner() {

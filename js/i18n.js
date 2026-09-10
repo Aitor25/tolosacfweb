@@ -70,7 +70,7 @@ window.TRANSLATIONS = {
     'footer.privacy':    'Privacidad',
     'footer.cookies':    'Cookies',
     'footer.terms':      'Términos',
-    'footer.copy':       '© 2025 Tolosa CF Eskubaloia.',
+    'footer.copy':       '© {year} Tolosa CF Eskubaloia.',
 
     // Botones generales
     'btn.seeTeam':       'Ver equipo →',
@@ -249,7 +249,7 @@ window.TRANSLATIONS = {
     'footer.privacy':    'Pribatutasuna',
     'footer.cookies':    'Cookieak',
     'footer.terms':      'Baldintzak',
-    'footer.copy':       '© 2025 Tolosa CF Eskubaloia.',
+    'footer.copy':       '© {year} Tolosa CF Eskubaloia.',
 
     // Botones generales
     'btn.seeTeam':       'Ikusi taldea →',
@@ -397,7 +397,7 @@ function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (t[key] !== undefined) {
-      let text = t[key];
+      let text = t[key].replace('{year}', new Date().getFullYear());
       const season = el.getAttribute('data-season');
       if (season) {
         text = `${text} | ${season}`;
