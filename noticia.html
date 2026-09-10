@@ -280,6 +280,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('news-body').textContent = 'Lo sentimos, no hemos podido encontrar esta noticia.';
 });
 
+// Si el contenido no trae ya etiquetas de bloque (quien escribe HTML a mano
+// sigue funcionando igual), lo tratamos como texto plano: las líneas en
+// blanco separan párrafos y los saltos de línea sueltos se convierten en
+// <br>, tal cual se escribió en el admin, sin tener que teclear HTML.
+function autoFormatContent(text) {
+  if (!text) return text;
+  if (/<(p|br|ul|ol|li|div)[\s>]/i.test(text)) return text;
+  // Texto plano: escapamos por si hay < > & sueltos en la redacción, para
+  // que se vean tal cual y no se interpreten como intento de HTML.
+  const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return escaped
+    .split(/\n{2,}/)
+    .map(block => '<p>' + block.replace(/\n/g, '<br>') + '</p>')
+    .join('');
+}
+
 function renderArticle(data) {
   currentArticleData = data;
   const lang = typeof getLang === 'function' ? getLang() : 'es';
@@ -301,8 +317,8 @@ function renderArticle(data) {
   tagContainer.appendChild(tagSpan);
   
   if (image) document.getElementById('news-image').src = image;
-  
-  const safeContent = DOMPurify.sanitize(content || '<p>Sin contenido disponible.</p>', {
+
+  const safeContent = DOMPurify.sanitize(autoFormatContent(content) || '<p>Sin contenido disponible.</p>', {
     ALLOWED_TAGS: ['b','i','em','strong','a','p','br','ul','ol','li'],
     ALLOWED_ATTR: ['href','target','rel']
   });
