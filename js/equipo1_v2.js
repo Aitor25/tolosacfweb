@@ -292,8 +292,7 @@ function parseMatchDate(dateStr){
 // en cuanto pasa el partido del fin de semana, Resultados salta a esa jornada
 // y Calendario avanza a la siguiente, de forma independiente.
 function findPastAndFutureJourneys(results, journeys){
-  // TEMPORAL: window.__testToday permite simular otra fecha desde el selector de prueba de la cabecera.
-  const today=window.__testToday ? new Date(window.__testToday) : new Date();
+  const today=new Date();
   today.setHours(0,0,0,0);
   let bestPast=null, bestPastDiff=Infinity;
   let bestFuture=null, bestFutureDiff=Infinity;
@@ -460,29 +459,4 @@ function renderCalendar(){
 
 document.addEventListener('DOMContentLoaded',()=>{
   loadData();
-
-  // TEMPORAL: selector de fecha de prueba en la cabecera. Borrar este bloque
-  // (y el div #test-date-input del HTML) cuando se termine de comprobar el
-  // cambio automático de jornada.
-  const testDateInput=document.getElementById('test-date-input');
-  const testDateReset=document.getElementById('test-date-reset');
-  if(testDateInput){
-    const todayStr=new Date().toISOString().slice(0,10);
-    testDateInput.value=todayStr;
-    testDateInput.addEventListener('change',()=>{
-      window.__testToday=testDateInput.value || null;
-      selectedResultsJourney=null;
-      selectedCalendarJourney=null;
-      renderActiveTab();
-    });
-  }
-  if(testDateReset){
-    testDateReset.addEventListener('click',()=>{
-      window.__testToday=null;
-      if(testDateInput) testDateInput.value=new Date().toISOString().slice(0,10);
-      selectedResultsJourney=null;
-      selectedCalendarJourney=null;
-      renderActiveTab();
-    });
-  }
 });
