@@ -199,6 +199,11 @@ window.TRANSLATIONS = {
     // Cuerpo Técnico
     'staff.section.title': 'Cuerpo Técnico',
     'staff.empty':         'No hay miembros del cuerpo técnico registrados.',
+
+    // Cargos del cuerpo técnico (valores fijos del selector del panel de admin)
+    'staff.role.Entrenador':             'Entrenador',
+    'staff.role.Ayudante de Entrenador': 'Ayudante de Entrenador',
+    'staff.role.Delegado':               'Delegado',
   },
 
   eu: {
@@ -387,6 +392,11 @@ window.TRANSLATIONS = {
     // Cuerpo Técnico
     'staff.section.title': 'Teknikari Taldea',
     'staff.empty':         'Ez dago teknikari talderik erregistratuta.',
+
+    // Cargos del cuerpo técnico (mismas claves que en es, valor traducido)
+    'staff.role.Entrenador':             'Entrenatzailea',
+    'staff.role.Ayudante de Entrenador': 'Entrenatzaile laguntzailea',
+    'staff.role.Delegado':               'Ordezkaria',
   }
 };
 

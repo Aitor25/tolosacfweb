@@ -6,6 +6,21 @@ function translatePosition(position) {
   return (dict && dict['squad.pos.' + position]) || position;
 }
 
+function translateStaffRole(role) {
+  var lang = typeof getLang === 'function' ? getLang() : 'es';
+  var dict = window.TRANSLATIONS && window.TRANSLATIONS[lang];
+  if (!dict) return role;
+  if (dict['staff.role.' + role]) return dict['staff.role.' + role];
+  // Compatibilidad con cargos guardados antes de fijar el selector (mayúsculas, espacios, etc.)
+  var roleNorm = String(role).trim().toLowerCase();
+  for (var key in dict) {
+    if (key.indexOf('staff.role.') === 0 && key.slice(11).toLowerCase() === roleNorm) {
+      return dict[key];
+    }
+  }
+  return role;
+}
+
 function getInitials(name) {
   if (!name) return '?';
   const parts = name.trim().split(/\s+/);
@@ -153,7 +168,8 @@ function buildStaffCard(member) {
   if (member.role) {
     const roleSpan = document.createElement('span');
     roleSpan.className = 'staff-role';
-    roleSpan.textContent = member.role;
+    roleSpan.dataset.role = member.role;
+    roleSpan.textContent = translateStaffRole(member.role);
     info.appendChild(roleSpan);
   }
   
@@ -194,5 +210,8 @@ document.addEventListener('DOMContentLoaded', function() {
 window.addEventListener('langchange', function() {
   document.querySelectorAll('.player-position').forEach(function(el) {
     el.textContent = translatePosition(el.dataset.position);
+  });
+  document.querySelectorAll('.staff-role').forEach(function(el) {
+    el.textContent = translateStaffRole(el.dataset.role);
   });
 });
