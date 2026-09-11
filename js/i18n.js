@@ -187,6 +187,15 @@ window.TRANSLATIONS = {
     'squad.pos.label':     'Posición',
     'squad.dorsal.label':  'Dorsal',
 
+    // Posiciones de jugador (valores fijos del selector del panel de admin)
+    'squad.pos.Portero':           'Portero',
+    'squad.pos.Lateral izquierdo': 'Lateral izquierdo',
+    'squad.pos.Central':           'Central',
+    'squad.pos.Lateral derecho':   'Lateral derecho',
+    'squad.pos.Extremo izquierdo': 'Extremo izquierdo',
+    'squad.pos.Extremo derecho':   'Extremo derecho',
+    'squad.pos.Pivote':            'Pivote',
+
     // Cuerpo Técnico
     'staff.section.title': 'Cuerpo Técnico',
     'staff.empty':         'No hay miembros del cuerpo técnico registrados.',
@@ -365,6 +374,15 @@ window.TRANSLATIONS = {
     'squad.empty':         'Ez dago jokalaririk erregistratuta.',
     'squad.pos.label':     'Posizioa',
     'squad.dorsal.label':  'Dorsala',
+
+    // Posiciones de jugador (mismas claves que en es, valor traducido)
+    'squad.pos.Portero':           'Atezaina',
+    'squad.pos.Lateral izquierdo': 'Ezker atzelaria',
+    'squad.pos.Central':           'Erdilaria',
+    'squad.pos.Lateral derecho':   'Eskuin atzelaria',
+    'squad.pos.Extremo izquierdo': 'Ezker hegalekoa',
+    'squad.pos.Extremo derecho':   'Eskuin hegalekoa',
+    'squad.pos.Pivote':            'Pibota',
 
     // Cuerpo Técnico
     'staff.section.title': 'Teknikari Taldea',

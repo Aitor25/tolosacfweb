@@ -1,5 +1,11 @@
 const db = window.db || firebase.firestore();
 
+function translatePosition(position) {
+  var lang = typeof getLang === 'function' ? getLang() : 'es';
+  var dict = window.TRANSLATIONS && window.TRANSLATIONS[lang];
+  return (dict && dict['squad.pos.' + position]) || position;
+}
+
 function getInitials(name) {
   if (!name) return '?';
   const parts = name.trim().split(/\s+/);
@@ -56,7 +62,8 @@ function buildPlayerCard(player) {
   if (player.position) {
     const posSpan = document.createElement('span');
     posSpan.className = 'player-position';
-    posSpan.textContent = player.position;
+    posSpan.dataset.position = player.position;
+    posSpan.textContent = translatePosition(player.position);
     info.appendChild(posSpan);
   }
   
@@ -182,4 +189,10 @@ document.addEventListener('DOMContentLoaded', function() {
   feather.replace();
   loadSquad();
   loadStaff();
+});
+
+window.addEventListener('langchange', function() {
+  document.querySelectorAll('.player-position').forEach(function(el) {
+    el.textContent = translatePosition(el.dataset.position);
+  });
 });
