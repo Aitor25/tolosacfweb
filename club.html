@@ -35,9 +35,6 @@
   .page-title em{color:var(--accent-bright);font-style:normal;}
   .page-subtitle{font-size:1rem;color:var(--header-sub);max-width:480px;line-height:1.6;margin-top:1rem;font-weight:500;}
   .page-rule{width:3rem;height:3px;background:var(--accent);margin-top:1.25rem;border-radius:2px;}
-  .cta-band{background:var(--header-bg);color:var(--header-text);padding:4rem 2rem;position:relative;overflow:hidden;border-top:1px solid var(--border);}
-  .cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 100% at 100% 50%,rgba(18,85,201,.25) 0%,transparent 60%);pointer-events:none;}
-  .cta-band-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2rem;position:relative;}
   .btn{font-family:var(--font-display);font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;padding:.8rem 1.8rem;border-radius:6px;border:2px solid transparent;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;transition:transform .2s var(--ease-spring),box-shadow .2s;position:relative;overflow:hidden;}
   .btn::before{content:'';position:absolute;inset:0;opacity:0;background:rgba(255,255,255,.15);transition:opacity .2s;} .btn:hover{transform:translateY(-3px);} .btn:hover::before{opacity:1;}
   .btn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 15px rgba(18,85,201,.4);} .btn-primary:hover{box-shadow:0 8px 25px rgba(18,85,201,.5);}
@@ -155,8 +152,9 @@
         </div>
       </div>
       <div style="position:relative;">
-        <div style="aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--surface-3);display:flex;align-items:center;justify-content:center;">
-          <i data-feather="camera" style="width:48px;height:48px;color:var(--text-muted);"></i>
+        <div style="aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--surface-3);display:flex;align-items:center;justify-content:center;">
+          <img src="https://firebasestorage.googleapis.com/v0/b/tolosa-cf-eskubaloia.firebasestorage.app/o/club%2F1789412384010_wuz8sv.jpg?alt=media&amp;token=cacd1c37-b260-40d8-bca5-7b4977d5f063" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <i data-feather="camera" style="width:48px;height:48px;color:var(--text-muted);display:none;"></i>
         </div>
         <div style="position:absolute;bottom:-1.5rem;left:-1.5rem;background:var(--accent);padding:1.5rem 2rem;border-radius:8px;color:white;box-shadow:0 8px 24px rgba(18,85,201,.4);">
           <div style="font-family:var(--font-display);font-weight:900;font-size:2.5rem;line-height:1;">10+</div>
@@ -167,27 +165,42 @@
   </div>
 </div>
 
-<div class="cta-band reveal">
-  <div class="cta-band-inner">
-    <div>
-      <div style="font-family:var(--font-display);font-weight:700;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-bright);margin-bottom:.5rem;" data-i18n="club.cta.label">Primera División Nacional</div>
-      <h2 style="font-family:var(--font-display);font-weight:900;font-size:clamp(1.5rem,4vw,2.5rem);text-transform:uppercase;line-height:.95;color:var(--header-text);" data-i18n="club.cta.title">Sigue al <em style="color:var(--accent-bright);font-style:normal;">Primer Equipo</em></h2>
-      <p style="color:var(--header-sub);margin-top:.5rem;font-size:.95rem;" data-i18n="club.cta.sub">Consulta la clasificación, resultados y calendario oficial.</p>
-    </div>
-    <a href="equipo1.html" class="btn btn-primary" data-ripple data-i18n="btn.seeStats">Ver estadísticas <i data-feather="bar-chart-2" style="width:16px;height:16px;"></i></a>
-  </div>
-</div>
-
 <div class="content-bg-alt">
   <div class="section">
-    <div style="text-align:center;margin-bottom:3.5rem;" class="reveal">
-      <div class="section-eyebrow" style="justify-content:center;" data-i18n="club.values.eyebrow">Lo que nos define</div>
-      <h2 class="section-title" data-i18n="club.values.title">Nuestros <em style="color:var(--accent-bright);font-style:normal;">Valores</em></h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem;">
-      <div class="value-card reveal delay-1"><div class="value-icon"><i data-feather="heart" style="width:26px;height:26px;"></i></div><div class="value-title" data-i18n="club.val1.title">Pasión</div><p class="value-text" data-i18n="club.val1.text">Vivimos cada partido con intensidad y entregamos el alma en la pista.</p></div>
-      <div class="value-card reveal delay-2"><div class="value-icon"><i data-feather="users" style="width:26px;height:26px;"></i></div><div class="value-title" data-i18n="club.val2.title">Comunidad</div><p class="value-text" data-i18n="club.val2.text">Somos una familia unida que apoya a sus miembros dentro y fuera del campo.</p></div>
-      <div class="value-card reveal delay-3"><div class="value-icon"><i data-feather="shield" style="width:26px;height:26px;"></i></div><div class="value-title" data-i18n="club.val3.title">Respeto</div><p class="value-text" data-i18n="club.val3.text">Valores deportivos ante todo: juego limpio con rivales, árbitros y afición.</p></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;" class="club-grid reveal">
+      <div style="position:relative;">
+        <div style="aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--surface-3);display:flex;align-items:center;justify-content:center;">
+          <img src="https://firebasestorage.googleapis.com/v0/b/tolosa-cf-eskubaloia.firebasestorage.app/o/club%2F1789412341433_no345i.jpg?alt=media&amp;token=1b66a486-dcc2-46b2-8988-44cbb3ee819c" alt="" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <i data-feather="camera" style="width:48px;height:48px;color:var(--text-muted);display:none;"></i>
+        </div>
+      </div>
+      <div>
+        <div class="section-eyebrow" data-i18n="club.values.eyebrow">Lo que nos define</div>
+        <h2 class="section-title" style="margin-bottom:2rem;" data-i18n="club.values.title">Nuestros <em style="color:var(--accent-bright);font-style:normal;">Valores</em></h2>
+        <div style="display:flex;flex-direction:column;gap:1.75rem;">
+          <div style="display:flex;gap:1.25rem;align-items:flex-start;" class="reveal delay-1">
+            <div class="value-icon" style="margin:0;flex-shrink:0;"><i data-feather="heart" style="width:24px;height:24px;"></i></div>
+            <div>
+              <div class="value-title" style="text-align:left;font-size:1.15rem;margin-bottom:.35rem;" data-i18n="club.val1.title">Pasión</div>
+              <p class="value-text" style="text-align:left;" data-i18n="club.val1.text">Vivimos cada partido con intensidad y entregamos el alma en la pista.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:1.25rem;align-items:flex-start;" class="reveal delay-2">
+            <div class="value-icon" style="margin:0;flex-shrink:0;"><i data-feather="users" style="width:24px;height:24px;"></i></div>
+            <div>
+              <div class="value-title" style="text-align:left;font-size:1.15rem;margin-bottom:.35rem;" data-i18n="club.val2.title">Comunidad</div>
+              <p class="value-text" style="text-align:left;" data-i18n="club.val2.text">Somos una familia unida que apoya a sus miembros dentro y fuera del campo.</p>
+            </div>
+          </div>
+          <div style="display:flex;gap:1.25rem;align-items:flex-start;" class="reveal delay-3">
+            <div class="value-icon" style="margin:0;flex-shrink:0;"><i data-feather="shield" style="width:24px;height:24px;"></i></div>
+            <div>
+              <div class="value-title" style="text-align:left;font-size:1.15rem;margin-bottom:.35rem;" data-i18n="club.val3.title">Respeto</div>
+              <p class="value-text" style="text-align:left;" data-i18n="club.val3.text">Valores deportivos ante todo: juego limpio con rivales, árbitros y afición.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
