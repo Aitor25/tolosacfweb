@@ -70,7 +70,7 @@ window.TRANSLATIONS = {
     'footer.privacy':    'Privacidad',
     'footer.cookies':    'Cookies',
     'footer.terms':      'Términos',
-    'footer.copy':       '© 2025 Tolosa CF Eskubaloia.',
+    'footer.copy':       '© {year} Tolosa CF Eskubaloia.',
 
     // Botones generales
     'btn.seeTeam':       'Ver equipo →',
@@ -131,6 +131,13 @@ window.TRANSLATIONS = {
     'sponsors.cta.title':'¿Quieres ser patrocinador?',
     'sponsors.cta.sub':  'Contáctanos y te explicamos cómo colaborar con el club.',
     'legal.cookies.title':'Política de<br>Cookies',
+    'cookies.bannerText': 'Usamos almacenamiento técnico necesario para recordar tu idioma y tema. Si aceptas, también cargamos el widget de Instagram, que instala sus propias cookies de terceros.',
+    'cookies.accept': 'Aceptar',
+    'cookies.reject': 'Rechazar',
+    'cookies.moreInfo': 'Más información',
+    'cookies.instaPlaceholder': 'Para ver aquí nuestras publicaciones de Instagram hace falta aceptar sus cookies de terceros.',
+    'cookies.acceptAndView': 'Aceptar y ver Instagram',
+    'cookies.settingsBtn': 'Cambiar mi decisión sobre las cookies',
     'legal.terms.title': 'Términos<br>de Uso',
     'legal.privacy.title':'Política de<br>Privacidad',
 
@@ -180,9 +187,23 @@ window.TRANSLATIONS = {
     'squad.pos.label':     'Posición',
     'squad.dorsal.label':  'Dorsal',
 
+    // Posiciones de jugador (valores fijos del selector del panel de admin)
+    'squad.pos.Portero':           'Portero',
+    'squad.pos.Lateral izquierdo': 'Lateral izquierdo',
+    'squad.pos.Central':           'Central',
+    'squad.pos.Lateral derecho':   'Lateral derecho',
+    'squad.pos.Extremo izquierdo': 'Extremo izquierdo',
+    'squad.pos.Extremo derecho':   'Extremo derecho',
+    'squad.pos.Pivote':            'Pivote',
+
     // Cuerpo Técnico
     'staff.section.title': 'Cuerpo Técnico',
     'staff.empty':         'No hay miembros del cuerpo técnico registrados.',
+
+    // Cargos del cuerpo técnico (valores fijos del selector del panel de admin)
+    'staff.role.Entrenador':             'Entrenador',
+    'staff.role.Ayudante de Entrenador': 'Ayudante de Entrenador',
+    'staff.role.Delegado':               'Delegado',
   },
 
   eu: {
@@ -242,7 +263,7 @@ window.TRANSLATIONS = {
     'footer.privacy':    'Pribatutasuna',
     'footer.cookies':    'Cookieak',
     'footer.terms':      'Baldintzak',
-    'footer.copy':       '© 2025 Tolosa CF Eskubaloia.',
+    'footer.copy':       '© {year} Tolosa CF Eskubaloia.',
 
     // Botones generales
     'btn.seeTeam':       'Ikusi taldea →',
@@ -303,6 +324,13 @@ window.TRANSLATIONS = {
     'sponsors.cta.title':'Babeslea izan nahi duzu?',
     'sponsors.cta.sub':  'Jarri gurekin harremanetan eta azalduko dizugu klubarekin nola lan egin.',
     'legal.cookies.title':'Cookien<br><em>Politika</em>',
+    'cookies.bannerText': 'Zure hizkuntza eta gaia gogoratzeko beharrezko biltegiratze teknikoa erabiltzen dugu. Onartzen baduzu, Instagramen widgeta ere kargatuko dugu, eta horrek bere hirugarrenen cookieak ezarriko ditu.',
+    'cookies.accept': 'Onartu',
+    'cookies.reject': 'Ez onartu',
+    'cookies.moreInfo': 'Informazio gehiago',
+    'cookies.instaPlaceholder': 'Hemen gure Instagrameko argitalpenak ikusteko, haien hirugarrenen cookieak onartu behar dituzu.',
+    'cookies.acceptAndView': 'Onartu eta ikusi Instagram',
+    'cookies.settingsBtn': 'Cookieei buruzko nire erabakia aldatu',
     'legal.terms.title': 'Erabilera<br><em>Baldintzak</em>',
     'legal.privacy.title':'Pribatutasun<br><em>Politika</em>',
 
@@ -352,9 +380,23 @@ window.TRANSLATIONS = {
     'squad.pos.label':     'Posizioa',
     'squad.dorsal.label':  'Dorsala',
 
+    // Posiciones de jugador (mismas claves que en es, valor traducido)
+    'squad.pos.Portero':           'Atezaina',
+    'squad.pos.Lateral izquierdo': 'Ezker atzelaria',
+    'squad.pos.Central':           'Erdilaria',
+    'squad.pos.Lateral derecho':   'Eskuin atzelaria',
+    'squad.pos.Extremo izquierdo': 'Ezker hegalekoa',
+    'squad.pos.Extremo derecho':   'Eskuin hegalekoa',
+    'squad.pos.Pivote':            'Pibota',
+
     // Cuerpo Técnico
     'staff.section.title': 'Teknikari Taldea',
     'staff.empty':         'Ez dago teknikari talderik erregistratuta.',
+
+    // Cargos del cuerpo técnico (mismas claves que en es, valor traducido)
+    'staff.role.Entrenador':             'Entrenatzailea',
+    'staff.role.Ayudante de Entrenador': 'Entrenatzaile laguntzailea',
+    'staff.role.Delegado':               'Ordezkaria',
   }
 };
 
@@ -383,7 +425,7 @@ function applyTranslations() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (t[key] !== undefined) {
-      let text = t[key];
+      let text = t[key].replace('{year}', new Date().getFullYear());
       const season = el.getAttribute('data-season');
       if (season) {
         text = `${text} | ${season}`;
