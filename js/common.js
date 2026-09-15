@@ -187,7 +187,7 @@ function _emptyMsg() {
   const div = document.createElement('div');
   div.style.cssText = "grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;";
   const p = document.createElement('p');
-  p.style.cssText = "font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;";
+  p.style.cssText = "font-family:'Archivo',sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;";
   p.textContent = "Aún no hay noticias publicadas";
   div.appendChild(p);
   return div;

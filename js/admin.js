@@ -1041,7 +1041,7 @@ function renderResultsTable(results){
     `<tr>
       <td><span class="badge badge-blue">J${m.journey}</span></td>
       <td style="font-weight:600;color:white;">${m.home}</td>
-      <td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;color:var(--accent-bright);">${m.score}</td>
+      <td style="text-align:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:1rem;color:var(--accent-bright);">${m.score}</td>
       <td style="font-weight:600;color:white;">${m.away}</td>
       <td style="color:rgba(255,255,255,0.4);font-size:.78rem;">${m.date||''} ${m.time||''}</td>
       <td style="text-align:center;">
@@ -1068,7 +1068,7 @@ function filterResults(){
     results.forEach(m => {
       const tr = document.createElement('tr');
       const tdDate = document.createElement('td'); tdDate.style.cssText = "font-size:.8rem;color:rgba(255,255,255,0.4);"; tdDate.textContent = m.date || 'S/D';
-      const tdTime = document.createElement('td'); tdTime.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--accent-bright);"; tdTime.textContent = m.time || '-';
+      const tdTime = document.createElement('td'); tdTime.style.cssText = "font-family:'Archivo',sans-serif;font-weight:700;color:var(--accent-bright);"; tdTime.textContent = m.time || '-';
       const tdLocal = document.createElement('td'); tdLocal.style.cssText = "font-weight:600;color:white;text-align:right;"; tdLocal.textContent = m.local;
       const tdRes = document.createElement('td'); tdRes.style.cssText = "text-align:center;font-weight:900;background:rgba(255,255,255,0.05);border-radius:4px;"; tdRes.textContent = m.result || 'vs';
       const tdVisit = document.createElement('td'); tdVisit.style.cssText = "font-weight:600;color:white;"; tdVisit.textContent = m.visitor;
@@ -1165,7 +1165,7 @@ function displayPreview(matches, standings, allResults){
     <div style="background:rgba(255,255,255,0.04);padding:.65rem .875rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.82rem;">
       <span style="color:rgba(255,255,255,0.5);">J${m.journey}</span>
       <span style="font-weight:600;color:white;">${m.home}</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--accent-bright);padding:.2rem .6rem;background:rgba(18,85,201,0.2);border-radius:4px;">${m.score}</span>
+      <span style="font-family:'Archivo',sans-serif;font-weight:900;color:var(--accent-bright);padding:.2rem .6rem;background:rgba(18,85,201,0.2);border-radius:4px;">${m.score}</span>
       <span style="font-weight:600;color:white;">${m.away}</span>
     </div>`).join('');
   const tolosa=standings.find(t=>t.team?.toLowerCase().includes('tolosa'));
@@ -1267,7 +1267,7 @@ async function loadStandings(){
     tbody.innerHTML = '';
     standings.forEach((t, i) => {
       const tr = document.createElement('tr');
-      const tdPos = document.createElement('td'); tdPos.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--accent-bright);font-size:1.1rem;"; tdPos.textContent = t.pos;
+      const tdPos = document.createElement('td'); tdPos.style.cssText = "font-family:'Archivo',sans-serif;font-weight:900;color:var(--accent-bright);font-size:1.1rem;"; tdPos.textContent = t.pos;
       const tdTeam = document.createElement('td'); tdTeam.style.cssText = "font-weight:600;color:white;"; tdTeam.textContent = t.team;
       const tdPJ = document.createElement('td'); tdPJ.style.cssText = "color:rgba(255,255,255,0.5);"; tdPJ.textContent = t.pj;
       const tdPG = document.createElement('td'); tdPG.textContent = t.pg;
@@ -1389,7 +1389,7 @@ async function loadPlayers(){
     docs.forEach(doc => {
       const p = doc.data();
       const tr = document.createElement('tr');
-      const tdNum = document.createElement('td'); tdNum.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--accent-bright);font-size:1rem;"; tdNum.textContent = p.number || '-';
+      const tdNum = document.createElement('td'); tdNum.style.cssText = "font-family:'Archivo',sans-serif;font-weight:900;color:var(--accent-bright);font-size:1rem;"; tdNum.textContent = p.number || '-';
       const tdName = document.createElement('td'); tdName.style.cssText = "font-weight:600;color:white;"; tdName.textContent = p.name;
       const tdPos = document.createElement('td'); const spanPos = document.createElement('span'); spanPos.className = "badge badge-gray"; spanPos.textContent = p.position || '-'; tdPos.appendChild(spanPos);
       const tdTeam = document.createElement('td'); tdTeam.style.cssText = "font-size:.78rem;color:rgba(255,255,255,0.4);"; tdTeam.textContent = p.team || '-';
@@ -1769,7 +1769,7 @@ function displayCalendarPreview(matches, teams){
     <div style="background:rgba(255,255,255,0.04);padding:.65rem .875rem;border-radius:8px;border:1px solid rgba(255,255,255,0.06);margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.82rem;">
       <span style="color:rgba(255,255,255,0.5);">J${m.journey} (${m.date})</span>
       <span style="font-weight:600;color:white;">${m.home}</span>
-      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--accent-bright);padding:.2rem .6rem;background:rgba(18,85,201,0.2);border-radius:4px;">${m.score}</span>
+      <span style="font-family:'Archivo',sans-serif;font-weight:900;color:var(--accent-bright);padding:.2rem .6rem;background:rgba(18,85,201,0.2);border-radius:4px;">${m.score}</span>
       <span style="font-weight:600;color:white;">${m.away}</span>
     </div>`).join('') + (matches.length > 8 ? `<div style="text-align:center;font-size:.75rem;opacity:.5;padding:.5rem;">... y ${matches.length - 8} partidos más</div>` : '');
   

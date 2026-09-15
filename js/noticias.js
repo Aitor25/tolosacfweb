@@ -133,7 +133,7 @@
       if (!docs.length) {
         if (!append) {
           container.innerHTML = `<div style="grid-column:1/-1;padding:4rem;text-align:center;opacity:.5;">
-            <p style="font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;">Aún no hay noticias publicadas</p>
+            <p style="font-family:'Archivo',sans-serif;text-transform:uppercase;font-weight:900;font-size:1.1rem;">Aún no hay noticias publicadas</p>
           </div>`;
         }
         return;

@@ -15,7 +15,7 @@ function renderStandings(standingsData, groupName) {
   const wrapper = document.createElement('div');
   if (groupName) {
     const title = document.createElement('h3');
-    title.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;text-transform:uppercase;color:white;margin:1.5rem 0 .5rem;";
+    title.style.cssText = "font-family:'Archivo',sans-serif;font-size:1.2rem;text-transform:uppercase;color:white;margin:1.5rem 0 .5rem;";
     title.textContent = groupName;
     wrapper.appendChild(title);
   }
@@ -59,7 +59,7 @@ function renderResults(resultsData, groupName) {
   const wrapper = document.createElement('div');
   if (groupName) {
     const title = document.createElement('h3');
-    title.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;text-transform:uppercase;color:white;margin:1.5rem 0 .5rem;";
+    title.style.cssText = "font-family:'Archivo',sans-serif;font-size:1.2rem;text-transform:uppercase;color:white;margin:1.5rem 0 .5rem;";
     title.textContent = groupName;
     wrapper.appendChild(title);
   }
@@ -95,7 +95,7 @@ function renderCalendar(calendarData, groupName) {
   const wrapper = document.createElement('div');
   if (groupName) {
     const title = document.createElement('h3');
-    title.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;text-transform:uppercase;color:white;margin:1.5rem 0 .5rem;";
+    title.style.cssText = "font-family:'Archivo',sans-serif;font-size:1.2rem;text-transform:uppercase;color:white;margin:1.5rem 0 .5rem;";
     title.textContent = groupName;
     wrapper.appendChild(title);
   }
@@ -205,7 +205,7 @@ function loadData(){
         subEl.setAttribute('data-season', currentData.season || '2026/27');
         renderActiveTab();
     }else{
-      document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.noDataTitle">Sin datos disponibles todavía</p><p style="font-size:.85rem;margin-top:.5rem;" data-i18n="team.noDataText">El administrador aún no ha subido datos para esta categoría.</p></div>';
+      document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;color:var(--text-secondary);"><p style="font-family:Archivo,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.noDataTitle">Sin datos disponibles todavía</p><p style="font-size:.85rem;margin-top:.5rem;" data-i18n="team.noDataText">El administrador aún no ha subido datos para esta categoría.</p></div>';
       if(typeof applyTranslations==='function')applyTranslations();
     }
   },err=>{
@@ -236,7 +236,7 @@ function renderActiveTab(){
 function renderStandings(){
   const standings=currentData.standings||[];
   if(!standings.length){
-    document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.standings.empty">Sin clasificación disponible</p></div>';
+    document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Archivo,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.standings.empty">Sin clasificación disponible</p></div>';
     return;
   }
   
@@ -247,12 +247,12 @@ function renderStandings(){
   standings.forEach(item=>{
     const isTolosa=item.team?.toLowerCase().includes('tolosa');
     const dg=(item.gf||0)-(item.gc||0);
-    let posEl=`<span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;">${item.pos}</span>`;
+    let posEl=`<span style="font-family:'Archivo',sans-serif;font-weight:900;">${item.pos}</span>`;
     if(item.pos===1)posEl=`<span class="pos-medal pos-1">${item.pos}</span>`;
     if(item.pos===2)posEl=`<span class="pos-medal pos-2">${item.pos}</span>`;
     if(item.pos===3)posEl=`<span class="pos-medal pos-3">${item.pos}</span>`;
     const teamHtml = getTeamHtml(item.team);
-    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};"><div style="display:flex; align-items:center; height:100%;">${teamHtml}</div></td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td style="text-align:center;">${item.gf||0}</td><td style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
+    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};"><div style="display:flex; align-items:center; height:100%;">${teamHtml}</div></td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td style="text-align:center;">${item.gf||0}</td><td style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
   });
   html+=`</tbody></table></div>`;
   document.getElementById('tab-content').innerHTML = html;
@@ -326,7 +326,7 @@ function getDefaultCalendarJourney(results, journeys){
 function renderResults(){
   const results=currentData.results||[];
   if(!results.length){
-    document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.results.empty">Sin resultados disponibles</p></div>';
+    document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Archivo,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.results.empty">Sin resultados disponibles</p></div>';
     return;
   }
   const journeys=[...new Set(results.map(m=>m.journey||1))].sort((a,b)=>a-b);
@@ -406,7 +406,7 @@ function selectJourney(kind, j){
 function renderCalendar(){
   const results=currentData.results||[];
   if(!results.length){
-    document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Barlow Condensed,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.calendar.empty">Sin partidos en el calendario</p></div>';
+    document.getElementById('tab-content').textContent = '<div style="text-align:center;padding:4rem;opacity:.5;color:var(--text-secondary);"><p style="font-family:Archivo,sans-serif;font-size:1.2rem;text-transform:uppercase;font-weight:900;" data-i18n="team.tab.calendar.empty">Sin partidos en el calendario</p></div>';
     return;
   }
   
