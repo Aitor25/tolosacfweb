@@ -155,16 +155,20 @@ const AdminLogic={
   //       · findSimilarMaster() → variante parecida pero no exacta → se
   //         pregunta al admin con el modal de duplicados.
   // ─────────────────────────────────────────────────────────────────────
-  // ── Formato "bloque VS" (dos variantes de la misma web de origen) ──
+  // ── Formato "bloque VS" (variantes vistas en la misma web de origen) ──
   // A) VS / Equipo / marcador-o-guion / Equipo / marcador-o-guion / fecha / hora / sede / Pending / Not available / L / V
   // B) Vs / Equipo / - / Equipo / - / - / - / "N - N" / fecha / hora / sede
-  // Ambas empiezan igual (VS, equipo, guion, equipo, guion), así que se detectan
+  // C) VS / Equipo / - / Equipo / N / - / N / fecha / hora / sede / Finalizado / STREAMING / L / V
+  //    (variante actual, sept-2026: el marcador va en 3 líneas sueltas justo
+  //    después del enfrentamiento, en vez de en una sola línea "N - N")
+  // Las tres empiezan igual (VS, equipo, guion, equipo), así que se detectan
   // con la misma firma. La extracción no asume una longitud de bloque fija:
   // busca la fecha DD/MM/YYYY hacia delante y, de paso, un marcador explícito
-  // "N - N" si aparece; todo lo demás (Pending/Not available/L/V/etc.) se ignora.
+  // — como línea única "N - N" (B) o como trío de líneas N / - / N (C) —
+  // si aparece; todo lo demás (Pending/Not available/Finalizado/STREAMING/L/V/etc.) se ignora.
   _isVsBlockFormat(lines){
     for(let i=0;i<lines.length;i++){
-      if(lines[i].toUpperCase()==='VS' && lines[i+2]==='-' && lines[i+4]==='-') return true;
+      if(lines[i].toUpperCase()==='VS' && lines[i+2]==='-' && lines[i+3]) return true;
     }
     return false;
   },
@@ -175,18 +179,21 @@ const AdminLogic={
     for(let i=0;i<lines.length;i++){
       if(lines[i].toUpperCase()!=='VS') continue;
       const home=lines[i+1]||'';
-      const homeScoreRaw=lines[i+2]||'';
       const away=lines[i+3]||'';
-      const awayScoreRaw=lines[i+4]||'';
       if(!home||!away||IGNORE_LINE.test(home)||IGNORE_LINE.test(away)) continue;
 
-      // Buscar la fecha (y, si aparece por el camino, un marcador "N - N" explícito)
+      // Buscar la fecha y, de paso, el marcador explícito allí donde aparezca:
+      // como línea única "N - N" (variante B) o como trío N / - / N (variante C).
       let dateIdx=-1, explicitScore=null;
       const searchLimit=Math.min(i+16, lines.length);
       for(let k=i+4;k<searchLimit;k++){
         if(/^\d{2}\/\d{2}\/\d{4}$/.test(lines[k])){ dateIdx=k; break; }
         const sm=lines[k].match(/^(\d+)\s*-\s*(\d+)$/);
-        if(sm) explicitScore={home:parseInt(sm[1],10), away:parseInt(sm[2],10)};
+        if(sm){ explicitScore={home:parseInt(sm[1],10), away:parseInt(sm[2],10)}; continue; }
+        if(/^\d+$/.test(lines[k]) && lines[k+1]==='-' && /^\d+$/.test(lines[k+2]||'')){
+          explicitScore={home:parseInt(lines[k],10), away:parseInt(lines[k+2],10)};
+          k+=2;
+        }
       }
       if(dateIdx===-1) continue; // bloque irregular sin fecha localizable: se ignora
 
@@ -194,9 +201,7 @@ const AdminLogic={
       const venueLine=lines[dateIdx+2]||'';
       const timeOk=/^\d{2}:\d{2}$/.test(timeLine);
 
-      let homeGoals=parseInt(homeScoreRaw,10);
-      let awayGoals=parseInt(awayScoreRaw,10);
-      let isPlayed=!isNaN(homeGoals)&&!isNaN(awayGoals);
+      let homeGoals=0, awayGoals=0, isPlayed=false;
       if(explicitScore){
         // "0 - 0" es el placeholder de partido no jugado en esta web (un 0-0 real no existe en balonmano)
         if(explicitScore.home===0 && explicitScore.away===0){ isPlayed=false; }
