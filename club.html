@@ -39,6 +39,16 @@
   .btn::before{content:'';position:absolute;inset:0;opacity:0;background:rgba(255,255,255,.15);transition:opacity .2s;} .btn:hover{transform:translateY(-3px);} .btn:hover::before{opacity:1;}
   .btn-primary{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 15px rgba(18,85,201,.4);} .btn-primary:hover{box-shadow:0 8px 25px rgba(18,85,201,.5);}
   @media(max-width:768px){.club-grid{grid-template-columns:1fr!important;gap:3rem!important;}}
+
+  /* Equipos de base: franja de color (sin icono repetido) */
+  .baseteam-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:11px;overflow:hidden;transition:transform .3s var(--ease-spring),box-shadow .3s;}
+  .baseteam-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(18,85,201,.12);}
+  .baseteam-bar{height:5px;background:linear-gradient(90deg,var(--accent),var(--accent-bright));}
+  .baseteam-bar.f{background:linear-gradient(90deg,#8f2a58,#c2447a);}
+  .baseteam-body{padding:1.5rem 1.35rem 1.65rem;}
+  .baseteam-title{font-family:var(--font-display);font-weight:900;font-size:1.05rem;text-transform:uppercase;line-height:1.2;margin-bottom:.85rem;color:var(--text-primary);}
+  .baseteam-cta{font-family:var(--font-display);font-weight:700;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-bright);text-decoration:none;}
+  .baseteam-soon{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);}
 </style>
 
   <script type="application/ld+json">
@@ -289,32 +299,38 @@ async function loadBaseTeamsPublic(){
     const docs = snap.docs.slice().sort((a,b)=>(a.data().order||0)-(b.data().order||0));
     docs.forEach(doc=>{
       const team = doc.data();
+      const isFemale = /femenino/i.test(team.name || '');
+
       const card = document.createElement('div');
-      card.className = 'value-card';
+      card.className = 'baseteam-card';
 
-      const icon = document.createElement('div'); icon.className = 'value-icon';
-      const iconEl = document.createElement('i'); iconEl.setAttribute('data-feather','shield'); iconEl.style.cssText = 'width:24px;height:24px;';
-      icon.appendChild(iconEl);
-      card.appendChild(icon);
+      const bar = document.createElement('div');
+      bar.className = 'baseteam-bar' + (isFemale ? ' f' : '');
+      card.appendChild(bar);
 
-      const title = document.createElement('div'); title.className = 'value-title'; title.style.fontSize = '1.05rem';
+      const body = document.createElement('div');
+      body.className = 'baseteam-body';
+
+      const title = document.createElement('div');
+      title.className = 'baseteam-title';
       title.textContent = team.name || '';
-      card.appendChild(title);
+      body.appendChild(title);
 
       const url = typeof safeURL === 'function' ? safeURL(team.url, 'link') : '';
       if(url){
         const a = document.createElement('a');
         a.href = url; a.target = '_blank'; a.rel = 'noopener';
-        a.className = 'btn btn-ghost';
-        a.style.cssText = 'margin-top:1rem;width:100%;justify-content:center;';
-        a.textContent = (t && t['baseteams.cta']) || 'Ver clasificación';
-        card.appendChild(a);
+        a.className = 'baseteam-cta';
+        a.textContent = ((t && t['baseteams.cta']) || 'Ver clasificación') + ' →';
+        body.appendChild(a);
       } else {
-        const span = document.createElement('div');
-        span.style.cssText = 'margin-top:1rem;font-size:.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;';
+        const span = document.createElement('span');
+        span.className = 'baseteam-soon';
         span.textContent = (t && t['baseteams.comingSoon']) || 'Enlace próximamente';
-        card.appendChild(span);
+        body.appendChild(span);
       }
+
+      card.appendChild(body);
       grid.appendChild(card);
     });
     if (typeof feather !== 'undefined') feather.replace();
