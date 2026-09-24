@@ -238,6 +238,7 @@
         console.warn('Error loading fixture banner:', err);
       });
   }
+  window.addEventListener('langchange', loadFixtureBanner);
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
