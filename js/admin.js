@@ -175,6 +175,23 @@ const AdminLogic={
 
   _extractVsBlocks(lines){
     const IGNORE_LINE=/^(pending|not available|l|v|acta)$/i;
+
+    // Primera fecha válida de todo el texto pegado: sirve para inferir el
+    // día de los partidos que la web de origen deja sin fecha (normalmente
+    // porque tampoco tienen horario fijado todavía). Se usa el domingo de
+    // esa misma semana, ya que es el día por defecto de la jornada.
+    let fallbackDate=null;
+    for(const line of lines){
+      if(/^\d{2}\/\d{2}\/\d{4}$/.test(line)){
+        const [d,m,y]=line.split('/').map(Number);
+        const dt=new Date(y,m-1,d);
+        dt.setDate(dt.getDate()+((7-dt.getDay())%7)); // avanzar al domingo de esa semana
+        const pad=n=>String(n).padStart(2,'0');
+        fallbackDate=`${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`;
+        break;
+      }
+    }
+
     const blocks=[];
     for(let i=0;i<lines.length;i++){
       if(lines[i].toUpperCase()!=='VS') continue;
@@ -184,21 +201,32 @@ const AdminLogic={
 
       // Buscar la fecha y, de paso, el marcador explícito allí donde aparezca:
       // como línea única "N - N" (variante B) o como trío N / - / N (variante C).
-      let dateIdx=-1, explicitScore=null;
+      // Guardamos también dónde termina el marcador: cuando la web de origen
+      // no trae fecha, la hora y la sede vienen justo después de él.
+      let dateIdx=-1, explicitScore=null, scoreEndIdx=-1;
       const searchLimit=Math.min(i+16, lines.length);
       for(let k=i+4;k<searchLimit;k++){
         if(/^\d{2}\/\d{2}\/\d{4}$/.test(lines[k])){ dateIdx=k; break; }
         const sm=lines[k].match(/^(\d+)\s*-\s*(\d+)$/);
-        if(sm){ explicitScore={home:parseInt(sm[1],10), away:parseInt(sm[2],10)}; continue; }
+        if(sm){ explicitScore={home:parseInt(sm[1],10), away:parseInt(sm[2],10)}; scoreEndIdx=k+1; continue; }
         if(/^\d+$/.test(lines[k]) && lines[k+1]==='-' && /^\d+$/.test(lines[k+2]||'')){
           explicitScore={home:parseInt(lines[k],10), away:parseInt(lines[k+2],10)};
+          scoreEndIdx=k+3;
           k+=2;
         }
       }
-      if(dateIdx===-1) continue; // bloque irregular sin fecha localizable: se ignora
 
-      const timeLine=lines[dateIdx+1]||'';
-      const venueLine=lines[dateIdx+2]||'';
+      // Sin fecha localizable en el bloque: si hay una fecha de referencia
+      // en la jornada, se usa el domingo de esa semana (no se descarta el
+      // partido). Sin ninguna fecha en todo el texto no hay forma de saber
+      // a qué jornada pertenece, así que ahí sí se ignora.
+      let dateLine, timeIdx;
+      if(dateIdx!==-1){ dateLine=lines[dateIdx]; timeIdx=dateIdx+1; }
+      else if(fallbackDate && scoreEndIdx!==-1){ dateLine=fallbackDate; timeIdx=scoreEndIdx; }
+      else continue;
+
+      const timeLine=lines[timeIdx]||'';
+      const venueLine=lines[timeIdx+1]||'';
       const timeOk=/^\d{2}:\d{2}$/.test(timeLine);
 
       let homeGoals=0, awayGoals=0, isPlayed=false;
@@ -212,7 +240,7 @@ const AdminLogic={
         atLine:i,
         home:home.trim(),
         away:away.trim(),
-        date:lines[dateIdx],
+        date:dateLine,
         time:timeOk ? timeLine : 'Pendiente',
         venue:(venueLine && !IGNORE_LINE.test(venueLine)) ? venueLine : 'Pabellon',
         score:isPlayed ? `${homeGoals}-${awayGoals}` : 'vs',
@@ -1429,7 +1457,12 @@ async function saveStaff(){
   const name=document.getElementById('staff-name').value?.trim();
   const role=document.getElementById('staff-role').value?.trim();
   if(!name||!role){toast('Nombre y cargo son obligatorios','error');return;}
-  const data={name,role,photo:document.getElementById('staff-photo').value?.trim()||'',order:parseInt(document.getElementById('staff-order').value)||0,team:'senior-masculino'};
+  let photoUrl=document.getElementById('staff-photo').value?.trim()||'';
+  try{
+    const uploadedUrl=await uploadImageToStorage('staff-photo-file','staff-upload-progress','staff');
+    if(uploadedUrl)photoUrl=uploadedUrl;
+  }catch(e){toast('Error subiendo la foto: '+e.message,'error');return;}
+  const data={name,role,photo:photoUrl,order:parseInt(document.getElementById('staff-order').value)||0,team:'senior-masculino'};
   const editId=document.getElementById('staff-edit-id').value;
   try{
     if(editId)await db.collection('staff').doc(editId).update(data);
