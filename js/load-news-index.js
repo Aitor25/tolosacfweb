@@ -6,6 +6,8 @@
 (function() {
   'use strict';
 
+  var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
   function buildCard(id, data, featured) {
     var lang  = typeof getLang === 'function' ? getLang() : 'es';
     var title = (lang === 'eu' && data.title_eu) || data.title || data.titulo || 'Sin titulo';
@@ -68,7 +70,29 @@
 
   var lastDocs = null;
 
-  function render(docs) {
+  // Las tarjetas entran escalonadas (70ms) cuando la rejilla aparece en pantalla.
+  // Al terminar se quita la animación para no bloquear el zoom del :hover.
+  function animateCards(grid) {
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+    var cards = grid.querySelectorAll('.news-card');
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].classList.add('news-enter');
+      cards[i].style.animationDelay = (i * 70) + 'ms';
+      cards[i].style.animationPlayState = 'paused';
+      cards[i].addEventListener('animationend', function(e) {
+        e.currentTarget.classList.remove('news-enter');
+        e.currentTarget.style.animationDelay = '';
+      }, { once: true });
+    }
+    var obs = new IntersectionObserver(function(entries) {
+      if (!entries[0].isIntersecting) return;
+      for (var j = 0; j < cards.length; j++) cards[j].style.animationPlayState = 'running';
+      obs.disconnect();
+    }, { threshold: 0.1 });
+    obs.observe(grid);
+  }
+
+  function render(docs, animate) {
     docs = docs.filter(function(doc) { return !doc.data().hidden; });
     lastDocs = docs;
     var grid = document.getElementById('news-grid');
@@ -91,6 +115,7 @@
     docs.forEach(function(doc, i) {
       grid.appendChild(buildCard(doc.id, doc.data(), i === 0));
     });
+    if (animate) animateCards(grid);
     if (typeof feather !== 'undefined') feather.replace();
   }
 
@@ -107,10 +132,10 @@
     // Intento 1: orderBy timestamp
     db.collection('news').orderBy('timestamp', 'desc').limit(5).get()
       .then(function(snap) {
-        if (!snap.empty) { render(snap.docs); return; }
+        if (!snap.empty) { render(snap.docs, true); return; }
         // Vacio: intentar sin orden
         return db.collection('news').limit(20).get().then(function(s2) {
-          render(s2.empty ? [] : sortByDate(s2.docs).slice(0, 5));
+          render(s2.empty ? [] : sortByDate(s2.docs).slice(0, 5), true);
         });
       })
       .catch(function(e) {
@@ -118,12 +143,62 @@
         // Intento 2: sin orden en el catch
         db.collection('news').limit(20).get()
           .then(function(s2) {
-            render(s2.empty ? [] : sortByDate(s2.docs).slice(0, 5));
+            render(s2.empty ? [] : sortByDate(s2.docs).slice(0, 5), true);
           })
           .catch(function(e2) {
             console.error('[load-news-index] Error:', e2.message);
           });
       });
+  }
+
+  var fixtureRendered = false;
+
+  // Cambia un texto con un fundido corto (sale 120ms, entra 200ms).
+  // En la primera carga se pone directamente: ahí ya anima la tarjeta entera.
+  function swapText(el, text, animate) {
+    if (el.textContent === text) return;
+    if (!animate || reduceMotion) { el.textContent = text; return; }
+    el.classList.remove('text-swap-in');
+    el.classList.add('text-swap-out');
+    setTimeout(function() {
+      el.textContent = text;
+      el.classList.remove('text-swap-out');
+      el.classList.add('text-swap-in');
+    }, 120);
+  }
+
+  function isToday(dateStr) {
+    var p = (dateStr || '').split(/[-/]/);
+    if (p.length !== 3) return false;
+    var now = new Date();
+    return parseInt(p[0], 10) === now.getDate() &&
+           parseInt(p[1], 10) === now.getMonth() + 1 &&
+           parseInt(p[2], 10) === now.getFullYear();
+  }
+
+  // El marcador cuenta desde 0 cuando entra en pantalla (900ms, desacelerando)
+  // y al llegar al resultado el bloque hace un pequeño "golpe".
+  function countUpScore(el) {
+    var m = (el.textContent || '').match(/^(\s*)(\d+)(\s*-\s*)(\d+)(\s*)$/);
+    if (!m || reduceMotion || !('IntersectionObserver' in window)) return;
+    var home = parseInt(m[2], 10), away = parseInt(m[4], 10);
+    var obs = new IntersectionObserver(function(entries) {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      var start = null, dur = 900;
+      function frame(ts) {
+        if (start === null) start = ts;
+        var t = Math.min(1, (ts - start) / dur);
+        var e = 1 - Math.pow(1 - t, 3);
+        el.textContent = m[1] + Math.round(home * e) + m[3] + Math.round(away * e) + m[5];
+        if (t < 1) { requestAnimationFrame(frame); return; }
+        el.classList.add('mc-score-land');
+        setTimeout(function() { el.classList.remove('mc-score-land'); }, 700);
+      }
+      el.textContent = m[1] + '0' + m[3] + '0' + m[5];
+      requestAnimationFrame(frame);
+    }, { threshold: 0.6 });
+    obs.observe(el);
   }
 
   function loadFixtureBanner() {
@@ -197,19 +272,28 @@
         var currentLang = typeof getLang === 'function' ? getLang() : 'es';
         var t = window.TRANSLATIONS && window.TRANSLATIONS[currentLang];
 
-        function updateAll(selector, content, isHtml) {
+        var animateSwap = fixtureRendered;
+
+        function updateAll(selector, content) {
+          var els = document.querySelectorAll(selector);
+          for(var k=0; k<els.length; k++) swapText(els[k], content, animateSwap);
+        }
+
+        // Solo se repinta el escudo si cambia el equipo (al cambiar de idioma no rebota otra vez)
+        function setCrest(selector, team) {
           var els = document.querySelectorAll(selector);
           for(var k=0; k<els.length; k++) {
-            if(isHtml) els[k].innerHTML = content;
-            else els[k].textContent = content;
+            if (els[k].getAttribute('data-team') === team) continue;
+            els[k].setAttribute('data-team', team || '');
+            els[k].innerHTML = getCrestHtml(team);
           }
         }
 
         if (nextMatch) {
           updateAll('.mc-next-home-name', nextMatch.home);
-          updateAll('#mc-next-home-crest-a, #mc-next-home-crest-b', getCrestHtml(nextMatch.home), true);
+          setCrest('#mc-next-home-crest-a, #mc-next-home-crest-b', nextMatch.home);
           updateAll('.mc-next-away-name', nextMatch.away);
-          updateAll('#mc-next-away-crest-a, #mc-next-away-crest-b', getCrestHtml(nextMatch.away), true);
+          setCrest('#mc-next-away-crest-a, #mc-next-away-crest-b', nextMatch.away);
           
           var dayOfWeek = typeof getDayOfWeekName === 'function' ? getDayOfWeekName(nextMatch.date, currentLang) : '';
           var dateText = dayOfWeek ? dayOfWeek + ', ' + (nextMatch.date || '') : (nextMatch.date || 'Pendiente');
@@ -222,15 +306,27 @@
         
         if (lastResult) {
           updateAll('.mc-last-home-name', lastResult.home);
-          updateAll('#mc-last-home-crest-a, #mc-last-home-crest-b', getCrestHtml(lastResult.home), true);
+          setCrest('#mc-last-home-crest-a, #mc-last-home-crest-b', lastResult.home);
           updateAll('.mc-last-away-name', lastResult.away);
-          updateAll('#mc-last-away-crest-a, #mc-last-away-crest-b', getCrestHtml(lastResult.away), true);
+          setCrest('#mc-last-away-crest-a, #mc-last-away-crest-b', lastResult.away);
           
-          updateAll('.mc-last-score', lastResult.score || '—');
+          if (!fixtureRendered) updateAll('.mc-last-score', lastResult.score || '—');
           var jText = t && t['fixture.journey'] ? t['fixture.journey'] : 'Jornada';
           updateAll('.mc-last-journey', jText + ' ' + (lastResult.journey || 1));
         }
         
+        var cards = document.querySelectorAll('.match-center-card');
+        var today = !!(nextMatch && isToday(nextMatch.date));
+        for (var c = 0; c < cards.length; c++) {
+          cards[c].classList.toggle('mc-is-today', today);
+          cards[c].classList.add('mc-ready');
+        }
+        if (!fixtureRendered) {
+          var scores = document.querySelectorAll('.mc-last-score');
+          for (var sc = 0; sc < scores.length; sc++) countUpScore(scores[sc]);
+        }
+        fixtureRendered = true;
+
         if (typeof feather !== 'undefined') feather.replace();
         if (typeof applyTranslations === 'function') applyTranslations();
       })

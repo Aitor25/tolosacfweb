@@ -16,6 +16,13 @@
   --font-body:    'Montserrat', sans-serif;
   --ease-spring:  cubic-bezier(0.34,1.56,0.64,1);
   --ease-out:     cubic-bezier(0.16,1,0.3,1);
+  /* Identidad de movimiento: entradas desaceleran (--ease-out), salidas aceleran
+     (--ease-in). Tres duraciones para todo el sitio. */
+  --ease-in:      cubic-bezier(0.3,0,1,1);
+  --ease-sine:    cubic-bezier(0.37,0,0.63,1);
+  --dur-quick:    .15s;
+  --dur-std:      .3s;
+  --dur-slow:     .6s;
 
   /* Modo CLARO (defecto) */
   --surface:        #ffffff;
@@ -91,18 +98,30 @@ body {
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
 /* ── Reveal ── */
-.reveal { opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out); }
+.reveal { opacity:0;transform:translateY(24px);transition:opacity var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out); }
 .reveal.visible { opacity:1;transform:none; }
-.reveal-left { opacity:0;transform:translateX(-28px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out); }
+.reveal-left { opacity:0;transform:translateX(-24px);transition:opacity var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out); }
 .reveal-left.visible { opacity:1;transform:none; }
-.reveal-scale { opacity:0;transform:scale(0.93);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out); }
+.reveal-scale { opacity:0;transform:scale(0.94);transition:opacity var(--dur-slow) var(--ease-out),transform var(--dur-slow) var(--ease-out); }
 .reveal-scale.visible { opacity:1;transform:none; }
-.delay-1{transition-delay:.1s;} .delay-2{transition-delay:.2s;} .delay-3{transition-delay:.3s;} .delay-4{transition-delay:.4s;} .delay-5{transition-delay:.5s;}
-@media(prefers-reduced-motion:reduce) { .reveal,.reveal-left,.reveal-scale{opacity:1;transform:none;transition:none;} *{animation-duration:.01ms!important;} }
+/* Escalonado de 70ms: 5 elementos entran en <400ms */
+.delay-1{transition-delay:.07s;} .delay-2{transition-delay:.14s;} .delay-3{transition-delay:.21s;} .delay-4{transition-delay:.28s;} .delay-5{transition-delay:.35s;}
 
 /* ── Ripple ── */
-.ripple { position:absolute;border-radius:50%;background:rgba(255,255,255,0.3);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none; }
+.ripple { position:absolute;border-radius:50%;background:rgba(255,255,255,0.3);transform:scale(0);animation:rippleAnim .5s var(--ease-out);pointer-events:none; }
 @keyframes rippleAnim { to { transform:scale(4);opacity:0; } }
+
+/* ── Cambio de texto (p.ej. al cambiar de idioma): sale rápido, entra suave ── */
+.text-swap-out { opacity:0;transform:translateY(-4px);transition:opacity .12s var(--ease-in),transform .12s var(--ease-in); }
+.text-swap-in  { transition:opacity .2s var(--ease-out),transform .2s var(--ease-out); }
+
+/* Movimiento reducido: sin desplazamientos, y sin bucles infinitos acelerados
+   (una animación infinita con duración ~0 parpadea sin parar). */
+@media(prefers-reduced-motion:reduce) {
+  .reveal,.reveal-left,.reveal-scale{opacity:1;transform:none;transition:none;}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+  .partners-row{animation:none!important;}
+}
 
 /* ── Navbar ── */
 #navbar {

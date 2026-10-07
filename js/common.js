@@ -165,6 +165,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => revealObs.observe(el));
 
+  // ── Contadores: [data-count] cuenta desde 0 al entrar en pantalla ──
+  // El número final ya está en el HTML, así que sin JS o con movimiento
+  // reducido se ve tal cual.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduceMotion) {
+    const countObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        countObs.unobserve(e.target);
+        const el = e.target, end = parseInt(el.dataset.count, 10), dur = 1000;
+        if (isNaN(end)) return;
+        let start = null;
+        const frame = ts => {
+          if (start === null) start = ts;
+          const t = Math.min(1, (ts - start) / dur);
+          el.textContent = Math.round(end * (1 - Math.pow(1 - t, 3)));
+          if (t < 1) requestAnimationFrame(frame);
+        };
+        el.textContent = '0';
+        requestAnimationFrame(frame);
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-count]').forEach(el => countObs.observe(el));
+  }
+
   // ── Ripple ──
   document.querySelectorAll('[data-ripple]').forEach(btn => {
     btn.addEventListener('click', function(e) {
