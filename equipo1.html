@@ -105,6 +105,8 @@
   .standings-table tr:hover td{background:rgba(18,85,201,0.04);}
   html.dark .standings-table tr:hover td{background:rgba(255,255,255,0.03);}
   .standings-table tr.is-tolosa td{background:rgba(18,85,201,0.08);}
+  /* Móvil: fuera empates y goles a favor/en contra para que la tabla quepa sin cortarse */
+  @media(max-width:640px){.standings-table .hide-m{display:none;}.standings-table th,.standings-table td{padding:.7rem .45rem;}}
   html.dark .standings-table tr.is-tolosa td{background:rgba(18,85,201,0.15);}
   .pos-medal{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:900;font-size:.8rem;}
   .pos-1{background:rgba(234,179,8,0.2);color:#d97706;}
@@ -389,9 +391,9 @@
 
 <style>@keyframes spin{to{transform:rotate(360deg);}}</style>
 
-<script src="js/i18n.js?v=3"></script>
+<script src="js/i18n.js?v=4"></script>
 <script src="js/common.js?v=2"></script>
 <script src="js/cookie-consent.js"></script>
-<script src="js/equipo1_v2.js?v=3"></script>
+<script src="js/equipo1_v2.js?v=4"></script>
 </body>
 </html>

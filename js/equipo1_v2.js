@@ -242,7 +242,7 @@ function renderStandings(){
   
   let html=`<div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);" class="dark-border">
   <table class="standings-table">
-  <thead><tr><th style="text-align:center;">Pos</th><th>Equipo</th><th style="text-align:center;">PJ</th><th style="text-align:center;">PG</th><th style="text-align:center;">PE</th><th style="text-align:center;">PP</th><th style="text-align:center;">GF</th><th style="text-align:center;">GC</th><th style="text-align:center;">DG</th><th style="text-align:center;color:var(--accent-bright);">PTS</th></tr></thead>
+  <thead><tr><th style="text-align:center;" data-i18n="st.pos">Pos</th><th data-i18n="st.team">Equipo</th><th style="text-align:center;" data-i18n="st.pj">PJ</th><th style="text-align:center;" data-i18n="st.pg">PG</th><th class="hide-m" style="text-align:center;" data-i18n="st.pe">PE</th><th style="text-align:center;" data-i18n="st.pp">PP</th><th class="hide-m" style="text-align:center;" data-i18n="st.gf">GF</th><th class="hide-m" style="text-align:center;" data-i18n="st.gc">GC</th><th style="text-align:center;" data-i18n="st.dg">DG</th><th style="text-align:center;color:var(--accent-bright);" data-i18n="st.pts">PTS</th></tr></thead>
   <tbody>`;
   standings.forEach(item=>{
     const isTolosa=item.team?.toLowerCase().includes('tolosa');
@@ -252,7 +252,7 @@ function renderStandings(){
     if(item.pos===2)posEl=`<span class="pos-medal pos-2">${item.pos}</span>`;
     if(item.pos===3)posEl=`<span class="pos-medal pos-3">${item.pos}</span>`;
     const teamHtml = getTeamHtml(item.team);
-    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};"><div style="display:flex; align-items:center; height:100%;">${teamHtml}</div></td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td style="text-align:center;">${item.gf||0}</td><td style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
+    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};"><div style="display:flex; align-items:center; height:100%;">${teamHtml}</div></td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td class="hide-m" style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td class="hide-m" style="text-align:center;">${item.gf||0}</td><td class="hide-m" style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
   });
   html+=`</tbody></table></div>`;
   document.getElementById('tab-content').innerHTML = html;
