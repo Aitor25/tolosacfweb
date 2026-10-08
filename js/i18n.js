@@ -36,7 +36,7 @@ window.TRANSLATIONS = {
     // Fixture banner
     'fixture.label':     'Próximo partido',
     'fixture.vs':        'Tolosa CF vs',
-    'fixture.cta':       'Ver equipo →',
+    'fixture.cta':       'Ver equipo',
 
     // Secciones index
     'section.news.eyebrow':  'Actualidad',
@@ -230,7 +230,7 @@ window.TRANSLATIONS = {
     // Fixture banner
     'fixture.label':     'Hurrengo partida',
     'fixture.vs':        'Tolosa CF vs',
-    'fixture.cta':       'Ikusi taldea →',
+    'fixture.cta':       'Ikusi taldea',
 
     // Secciones index
     'section.news.eyebrow':  'Albisteak',
