@@ -227,8 +227,11 @@
           if(!teamName) return '';
           var slug = teamName.toString().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
           var isTolosa = slug.indexOf('TOLOSA') > -1;
-          var src = isTolosa ? 'escudo.png' : (globalLogos[slug] || '');
-          if(src) return '<img src="' + src + '" style="width:100%;height:100%;object-fit:contain;" alt="' + teamName + '">';
+          var src = isTolosa ? 'images/escudo-120.png' : (globalLogos[slug] || '');
+          if(src) {
+            var esc = function(v){ return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
+            return '<img src="' + esc(src) + '" style="width:100%;height:100%;object-fit:contain;" alt="">';
+          }
           return '<i data-feather="shield" style="width:50%;height:50%;opacity:0.2;"></i>';
         }
         

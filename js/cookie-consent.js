@@ -43,6 +43,8 @@
     iframe.scrolling = 'no';
     iframe.setAttribute('allowtransparency', 'true');
     iframe.className = 'lightwidget-widget';
+    iframe.title = t('cookies.instaTitle', 'Últimas publicaciones de Instagram del club');
+    iframe.loading = 'lazy';
     iframe.style.cssText = 'width:100%;border:0;overflow:hidden;';
     wrap.appendChild(script);
     wrap.appendChild(iframe);
@@ -87,7 +89,7 @@
     var el = document.createElement('div');
     el.id = 'cookie-banner';
     el.setAttribute('role', 'dialog');
-    el.setAttribute('aria-label', 'Aviso de cookies');
+    el.setAttribute('aria-label', t('cookies.title', 'Aviso de cookies'));
     el.style.cssText = 'position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:500;max-width:640px;margin:0 auto;background:var(--card-bg);color:var(--text-primary);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem 1.5rem;box-shadow:0 12px 40px rgba(0,0,0,0.25);font-family:var(--font-body);';
 
     var text = document.createElement('p');
@@ -100,11 +102,13 @@
 
     var acceptBtn = document.createElement('button');
     acceptBtn.className = 'btn btn-primary';
+    acceptBtn.type = 'button';
     acceptBtn.textContent = t('cookies.accept', 'Aceptar');
     acceptBtn.addEventListener('click', function () { applyConsent('accepted'); });
 
     var rejectBtn = document.createElement('button');
-    rejectBtn.className = 'btn btn-ghost';
+    rejectBtn.className = 'btn btn-neutral';
+    rejectBtn.type = 'button';
     rejectBtn.textContent = t('cookies.reject', 'Rechazar');
     rejectBtn.addEventListener('click', function () { applyConsent('rejected'); });
 

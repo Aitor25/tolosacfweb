@@ -45,6 +45,59 @@ function cropWhitespace(file) {
   });
 }
 
+// Lado máximo (px) de cada tipo de imagen tras la subida: las fotos de móvil/cámara
+// pesan varios MB y se muestran a 200-700 px, así que se reducen antes de subirlas.
+const MAX_SIDE_BY_FOLDER = { news: 1600, club: 1600, players: 900, staff: 800, sponsors: 600, escudos: 300 };
+
+function resizeImageFile(file, maxSide, quality = 0.85) {
+  return new Promise((resolve) => {
+    if (file.type === 'image/gif') { resolve(file); return; } // se respeta la animación
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      if (scale === 1 && file.size < 300 * 1024) { resolve(file); return; } // ya es ligera
+      const w = Math.max(1, Math.round(img.width * scale));
+      const h = Math.max(1, Math.round(img.height * scale));
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      // Si hay píxeles transparentes se conserva el formato con transparencia (PNG/WebP); si no, JPEG ligero.
+      let hasAlpha = false;
+      if (file.type !== 'image/jpeg') {
+        const px = ctx.getImageData(0, 0, w, h).data;
+        for (let i = 3; i < px.length; i += 4) { if (px[i] < 250) { hasAlpha = true; break; } }
+      }
+      const outType = (file.type === 'image/jpeg' || !hasAlpha) ? 'image/jpeg' : file.type;
+      canvas.toBlob((blob) => {
+        if (!blob || (scale === 1 && blob.size >= file.size)) { resolve(file); return; }
+        const ext = outType === 'image/jpeg' ? 'jpg' : (outType === 'image/webp' ? 'webp' : 'png');
+        resolve(new File([blob], file.name.replace(/\.[^.]+$/, '') + '.' + ext, { type: outType }));
+      }, outType, quality);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
+// Borra de Storage el archivo al que apunta una URL de este bucket (best-effort).
+// Así la foto de una persona o patrocinador eliminado no sigue accesible públicamente.
+// Solo toca archivos de la carpeta esperada (news/, players/, staff/, sponsors/).
+async function deleteStorageFileByUrl(url, folder) {
+  try {
+    if (!url || !window.storage) return;
+    const u = new URL(url);
+    if (u.hostname !== 'firebasestorage.googleapis.com') return;
+    const m = u.pathname.match(/\/o\/([^/]+)$/);
+    if (!m || decodeURIComponent(m[1]).indexOf(folder + '/') !== 0) return;
+    await window.storage.refFromURL(url.split('?')[0]).delete();
+  } catch (e) {
+    console.warn('[admin] No se pudo borrar el archivo de Storage:', e && (e.code || e.message));
+  }
+}
+
 const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // debe coincidir con storage.rules
 
@@ -68,6 +121,7 @@ async function uploadImageToStorage(fileInputId, progressId, folder) {
   if(folder === 'sponsors') {
     try { file = await cropWhitespace(file); } catch(e) {}
   }
+  try { file = await resizeImageFile(file, MAX_SIDE_BY_FOLDER[folder] || 1600); } catch(e) {}
   
   const progressDiv = document.getElementById(progressId);
   if(progressDiv) progressDiv.style.display = 'block';
@@ -709,7 +763,11 @@ async function editNews(id){
 }
 async function deleteNews(id){
   if(!confirm('Eliminar esta noticia?'))return;
-  await db.collection('news').doc(id).delete();toast('Noticia eliminada','success');loadNewsList();loadDashboardStats();
+  const snap=await db.collection('news').doc(id).get();
+  const photo=snap.exists?(snap.data().image||''):'';
+  await db.collection('news').doc(id).delete();
+  await deleteStorageFileByUrl(photo,'news');
+  toast('Noticia eliminada','success');loadNewsList();loadDashboardStats();
 }
 // Oculta/muestra una noticia sin borrarla: las noticias ocultas no aparecen
 // en el inicio, en la lista de noticias ni son accesibles por enlace directo.
@@ -1449,7 +1507,7 @@ async function editPlayer(id){
   document.getElementById('player-edit-id').value=id;document.getElementById('player-name').value=p.name||'';document.getElementById('player-number').value=p.number||'';document.getElementById('player-position').value=p.position||'Central';document.getElementById('player-team').value=p.team||'senior-masculino';document.getElementById('player-photo').value=p.photo||'';document.getElementById('player-notes').value=p.notes||'';
   document.getElementById('player-form-title').textContent='Editar jugador';
 }
-async function deletePlayer(id){if(!confirm('Eliminar este jugador?'))return;await db.collection('players').doc(id).delete();toast('Jugador eliminado','success');loadPlayers();loadDashboardStats();}
+async function deletePlayer(id){if(!confirm('Eliminar este jugador?'))return;const snap=await db.collection('players').doc(id).get();const photo=snap.exists?(snap.data().photo||''):'';await db.collection('players').doc(id).delete();await deleteStorageFileByUrl(photo,'players');toast('Jugador eliminado','success');loadPlayers();loadDashboardStats();}
 function clearPlayerForm(){['player-edit-id','player-name','player-number','player-photo','player-notes','player-photo-file'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const lbl=document.getElementById('player-photo-filename');if(lbl)lbl.textContent='';document.getElementById('player-form-title').textContent='Nuevo jugador';}
 
 // ── CUERPO TÉCNICO ──
@@ -1513,7 +1571,7 @@ async function editStaff(id){
   document.getElementById('staff-order').value=m.order||0;
   document.getElementById('staff-form-title').textContent='Editar miembro';
 }
-async function deleteStaff(id){if(!confirm('Eliminar este miembro del cuerpo técnico?'))return;await db.collection('staff').doc(id).delete();toast('Miembro eliminado','success');loadStaffAdmin();}
+async function deleteStaff(id){if(!confirm('Eliminar este miembro del cuerpo técnico?'))return;const snap=await db.collection('staff').doc(id).get();const photo=snap.exists?(snap.data().photo||''):'';await db.collection('staff').doc(id).delete();await deleteStorageFileByUrl(photo,'staff');toast('Miembro eliminado','success');loadStaffAdmin();}
 function clearStaffForm(){['staff-edit-id','staff-name','staff-role','staff-photo','staff-order','staff-photo-file'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const lbl=document.getElementById('staff-photo-filename');if(lbl)lbl.textContent='';document.getElementById('staff-form-title').textContent='Nuevo miembro';}
 
 
@@ -1581,7 +1639,7 @@ async function editSponsor(id){
   document.getElementById('sponsor-edit-id').value=id;document.getElementById('sponsor-name').value=s.name||'';document.getElementById('sponsor-logo').value=s.logo||'';document.getElementById('sponsor-url').value=s.url||'';document.getElementById('sponsor-category').value=s.category||'principal';
   document.getElementById('sponsor-form-title').textContent='Editar patrocinador';
 }
-async function deleteSponsor(id){if(!confirm('Eliminar este patrocinador?'))return;await db.collection('sponsors').doc(id).delete();toast('Patrocinador eliminado','success');loadSponsors();loadDashboardStats();}
+async function deleteSponsor(id){if(!confirm('Eliminar este patrocinador?'))return;const snap=await db.collection('sponsors').doc(id).get();const logo=snap.exists?(snap.data().logo||''):'';await db.collection('sponsors').doc(id).delete();await deleteStorageFileByUrl(logo,'sponsors');toast('Patrocinador eliminado','success');loadSponsors();loadDashboardStats();}
 function clearSponsorForm(){['sponsor-edit-id','sponsor-name','sponsor-logo','sponsor-url','sponsor-logo-file'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});const lbl=document.getElementById('sponsor-logo-filename');if(lbl)lbl.textContent='';document.getElementById('sponsor-category').value='principal';document.getElementById('sponsor-form-title').textContent='Nuevo patrocinador';}
 
 // ── EQUIPOS DE BASE ──
@@ -1924,13 +1982,15 @@ async function saveEscudo() {
   btn.disabled = true;
   
   try {
-    // 1. Upload to Storage
+    // 1. Upload to Storage (el escudo se reduce a 300 px: se muestra a 20-80 px)
+    let fileToUpload = file;
+    try { fileToUpload = await resizeImageFile(file, MAX_SIDE_BY_FOLDER.escudos); } catch(e) {}
     const storageRef = firebase.storage().ref();
-    const ext = file.name.split('.').pop();
+    const ext = fileToUpload.name.split('.').pop();
     const fileName = `escudos/${Date.now()}_${currentEditingTeam.replace(/[^a-zA-Z0-9]/g, '')}.${ext}`;
     const fileRef = storageRef.child(fileName);
     
-    await fileRef.put(file);
+    await fileRef.put(fileToUpload);
     const downloadURL = await fileRef.getDownloadURL();
     
     // 2. Save to Firestore

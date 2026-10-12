@@ -24,6 +24,20 @@ window.TRANSLATIONS = {
     'nav.lightMode':     'Modo claro',
     'nav.darkMode':      'Modo oscuro',
 
+    // Accesibilidad (etiquetas para lectores de pantalla)
+    'a11y.skip':         'Saltar al contenido principal',
+    'a11y.mainNav':      'Navegación principal',
+    'a11y.legalNav':     'Información legal',
+    'a11y.openMenu':     'Abrir menú',
+    'a11y.closeMenu':    'Cerrar menú',
+    'a11y.changeTheme':  'Cambiar tema',
+    'a11y.changeLang':   'Cambiar idioma',
+    'hero.scroll':       'Desliza',
+    'e404.eyebrow':      'Error 404',
+    'e404.title':        'Página no encontrada',
+    'e404.text':         'La página que buscas no existe o se ha movido.',
+    'e404.cta':          'Volver al inicio',
+
     // Hero (index)
     'hero.word1':        'Ongi',
     'hero.word2':        'etorri',
@@ -134,6 +148,8 @@ window.TRANSLATIONS = {
     'sponsors.cta.sub':  'Contáctanos y te explicamos cómo colaborar con el club.',
     'legal.cookies.title':'Política de<br>Cookies',
     'cookies.bannerText': 'Usamos almacenamiento técnico necesario para recordar tu idioma y tema. Si aceptas, también cargamos el widget de Instagram, que instala sus propias cookies de terceros.',
+    'cookies.title': 'Aviso de cookies',
+    'cookies.instaTitle': 'Últimas publicaciones de Instagram del club',
     'cookies.accept': 'Aceptar',
     'cookies.reject': 'Rechazar',
     'cookies.moreInfo': 'Más información',
@@ -171,6 +187,12 @@ window.TRANSLATIONS = {
     'team.tab.results.empty': 'Sin resultados disponibles',
     'team.tab.standings.empty': 'Sin clasificación disponible',
     'contact.form.success': '¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.',
+    'contact.form.failure': 'No se ha podido enviar el mensaje. Escríbenos directamente a eskubaloia.tolosacf@gmail.com.',
+    'contact.form.info': 'Responsable: Tolosa CF. Finalidad: atender tu consulta. Base jurídica: tu consentimiento. Destinatarios: no se ceden datos a terceros, salvo obligación legal; el envío se realiza a través de nuestros proveedores Firebase (Google) y EmailJS. Derechos: acceso, rectificación, supresión, oposición, limitación y portabilidad, escribiendo a eskubaloia.tolosacf@gmail.com.',
+    'contact.consent.before': 'He leído y acepto la',
+    'contact.consent.link': 'Política de Privacidad',
+    'contact.consent.after': '.',
+    'contact.form.consentError': 'Para enviar el mensaje debes aceptar la Política de Privacidad.',
     'contact.form.error': 'Por favor, rellena todos los campos correctamente.',
     'contact.form.sending': 'Enviando...',
     'team.noDataTitle': 'Sin datos disponibles todavía',
@@ -218,6 +240,20 @@ window.TRANSLATIONS = {
     'nav.contact':       'Kontaktua',
     'nav.lightMode':     'Modu argia',
     'nav.darkMode':      'Modu iluna',
+
+    // Accesibilidad (etiquetas para lectores de pantalla)
+    'a11y.skip':         'Joan eduki nagusira',
+    'a11y.mainNav':      'Nabigazio nagusia',
+    'a11y.legalNav':     'Informazio legala',
+    'a11y.openMenu':     'Ireki menua',
+    'a11y.closeMenu':    'Itxi menua',
+    'a11y.changeTheme':  'Aldatu gaia',
+    'a11y.changeLang':   'Aldatu hizkuntza',
+    'hero.scroll':       'Korritu',
+    'e404.eyebrow':      '404 errorea',
+    'e404.title':        'Ez da orria aurkitu',
+    'e404.text':         'Bilatzen duzun orria ez dago edo lekuz aldatu da.',
+    'e404.cta':          'Itzuli hasierara',
 
     // Hero (index)
     'hero.word1':        'Ongi',
@@ -329,6 +365,8 @@ window.TRANSLATIONS = {
     'sponsors.cta.sub':  'Jarri gurekin harremanetan eta azalduko dizugu klubarekin nola lan egin.',
     'legal.cookies.title':'Cookien<br><em>Politika</em>',
     'cookies.bannerText': 'Zure hizkuntza eta gaia gogoratzeko beharrezko biltegiratze teknikoa erabiltzen dugu. Onartzen baduzu, Instagramen widgeta ere kargatuko dugu, eta horrek bere hirugarrenen cookieak ezarriko ditu.',
+    'cookies.title': 'Cookie oharra',
+    'cookies.instaTitle': 'Klubaren Instagrameko azken argitalpenak',
     'cookies.accept': 'Onartu',
     'cookies.reject': 'Ez onartu',
     'cookies.moreInfo': 'Informazio gehiago',
@@ -366,6 +404,12 @@ window.TRANSLATIONS = {
     'team.tab.results.empty': 'Ez dago emaitzarik eskuragarri',
     'team.tab.standings.empty': 'Ez dago sailkapenik eskuragarri',
     'contact.form.success': 'Mezua ongi bidali da! Laster jarriko gara zurekin harremanetan.',
+    'contact.form.failure': 'Ezin izan da mezua bidali. Idatzi zuzenean eskubaloia.tolosacf@gmail.com helbidera.',
+    'contact.form.info': 'Arduraduna: Tolosa CF. Helburua: zure kontsulta erantzutea. Oinarri juridikoa: zure baimena. Hartzaileak: datuak ez zaizkie hirugarrenei lagatzen, lege-betebeharra izan ezean; mezua gure hornitzaileen (Firebase –Google– eta EmailJS) bidez bidaltzen da. Eskubideak: datuetara sartzeko, zuzentzeko, ezabatzeko, aurka egiteko, tratamendua mugatzeko eta eramangarritasunerako eskubideak erabil ditzakezu eskubaloia.tolosacf@gmail.com helbidera idatziz.',
+    'contact.consent.before': '',
+    'contact.consent.link': 'Pribatutasun Politika',
+    'contact.consent.after': ' irakurri dut eta onartzen dut.',
+    'contact.form.consentError': 'Mezua bidaltzeko, Pribatutasun Politika onartu behar duzu.',
     'contact.form.error': 'Mesedez, bete eremu guztiak behar bezala.',
     'contact.form.sending': 'Bidaltzen...',
     'team.noDataTitle': 'Ez dago daturik eskuragarri oraindik',
@@ -459,6 +503,12 @@ function applyTranslations() {
     }
   });
 
+  // Etiquetas accesibles: data-i18n-aria="key"
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    const key = el.getAttribute('data-i18n-aria');
+    if (t[key] !== undefined) el.setAttribute('aria-label', t[key]);
+  });
+
   // Placeholders: data-i18n-placeholder="key"
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
@@ -487,13 +537,16 @@ function updateLangSelector(lang) {
     current.textContent = '';
     const img = document.createElement('img');
     img.src = flagSrc;
-    img.alt = lang.toUpperCase();
+    img.alt = '';
     img.className = 'flag-icon';
     const span = document.createElement('span');
     span.textContent = lang.toUpperCase();
     current.appendChild(img);
     current.appendChild(document.createTextNode(' '));
     current.appendChild(span);
+    const toggle = document.getElementById('lang-toggle');
+    const tr = window.TRANSLATIONS[lang];
+    if (toggle && tr) toggle.setAttribute('aria-label', lang.toUpperCase() + ' – ' + tr['a11y.changeLang']);
   }
   // Marcar activo en el dropdown desktop y botones móviles
   document.querySelectorAll('[data-lang]').forEach(btn => {

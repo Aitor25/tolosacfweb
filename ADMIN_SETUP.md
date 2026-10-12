@@ -1,47 +1,53 @@
-# Configuración Administrativa y Seguridad Avanzada
+# Administración, reglas de seguridad y despliegue
 
-## 1. Custom Claims para Administradores
-Las reglas de Firebase están preparadas para validar si un usuario es administrador mediante `request.auth.token.admin == true`.
-**NUNCA ejecutes el siguiente script en el navegador del cliente.**
-Debes ejecutarlo en un entorno seguro (Node.js en tu equipo o Cloud Functions) usando el SDK de Firebase Admin y una clave de servicio.
+## Quién es administrador
 
-### Script Seguro (Node.js)
-Crea un archivo local `setAdmin.js` (fuera del repositorio público):
-```javascript
-const admin = require('firebase-admin');
-const serviceAccount = require('./ruta/a/tu/clave/privada.json'); // NO SUBIR A GITHUB
+El panel (`admin.html`) usa Firebase Authentication. El **único administrador** es la cuenta de Google
+`agarciah10@gmail.com`: ese correo está escrito en `firestore.rules` y `storage.rules` (función `isAdmin()`).
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+Para cambiar de administrador, edita el correo en **ambos** ficheros y despliega las reglas:
 
-const uid = 'AQUI_EL_UID_DE_TU_USUARIO';
-
-admin.auth().setCustomUserClaims(uid, { admin: true })
-  .then(() => {
-    console.log('Claim de administrador asignado a', uid);
-  })
-  .catch((error) => console.error(error));
+```bash
+firebase deploy --only firestore:rules,storage --project tolosa-cf-eskubaloia
 ```
-**Para forzar la renovación del Token:**
-Una vez ejecutado, el usuario debe cerrar sesión en la web y volver a entrar para que el token JWT se renueve e incluya el rol `admin: true`.
-**Plan de recuperación:** Si pierdes acceso, simplemente vuelve a generar una clave de servicio desde tu consola y ejecuta el script con el UID del nuevo administrador.
 
-## 2. Configuración de Firebase App Check
-App Check protege tus bases de datos bloqueando el tráfico que no provenga de tu aplicación real.
-**No lo actives en modo "Obligatorio" (Enforcement) todavía.**
+Mantén activada la **verificación en dos pasos** en esa cuenta de Google: es la llave de toda la escritura de la web.
 
-**Fases de Implantación:**
-1. Ve a la consola de Firebase > App Check.
-2. Registra tu aplicación usando **reCAPTCHA v3** (Enterprise si aplica) para la web.
-3. El código HTML ya está preparado para integrarlo, pero debes añadir la clave del sitio en tu `firebase-config.js` cuando vayas a habilitarlo:
-   `const appCheck = firebase.appCheck();`
-   `appCheck.activate('TU_RECAPTCHA_SITE_KEY', true);`
-4. Revisa las métricas en la consola. Solo cuando el tráfico "No verificado" sea nulo o sospechoso, pulsa "Enforce" para bloquear.
+## Qué permiten las reglas
 
-## 3. Despliegue de Reglas de Seguridad
-Se han generado dos archivos locales: `firestore.rules` y `storage.rules`.
-Antes de publicarlas mediante Firebase CLI o la consola:
-1. Revisa las reglas actuales en Firebase Console.
-2. Compara el uso de tus colecciones.
-3. Usa el simulador (Rules Playground) para garantizar que puedes seguir leyendo y escribiendo como administrador.
+| Recurso | Lectura | Escritura |
+|---|---|---|
+| `news`, `teams`, `players`, `staff`, `sponsors`, `baseTeams`, `competitions`, `settings` | pública | solo administrador |
+| `messages` (formulario de contacto) | solo administrador | cualquiera puede **crear** un mensaje con forma y tamaño válidos; nadie más puede leer, editar ni borrar |
+| cualquier otra colección | nadie | nadie |
+| Storage (imágenes) | pública | solo administrador; solo PNG/JPEG/WebP/GIF de menos de 5 MB; borrar solo administrador |
+
+Importante: **lectura pública significa que cualquiera puede consultar esos datos** directamente por la API de Firebase,
+aunque la web no los muestre (por ejemplo, las noticias marcadas como "ocultas" siguen siendo legibles). No guardes ahí
+nada que no deba ser público.
+
+## Pruebas de las reglas
+
+`test/rules.test.js` prueba las reglas contra los emuladores de Firebase (necesita Java 17 o superior):
+
+```bash
+npm install
+npm run test:rules
+```
+
+## Al cambiar de dominio
+
+1. **GitHub Pages**: Settings → Pages → Custom domain, y marcar *Enforce HTTPS*. Debe existir el fichero `CNAME` en la raíz.
+2. **Firebase Authentication**: Authentication → Settings → *Authorized domains* → añadir el dominio nuevo (si no, el
+   inicio de sesión del panel falla en el dominio nuevo).
+3. **EmailJS**: si en su panel hay restricción de dominios permitidos, añadir el dominio nuevo (si no, el formulario de contacto deja de enviar correos).
+4. **Clave de API de Firebase** (Google Cloud Console → APIs y servicios → Credenciales): si tiene restricción por referente HTTP, añadir el dominio nuevo.
+5. **LightWidget** (Instagram): si el widget tiene restricción de dominios, añadir el dominio nuevo.
+6. Actualizar en `index.html` el JSON-LD (`url`, `logo`), y en todas las páginas `canonical`, `og:url` y `og:image`; regenerar `sitemap.xml` y `robots.txt` con el dominio nuevo.
+
+## Recomendaciones opcionales
+
+- **Firebase App Check** (reCAPTCHA v3) para que solo la web real pueda llamar a Firestore, y **alertas de presupuesto** en
+  Google Cloud, para que un abuso del formulario de contacto no pueda generar gasto ni llenar la bandeja de entrada.
+- Si el administrador entra siempre con Google, se puede endurecer `isAdmin()` exigiendo además
+  `request.auth.token.email_verified == true`.

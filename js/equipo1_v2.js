@@ -182,11 +182,11 @@ function getTeamHtml(teamName, isLarge = false, isAway = false) {
   const safeTeamName = escapeHtml(teamName);
 
   if(isTolosa) {
-    crestHtml = `<img src="escudo.png" class="${crestClass}" alt="Tolosa CF">`;
+    crestHtml = `<img src="images/escudo-120.png" class="${crestClass}" alt="">`;
     textHtml = `<span style="font-weight:700;">${safeTeamName} <span style="color:var(--accent-bright);font-size:.7rem;">&#9679;</span></span>`;
   } else {
     const logo = globalTeamLogos[lookupSlug];
-    if(logo) crestHtml = `<img src="${escapeHtml(logo)}" class="${crestClass}" alt="${safeTeamName}">`;
+    if(logo) crestHtml = `<img src="${escapeHtml(logo)}" class="${crestClass}" alt="">`;
     textHtml = `<span style="font-weight:400;">${safeTeamName}</span>`;
   }
   
@@ -242,17 +242,17 @@ function renderStandings(){
   
   let html=`<div style="overflow-x:auto;border-radius:12px;border:1px solid var(--border);" class="dark-border">
   <table class="standings-table">
-  <thead><tr><th style="text-align:center;" data-i18n="st.pos">Pos</th><th data-i18n="st.team">Equipo</th><th style="text-align:center;" data-i18n="st.pj">PJ</th><th style="text-align:center;" data-i18n="st.pg">PG</th><th class="hide-m" style="text-align:center;" data-i18n="st.pe">PE</th><th style="text-align:center;" data-i18n="st.pp">PP</th><th class="hide-m" style="text-align:center;" data-i18n="st.gf">GF</th><th class="hide-m" style="text-align:center;" data-i18n="st.gc">GC</th><th style="text-align:center;" data-i18n="st.dg">DG</th><th style="text-align:center;color:var(--accent-bright);" data-i18n="st.pts">PTS</th></tr></thead>
+  <thead><tr><th style="text-align:center;" data-i18n="st.pos">Pos</th><th data-i18n="st.team">Equipo</th><th style="text-align:center;" data-i18n="st.pj">PJ</th><th style="text-align:center;" data-i18n="st.pg">PG</th><th class="hide-m" style="text-align:center;" data-i18n="st.pe">PE</th><th style="text-align:center;" data-i18n="st.pp">PP</th><th class="hide-m" style="text-align:center;" data-i18n="st.gf">GF</th><th class="hide-m" style="text-align:center;" data-i18n="st.gc">GC</th><th style="text-align:center;" data-i18n="st.dg">DG</th><th style="text-align:center;color:var(--accent-text);" data-i18n="st.pts">PTS</th></tr></thead>
   <tbody>`;
   standings.forEach(item=>{
     const isTolosa=item.team?.toLowerCase().includes('tolosa');
     const dg=(item.gf||0)-(item.gc||0);
-    let posEl=`<span style="font-family:'Archivo',sans-serif;font-weight:900;">${item.pos}</span>`;
-    if(item.pos===1)posEl=`<span class="pos-medal pos-1">${item.pos}</span>`;
-    if(item.pos===2)posEl=`<span class="pos-medal pos-2">${item.pos}</span>`;
-    if(item.pos===3)posEl=`<span class="pos-medal pos-3">${item.pos}</span>`;
+    let posEl=`<span style="font-family:'Archivo',sans-serif;font-weight:900;">${escapeHtml(item.pos)}</span>`;
+    if(item.pos===1)posEl=`<span class="pos-medal pos-1">${escapeHtml(item.pos)}</span>`;
+    if(item.pos===2)posEl=`<span class="pos-medal pos-2">${escapeHtml(item.pos)}</span>`;
+    if(item.pos===3)posEl=`<span class="pos-medal pos-3">${escapeHtml(item.pos)}</span>`;
     const teamHtml = getTeamHtml(item.team);
-    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};"><div style="display:flex; align-items:center; height:100%;">${teamHtml}</div></td><td style="text-align:center;">${item.pj||0}</td><td style="text-align:center;color:#22c55e;">${item.pg||0}</td><td class="hide-m" style="text-align:center;">${item.pe||0}</td><td style="text-align:center;color:#ef4444;">${item.pp||0}</td><td class="hide-m" style="text-align:center;">${item.gf||0}</td><td class="hide-m" style="text-align:center;">${item.gc||0}</td><td style="text-align:center;color:${dg>0?'#22c55e':dg<0?'#ef4444':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${item.pts||0}</td></tr>`;
+    html+=`<tr class="${isTolosa?'is-tolosa':''}"><td style="text-align:center;">${posEl}</td><td style="font-weight:${isTolosa?'700':'400'};"><div style="display:flex; align-items:center; height:100%;">${teamHtml}</div></td><td style="text-align:center;">${escapeHtml(item.pj||0)}</td><td style="text-align:center;color:var(--good);">${escapeHtml(item.pg||0)}</td><td class="hide-m" style="text-align:center;">${escapeHtml(item.pe||0)}</td><td style="text-align:center;color:var(--bad);">${escapeHtml(item.pp||0)}</td><td class="hide-m" style="text-align:center;">${escapeHtml(item.gf||0)}</td><td class="hide-m" style="text-align:center;">${escapeHtml(item.gc||0)}</td><td style="text-align:center;color:${dg>0?'var(--good)':dg<0?'var(--bad)':'inherit'}">${dg>0?'+':''}${dg}</td><td style="text-align:center;font-family:'Archivo',sans-serif;font-weight:900;font-size:1.15rem;color:var(--accent-bright);">${escapeHtml(item.pts||0)}</td></tr>`;
   });
   html+=`</tbody></table></div>`;
   document.getElementById('tab-content').innerHTML = html;
@@ -355,13 +355,13 @@ function renderResults(){
     
     html+=`<div class="match-card ${isTolosa?'is-tolosa-match':''}">
       <div class="match-header">
-        <span class="match-journey">J${m.journey||1}</span>
+        <span class="match-journey">J${escapeHtml(m.journey||1)}</span>
         <span class="match-header-separator">•</span>
         <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${escapeHtml(m.time)}` : ''}</span>
       </div>
       <div class="match-body">
         <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px;">${getTeamHtml(m.home, true, false)}</div>
-        <div class="match-score ${isPlayed?'':'unplayed'}">${displayScore}</div>
+        <div class="match-score ${isPlayed?'':'unplayed'}">${escapeHtml(displayScore)}</div>
         <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px; justify-content:flex-end; text-align:right;">${getTeamHtml(m.away, true, true)}</div>
       </div>
       <div class="match-footer" style="opacity:.7;font-size:.78rem;">
@@ -437,13 +437,13 @@ function renderCalendar(){
     
     html+=`<div class="match-card ${isTolosa?'is-tolosa-match':''}">
       <div class="match-header">
-        <span class="match-journey">J${m.journey||1}</span>
+        <span class="match-journey">J${escapeHtml(m.journey||1)}</span>
         <span class="match-header-separator">•</span>
         <span class="match-date" style="font-weight:700;">${dateDisplay} ${m.time && m.time !== 'Pendiente' && m.time !== '0:00' ? `• ${escapeHtml(m.time)}` : ''}</span>
       </div>
       <div class="match-body">
         <div class="match-team match-home" style="font-weight:${m.home?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px;">${getTeamHtml(m.home, true, false)}</div>
-        <div class="match-score ${isPlayed?'':'unplayed'}">${displayScore}</div>
+        <div class="match-score ${isPlayed?'':'unplayed'}">${escapeHtml(displayScore)}</div>
         <div class="match-team match-away" style="font-weight:${m.away?.toLowerCase().includes('tolosa')?'700':'400'}; display:flex; align-items:center; gap:8px; justify-content:flex-end; text-align:right;">${getTeamHtml(m.away, true, true)}</div>
       </div>
       <div class="match-footer" style="opacity:.7;font-size:.78rem;">

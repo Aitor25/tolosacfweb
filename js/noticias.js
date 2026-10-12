@@ -59,10 +59,10 @@
     tagSpan.textContent = tag;
     body.appendChild(tagSpan);
     
-    const h3 = document.createElement('h3');
-    h3.className = 'news-card-title';
-    h3.textContent = title;
-    body.appendChild(h3);
+    const h2 = document.createElement('h2');
+    h2.className = 'news-card-title';
+    h2.textContent = title;
+    body.appendChild(h2);
     
     const dateDiv = document.createElement('div');
     dateDiv.className = 'news-card-date';
@@ -159,9 +159,14 @@
     } catch (e) {
       console.error('[Noticias] Error:', e.code, e.message);
       if (!append) {
-        container.innerHTML = `<div style="grid-column:1/-1;padding:3rem;text-align:center;">
-          <p style="color:#ef4444;font-size:.9rem;">Error al cargar noticias: ${e.message}</p>
-        </div>`;
+        container.innerHTML = '';
+        const errBox = document.createElement('div');
+        errBox.style.cssText = 'grid-column:1/-1;padding:3rem;text-align:center;';
+        const errP = document.createElement('p');
+        errP.style.cssText = 'color:#ef4444;font-size:.9rem;';
+        errP.textContent = 'Error al cargar noticias: ' + e.message;
+        errBox.appendChild(errP);
+        container.appendChild(errBox);
       }
     }
   }
