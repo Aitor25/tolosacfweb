@@ -33,6 +33,19 @@ window.TRANSLATIONS = {
     'a11y.changeTheme':  'Cambiar tema',
     'a11y.changeLang':   'Cambiar idioma',
     'hero.scroll':       'Desliza',
+
+    // Títulos de pestaña
+    'title.home': 'Tolosa CF Eskubaloia | Club de balonmano de Tolosa',
+    'title.news': 'Noticias | Tolosa CF Eskubaloia',
+    'title.club': 'El Club | Tolosa CF Eskubaloia',
+    'title.team': 'Temporada | Tolosa CF Eskubaloia',
+    'title.squad': 'Plantilla | Tolosa CF Eskubaloia',
+    'title.sponsors': 'Patrocinadores | Tolosa CF Eskubaloia',
+    'title.contact': 'Contacto | Tolosa CF Eskubaloia',
+    'title.privacy': 'Política de privacidad | Tolosa CF Eskubaloia',
+    'title.cookies': 'Política de cookies | Tolosa CF Eskubaloia',
+    'title.terms': 'Términos de uso | Tolosa CF Eskubaloia',
+    'title.e404': 'Página no encontrada | Tolosa CF Eskubaloia',
     'e404.eyebrow':      'Error 404',
     'e404.title':        'Página no encontrada',
     'e404.text':         'La página que buscas no existe o se ha movido.',
@@ -250,6 +263,19 @@ window.TRANSLATIONS = {
     'a11y.changeTheme':  'Aldatu gaia',
     'a11y.changeLang':   'Aldatu hizkuntza',
     'hero.scroll':       'Korritu',
+
+    // Títulos de pestaña
+    'title.home': 'Tolosa CF Eskubaloia | Tolosako eskubaloi kluba',
+    'title.news': 'Berriak | Tolosa CF Eskubaloia',
+    'title.club': 'Kluba | Tolosa CF Eskubaloia',
+    'title.team': 'Denboraldia | Tolosa CF Eskubaloia',
+    'title.squad': 'Jokalariak | Tolosa CF Eskubaloia',
+    'title.sponsors': 'Babesleak | Tolosa CF Eskubaloia',
+    'title.contact': 'Kontaktua | Tolosa CF Eskubaloia',
+    'title.privacy': 'Pribatutasun politika | Tolosa CF Eskubaloia',
+    'title.cookies': 'Cookien politika | Tolosa CF Eskubaloia',
+    'title.terms': 'Erabilera-baldintzak | Tolosa CF Eskubaloia',
+    'title.e404': 'Ez da orria aurkitu | Tolosa CF Eskubaloia',
     'e404.eyebrow':      '404 errorea',
     'e404.title':        'Ez da orria aurkitu',
     'e404.text':         'Bilatzen duzun orria ez dago edo lekuz aldatu da.',
@@ -523,6 +549,10 @@ function applyTranslations() {
       el.style.display = 'none';
     }
   });
+
+  // Título de la pestaña (las páginas fijas declaran su clave en <html data-title-key>)
+  const titleKey = document.documentElement.getAttribute('data-title-key');
+  if (titleKey && t[titleKey]) document.title = t[titleKey];
 
   // Actualizar atributo lang del html para accesibilidad
   document.documentElement.setAttribute('lang', lang === 'eu' ? 'eu' : 'es');

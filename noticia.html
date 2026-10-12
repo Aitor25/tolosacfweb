@@ -10,17 +10,22 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tolosa CF Eskubaloia</title>
+<title>Noticia | Tolosa CF Eskubaloia</title>
   <meta name="description" content="Noticia del Tolosa CF Eskubaloia: novedades, convocatorias y toda la actualidad del club.">
   <meta property="og:site_name" content="Tolosa CF Eskubaloia">
-  <meta property="og:title" content="Tolosa CF Eskubaloia">
+  <meta property="og:title" content="Noticia | Tolosa CF Eskubaloia">
   <meta property="og:description" content="Noticia del Tolosa CF Eskubaloia: novedades, convocatorias y toda la actualidad del club.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_ES">
   <meta property="og:locale:alternate" content="eu_ES">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tolosa CF Eskubaloia">
+  <meta name="twitter:title" content="Noticia | Tolosa CF Eskubaloia">
   <meta name="twitter:description" content="Noticia del Tolosa CF Eskubaloia: novedades, convocatorias y toda la actualidad del club.">
+  <meta property="og:image" content="https://tolosacfeskubaloia.es/images/og-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Escudo del Tolosa CF Eskubaloia">
+  <meta name="twitter:image" content="https://tolosacfeskubaloia.es/images/og-cover.jpg">
 
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://cdn.lightwidget.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; frame-src 'self' https://lightwidget.com https://cdn.lightwidget.com; connect-src 'self' https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; base-uri 'self'; object-src 'none'; form-action 'self'; upgrade-insecure-requests">
 
@@ -344,7 +349,10 @@ function renderArticle(data) {
   const image = data.image || data.imagen || '';
   const content = (lang === 'eu' && (data.content_eu || data.summary_eu)) || data.content || data.summary || data.resumen || '';
 
-  document.title = title + ' - TOLOSA CF ESKUBALOIA';
+  document.title = title + ' | Tolosa CF Eskubaloia';
+  let canon = document.querySelector('link[rel="canonical"]');
+  if (!canon) { canon = document.createElement('link'); canon.rel = 'canonical'; document.head.appendChild(canon); }
+  canon.href = 'https://tolosacfeskubaloia.es/noticia.html?id=' + encodeURIComponent(new URLSearchParams(window.location.search).get('id') || '');
   document.getElementById('news-title').textContent = title;
   document.getElementById('news-date').textContent = date;
   

@@ -43,7 +43,7 @@ npm run test:rules
 3. **EmailJS**: si en su panel hay restricción de dominios permitidos, añadir el dominio nuevo (si no, el formulario de contacto deja de enviar correos).
 4. **Clave de API de Firebase** (Google Cloud Console → APIs y servicios → Credenciales): si tiene restricción por referente HTTP, añadir el dominio nuevo.
 5. **LightWidget** (Instagram): si el widget tiene restricción de dominios, añadir el dominio nuevo.
-6. Actualizar en `index.html` el JSON-LD (`url`, `logo`), y en todas las páginas `canonical`, `og:url` y `og:image`; regenerar `sitemap.xml` y `robots.txt` con el dominio nuevo.
+6. El dominio actual es `tolosacfeskubaloia.es`. Si algún día cambia, hay que sustituirlo en `CNAME`, `robots.txt`, `sitemap.xml`, el JSON-LD de `index.html` y las etiquetas `canonical`, `og:url`, `og:image` y `twitter:image` de todas las páginas.
 
 ## Recomendaciones opcionales
 
