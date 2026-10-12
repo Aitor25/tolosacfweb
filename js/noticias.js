@@ -29,7 +29,7 @@
     
     const a = document.createElement('a');
     a.className = 'news-card' + (featured ? ' featured' : '');
-    a.href = 'noticia.html?id=' + encodeURIComponent(id);
+    a.href = '/noticia?id=' + encodeURIComponent(id);
     
     if(image) {
       const img = document.createElement('img');

@@ -113,7 +113,7 @@
     rejectBtn.addEventListener('click', function () { applyConsent('rejected'); });
 
     var infoLink = document.createElement('a');
-    infoLink.href = 'cookies.html';
+    infoLink.href = '/cookies';
     infoLink.textContent = t('cookies.moreInfo', 'Más información');
     infoLink.style.cssText = 'font-size:.8rem;color:var(--accent-bright);text-decoration:underline;margin-left:auto;';
 

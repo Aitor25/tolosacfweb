@@ -241,7 +241,7 @@ function _errMsg(m) {
 function _buildCard(n, i, append) {
   const a = document.createElement('a');
   a.className = 'news-card' + ((i === 0 && !append) ? ' featured' : '') + ' reveal delay-' + Math.min(i+1, 5);
-  a.href = 'noticia.html?id=' + encodeURIComponent(n.id);
+  a.href = '/noticia?id=' + encodeURIComponent(n.id);
   
   if (n.image) {
     const img = document.createElement('img');

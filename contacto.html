@@ -21,8 +21,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Contacto | Tolosa CF Eskubaloia">
   <meta name="twitter:description" content="Contacta con el Tolosa CF Eskubaloia: ubicación, correo electrónico, redes sociales y formulario de contacto.">
-  <link rel="canonical" href="https://tolosacfeskubaloia.es/contacto.html">
-  <meta property="og:url" content="https://tolosacfeskubaloia.es/contacto.html">
+  <link rel="canonical" href="https://tolosacfeskubaloia.es/contacto">
+  <meta property="og:url" content="https://tolosacfeskubaloia.es/contacto">
   <meta property="og:image" content="https://tolosacfeskubaloia.es/images/og-cover.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -82,13 +82,13 @@
   <div class="nav-inner">
     <a href="/" class="nav-brand"><img src="images/escudo-120.png" alt="" width="39" height="44"><span class="nav-brand-text">Tolosa CF<br><span>Eskubaloia</span></span></a>
     <ul class="nav-links">
-      <li><a href="/" data-i18n="nav.home">Inicio</a></li><li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li><li><a href="club.html" data-i18n="nav.club">El Club</a></li><li class="has-dropdown">
-          <a href="equipo1.html" data-i18n="nav.team">1. Equipo</a>
+      <li><a href="/" data-i18n="nav.home">Inicio</a></li><li><a href="/noticias" data-i18n="nav.news">Noticias</a></li><li><a href="/club" data-i18n="nav.club">El Club</a></li><li class="has-dropdown">
+          <a href="/equipo1" data-i18n="nav.team">1. Equipo</a>
           <div class="nav-dropdown">
-            <a href="equipo1.html" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
-            <a href="plantilla.html" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
+            <a href="/equipo1" class="nav-dropdown-item" data-i18n="team.subnav.season"><i data-feather="bar-chart-2" style="width:14px;height:14px;"></i>Temporada</a>
+            <a href="/plantilla" class="nav-dropdown-item" data-i18n="team.subnav.squad"><i data-feather="users" style="width:14px;height:14px;"></i>Plantilla</a>
           </div>
-        </li><li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li><li><a href="contacto.html" class="active" aria-current="page" data-i18n="nav.contact">Contacto</a></li>
+        </li><li><a href="/patrocinadores" data-i18n="nav.sponsors">Patrocinadores</a></li><li><a href="/contacto" class="active" aria-current="page" data-i18n="nav.contact">Contacto</a></li>
       <li class="lang-selector">
         <button type="button" id="lang-toggle" aria-label="Cambiar idioma" aria-haspopup="true">
           <span id="lang-current"><img src="images/flag-es.svg" alt="" class="flag-icon"> <span>ES</span></span>
@@ -116,20 +116,20 @@
   </div>
   <ul class="mobile-nav-links">
     <li><a href="/" data-i18n="nav.home">Inicio</a></li>
-    <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
-    <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
+    <li><a href="/noticias" data-i18n="nav.news">Noticias</a></li>
+    <li><a href="/club" data-i18n="nav.club">El Club</a></li>
     <li class="mobile-has-sub">
       <button type="button" class="mobile-sub-toggle" onclick="toggleMobileSub(this)" aria-expanded="false">
         <span data-i18n="nav.team">1. Equipo</span>
         <span class="mobile-sub-arrow">›</span>
       </button>
       <ul class="mobile-sub-links">
-        <li><a href="equipo1.html" data-i18n="team.subnav.season">Temporada</a></li>
-        <li><a href="plantilla.html" data-i18n="team.subnav.squad">Plantilla</a></li>
+        <li><a href="/equipo1" data-i18n="team.subnav.season">Temporada</a></li>
+        <li><a href="/plantilla" data-i18n="team.subnav.squad">Plantilla</a></li>
       </ul>
     </li>
-    <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
-    <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+    <li><a href="/patrocinadores" data-i18n="nav.sponsors">Patrocinadores</a></li>
+    <li><a href="/contacto" data-i18n="nav.contact">Contacto</a></li>
   </ul>
   <div style="margin-top:auto;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:1.5rem;">
     <!-- Lang switcher móvil -->
@@ -174,7 +174,7 @@
           <div><label class="form-label" for="contact-subject" data-i18n="contact.form.subject">Asunto</label><input type="text" id="contact-subject" name="subject" class="form-input" autocomplete="off" maxlength="300" required aria-required="true" data-i18n-placeholder="contact.form.subjectPlaceholder" placeholder="¿De qué se trata?"></div>
           <div><label class="form-label" for="contact-message" data-i18n="contact.form.message">Mensaje</label><textarea id="contact-message" name="message" rows="5" maxlength="5000" required aria-required="true" class="form-input" style="resize:vertical;" data-i18n-placeholder="contact.form.messagePlaceholder" placeholder="Escribe tu mensaje aquí..."></textarea></div>
           <p class="form-legal-note" data-i18n="contact.form.info">Responsable: Tolosa CF. Finalidad: atender tu consulta. Base jurídica: tu consentimiento. Destinatarios: no se ceden datos a terceros, salvo obligación legal; el envío se realiza a través de nuestros proveedores Firebase (Google) y EmailJS. Derechos: acceso, rectificación, supresión, oposición, limitación y portabilidad, escribiendo a eskubaloia.tolosacf@gmail.com.</p>
-          <label class="form-consent"><input type="checkbox" id="contact-consent" name="consent" required aria-required="true"><span><span data-i18n="contact.consent.before">He leído y acepto la</span> <a href="privacidad.html" target="_blank" rel="noopener" data-i18n="contact.consent.link">Política de Privacidad</a><span data-i18n="contact.consent.after">.</span></span></label>
+          <label class="form-consent"><input type="checkbox" id="contact-consent" name="consent" required aria-required="true"><span><span data-i18n="contact.consent.before">He leído y acepto la</span> <a href="/privacidad" target="_blank" rel="noopener" data-i18n="contact.consent.link">Política de Privacidad</a><span data-i18n="contact.consent.after">.</span></span></label>
           <div style="position:absolute;left:-9999px;" aria-hidden="true"><label for="contact-hp">Dejar en blanco</label><input type="text" id="contact-hp" name="hp_field_do_not_fill" tabindex="-1" autocomplete="off"></div>
           <button type="submit" id="contact-submit" class="btn btn-primary btn-full" data-i18n="contact.form.send"><i data-feather="send" style="width:15px;height:15px;"></i> Enviar mensaje</button>
           <div id="contact-feedback" style="display:none;margin-top:1rem;padding:.75rem;border-radius:8px;font-size:.85rem;text-align:center;"></div>
@@ -201,18 +201,18 @@
         <h2 class="footer-heading" data-i18n="footer.sections">Secciones</h2>
         <ul class="footer-links">
           <li><a href="/" data-i18n="nav.home">Inicio</a></li>
-          <li><a href="noticias.html" data-i18n="nav.news">Noticias</a></li>
-          <li><a href="club.html" data-i18n="nav.club">El Club</a></li>
-          <li><a href="equipo1.html" data-i18n="nav.team">1. Equipo</a></li>
-          <li><a href="patrocinadores.html" data-i18n="nav.sponsors">Patrocinadores</a></li>
+          <li><a href="/noticias" data-i18n="nav.news">Noticias</a></li>
+          <li><a href="/club" data-i18n="nav.club">El Club</a></li>
+          <li><a href="/equipo1" data-i18n="nav.team">1. Equipo</a></li>
+          <li><a href="/patrocinadores" data-i18n="nav.sponsors">Patrocinadores</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h2 class="footer-heading" data-i18n="footer.club">El Club</h2>
         <ul class="footer-links">
-          <li><a href="equipo1.html" data-i18n="footer.firstTeam">Primer equipo</a></li>
-          <li><a href="patrocinadores.html" data-i18n="footer.collaborate">Colabora</a></li>
-          <li><a href="contacto.html" data-i18n="nav.contact">Contacto</a></li>
+          <li><a href="/equipo1" data-i18n="footer.firstTeam">Primer equipo</a></li>
+          <li><a href="/patrocinadores" data-i18n="footer.collaborate">Colabora</a></li>
+          <li><a href="/contacto" data-i18n="nav.contact">Contacto</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -223,7 +223,7 @@
     </div>
     <div class="footer-bottom">
       <p class="footer-copy" data-i18n="footer.copy">&copy; 2026 Tolosa CF Eskubaloia.</p>
-      <nav class="footer-legal" aria-label="Información legal" data-i18n-aria="a11y.legalNav"><a href="privacidad.html" data-i18n="footer.privacy">Privacidad</a><a href="cookies.html" data-i18n="footer.cookies">Cookies</a><a href="terminos.html" data-i18n="footer.terms">Términos</a></nav>
+      <nav class="footer-legal" aria-label="Información legal" data-i18n-aria="a11y.legalNav"><a href="/privacidad" data-i18n="footer.privacy">Privacidad</a><a href="/cookies" data-i18n="footer.cookies">Cookies</a><a href="/terminos" data-i18n="footer.terms">Términos</a></nav>
     </div>
   </div>
 </footer>
