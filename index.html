@@ -126,12 +126,11 @@
   .btn-ghost{background:rgba(255,255,255,0.08);color:white;border-color:rgba(255,255,255,0.25);}.btn-ghost:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.12);}
   html:not(.dark) .btn-ghost{color:var(--navy);border-color:rgba(4,16,31,0.25);background:rgba(4,16,31,0.04);}html:not(.dark) .btn-ghost:hover{border-color:var(--navy);}
   .hero-scroll{position:absolute;bottom:1.75rem;right:2rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;z-index:10;opacity:0;animation:fadeUp .6s 1.2s var(--ease-out) forwards;}
-  @media(min-width:820px){.hero-scroll{right:auto;left:50%;translate:-50% 0;bottom:1rem;}}
-  .hero-scroll span{font-family:var(--font-display);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,0.35);writing-mode:vertical-rl;}
-  html:not(.dark) .hero-scroll span{color:rgba(4,16,31,0.6);}
-  .hero-scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,rgba(255,255,255,0.4),transparent);position:relative;overflow:hidden;}
-  .hero-scroll-line::after{content:'';position:absolute;left:0;top:-14px;width:1px;height:14px;background:var(--accent-bright);animation:scrollCue 2.2s var(--ease-in-out,cubic-bezier(.65,0,.35,1)) 2s infinite;}
-  @keyframes scrollCue{0%{transform:translateY(0);opacity:0;}15%{opacity:1;}70%{opacity:1;}100%{transform:translateY(64px);opacity:0;}}
+  @media(min-width:820px){.hero-scroll{right:auto;left:50%;translate:-50% 0;bottom:1rem;}.hero-content{padding-bottom:8rem;}}
+  .hero-scroll-line{width:2px;height:80px;border-radius:2px;background:linear-gradient(to bottom,rgba(255,255,255,0.5),transparent);position:relative;overflow:hidden;}
+  html:not(.dark) .hero-scroll-line{background:linear-gradient(to bottom,rgba(4,16,31,0.35),transparent);}
+  .hero-scroll-line::after{content:'';position:absolute;left:0;top:-24px;width:2px;height:24px;border-radius:2px;background:var(--accent-bright);animation:scrollCue 2.2s var(--ease-in-out,cubic-bezier(.65,0,.35,1)) 2s infinite;}
+  @keyframes scrollCue{0%{transform:translateY(0);opacity:0;}15%{opacity:1;}70%{opacity:1;}100%{transform:translateY(104px);opacity:0;}}
   /* ── MATCH CENTER ── */
   .match-center-container { position: relative; margin-top: -80px; z-index: 10; padding: 0 2rem; max-width: 1400px; margin-left: auto; margin-right: auto; margin-bottom: 3rem; }
   .match-center-card { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); background: rgba(18, 85, 201, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 24px 60px rgba(0,0,0,0.15); overflow: hidden; }
@@ -476,7 +475,7 @@
       </div>
     </div>
   </div>
-  <div class="hero-scroll"><div class="hero-scroll-line"></div><span data-i18n="hero.scroll">Desliza</span></div>
+  <div class="hero-scroll" aria-hidden="true"><div class="hero-scroll-line"></div></div>
 </section>
 
 <!-- MATCH CENTER BOTTOM -->
