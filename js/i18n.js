@@ -55,7 +55,7 @@ window.TRANSLATIONS = {
     'hero.word1':        'Ongi',
     'hero.word2':        'etorri',
     'hero.word3':        'familia',
-    'hero.word4':        'urdiña!',
+    'hero.word4':        'urdinera!',
     'hero.sub':          'Sigue toda la actualidad del Tolosa CF Eskubaloia. Resultados, noticias y toda la información del balonmano Tolosarra.',
     'hero.cta.news':     'Últimas noticias',
     'hero.cta.club':     'Conoce el club',
@@ -285,20 +285,20 @@ window.TRANSLATIONS = {
     'hero.word1':        'Ongi',
     'hero.word2':        'etorri',
     'hero.word3':        'familia',
-    'hero.word4':        'urdiña!',
-    'hero.sub':          'Jarraitu Tolosa CF Eskubaloiaren albiste guztiak. Emaitzak, berriak eta eskubaloi tolosarraren informazio guztia.',
+    'hero.word4':        'urdinera!',
+    'hero.sub':          'Hemen Tolosa CF Eskubaloiko informazio guztia topatuko duzu. Ezagutu gure taldeak, taldekideak, emaitzak eta azken berriak.',
     'hero.cta.news':     'Azken berriak',
     'hero.cta.club':     'Ezagutu kluba',
 
     // Fixture banner
     'fixture.label':     'Hurrengo partida',
     'fixture.vs':        'Tolosa CF vs',
-    'fixture.cta':       'Ikusi taldea',
+    'fixture.cta':       'Ikusi sailkapena',
 
     // Secciones index
     'section.news.eyebrow':  'Albisteak',
     'section.news.title':    'Azken\nBerriak',
-    'section.news.cta':      'Ikusi denak',
+    'section.news.cta':      'Denak',
 
     // Stats
     'stats.years':       'Urteko historia',
@@ -322,7 +322,7 @@ window.TRANSLATIONS = {
     'footer.contact':    'Kontaktua',
     'footer.history':    'Historia',
     'footer.firstTeam':  'Lehen taldea',
-    'footer.collaborate':'Lagundu',
+    'footer.collaborate':'Babesleak',
     'footer.legal':      'Lege oharra',
     'footer.privacy':    'Pribatutasuna',
     'footer.cookies':    'Cookieak',
@@ -404,7 +404,7 @@ window.TRANSLATIONS = {
 
     // Contacto page
     'contact.page.title': 'Jar zaitez gurekin harremanetan',
-    'contact.page.subtitle': 'Galderarik baduzu edo bat egin nahi baduzu, hemen gaude zuretzat.',
+    'contact.page.subtitle': 'Galderaren bat egin edo gurera batu nahi baduzu, bete hurrengo formularioa konpromisorik gabe.',
     'contact.eyebrow':   'Aurki gaitzazu',
     'contact.title':     'Hitz egin dezagun',
     'contact.loc.label': 'Kokapena',
