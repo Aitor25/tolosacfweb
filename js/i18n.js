@@ -35,7 +35,7 @@ window.TRANSLATIONS = {
     'hero.scroll':       'Desliza',
 
     // Títulos de pestaña
-    'title.home': 'Tolosa CF Eskubaloia | Club de balonmano de Tolosa',
+    'title.home': 'Tolosa CF Eskubaloia',
     'title.news': 'Noticias | Tolosa CF Eskubaloia',
     'title.club': 'El Club | Tolosa CF Eskubaloia',
     'title.team': 'Temporada | Tolosa CF Eskubaloia',
@@ -265,7 +265,7 @@ window.TRANSLATIONS = {
     'hero.scroll':       'Korritu',
 
     // Títulos de pestaña
-    'title.home': 'Tolosa CF Eskubaloia | Tolosako eskubaloi kluba',
+    'title.home': 'Tolosa CF Eskubaloia',
     'title.news': 'Berriak | Tolosa CF Eskubaloia',
     'title.club': 'Kluba | Tolosa CF Eskubaloia',
     'title.team': 'Denboraldia | Tolosa CF Eskubaloia',
