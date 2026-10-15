@@ -216,13 +216,34 @@ function loadData(){
   });
 }
 
+const TAB_NAMES=['standings','calendar','results'];
+
+function tabFromHash(){
+  const h=location.hash.replace('#','');
+  return TAB_NAMES.includes(h)?h:null;
+}
+
+function markActiveTab(){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===activeTab));
+}
+
 function switchTab(tab){
+  if(!TAB_NAMES.includes(tab))tab='standings';
   activeTab=tab;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  const btn = event.target.closest('.tab-btn');
-  if (btn) btn.classList.add('active');
+  markActiveTab();
+  if(history.replaceState)history.replaceState(null,'','#'+tab);
   renderActiveTab();
 }
+
+// Enlaces directos a una pestaña (p. ej. desde el pie de página): /equipo1#calendar
+window.addEventListener('hashchange',()=>{
+  const t=tabFromHash();
+  if(t){
+    if(t!==activeTab)switchTab(t);
+    const content=document.getElementById('tab-content');
+    if(content){content.style.scrollMarginTop='140px';content.scrollIntoView({behavior:'smooth',block:'start'});}
+  }
+});
 
 function renderActiveTab(){
   if(!currentData)return;
@@ -458,5 +479,7 @@ function renderCalendar(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
+  activeTab=tabFromHash()||'standings';
+  markActiveTab();
   loadData();
 });
