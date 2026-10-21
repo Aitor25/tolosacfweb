@@ -43,9 +43,11 @@ function cropWhitespace(file) {
         }
       }
       if (!hasContent) { resolve(file); return; }
-      const pad = 10;
-      minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
-      maxX = Math.min(canvas.width, maxX + pad); maxY = Math.min(canvas.height, maxY + pad);
+      // Margen proporcional por eje (un logo muy alargado no debe quedar con mucho aire arriba/abajo)
+      const padX = Math.max(4, Math.round((maxX - minX) * 0.03));
+      const padY = Math.max(4, Math.round((maxY - minY) * 0.03));
+      minX = Math.max(0, minX - padX); minY = Math.max(0, minY - padY);
+      maxX = Math.min(canvas.width, maxX + padX); maxY = Math.min(canvas.height, maxY + padY);
       const cw = maxX - minX, ch = maxY - minY;
       const cCanvas = document.createElement('canvas');
       cCanvas.width = cw; cCanvas.height = ch;
