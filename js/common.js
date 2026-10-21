@@ -383,6 +383,17 @@ function safeURL(urlStr, type = 'link') {
   }
 }
 
+// Orden manual de patrocinadores (campo "order" que fija el admin). Los que aún no
+// tienen orden van al final, en el orden en que ya llegaban.
+function sortSponsorDocs(docs) {
+  const ord = d => { const o = d.data().order; return Number.isFinite(o) ? o : Infinity; };
+  return docs.slice().sort((a, b) => {
+    const oa = ord(a), ob = ord(b);
+    return oa === ob ? 0 : (oa < ob ? -1 : 1);
+  });
+}
+window.sortSponsorDocs = sortSponsorDocs;
+
 // ── PARTNERS MARQUEE (home) ──
 // Rellena el carrusel de patrocinadores del inicio con los datos reales de
 // Firestore (misma colección 'sponsors' que patrocinadores.html). Si no hay
@@ -396,7 +407,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (snap.empty) return;
 
     const items = [];
-    snap.docs.forEach(doc => {
+    sortSponsorDocs(snap.docs).forEach(doc => {
       const s = doc.data();
       const logo = safeURL(s.logo || s.imagen, 'image');
       if (!logo) return; // sin logo no hay nada que mostrar en el carrusel

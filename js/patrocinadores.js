@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const grid = document.getElementById('sponsors-grid');
         
         grid.innerHTML = '';
-        snap.docs.forEach((doc, i) => {
+        const docs = typeof sortSponsorDocs === 'function' ? sortSponsorDocs(snap.docs) : snap.docs;
+        docs.forEach((doc, i) => {
           const s = doc.data();
           const href = safeURL(s.link || s.enlace, 'link');
           const logo = safeURL(s.logo || s.imagen, 'image');

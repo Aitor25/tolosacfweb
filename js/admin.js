@@ -1601,51 +1601,104 @@ async function saveSponsor(){
     const data={name,logo:logoUrl,url:document.getElementById('sponsor-url').value,category:document.getElementById('sponsor-category').value};
     const editId=document.getElementById('sponsor-edit-id').value;
     if(editId) await db.collection('sponsors').doc(editId).update(data);
-    else await db.collection('sponsors').add(data);
+    else {
+      // Un patrocinador nuevo va al final; luego se puede arrastrar a su sitio.
+      const count = window._sponsorList ? window._sponsorList.length : (await db.collection('sponsors').get()).size;
+      await db.collection('sponsors').add({...data, order: count});
+    }
     toast(editId?'Patrocinador actualizado':'Patrocinador guardado','success');
     clearSponsorForm();loadSponsors();loadDashboardStats();
   } catch(e) {
     toast('Error: '+e.message,'error');
   }
 }
+// Orden de los patrocinadores: campo "order" (0, 1, 2…). Se cambia arrastrando la tarjeta
+// o con las flechas; la web pública (página y carrusel de la portada) lo respeta.
+async function persistSponsorOrder(){
+  const list=window._sponsorList||[];
+  const batch=db.batch(); let changed=0;
+  list.forEach((s,i)=>{
+    if(s.data.order!==i){ batch.update(db.collection('sponsors').doc(s.id),{order:i}); s.data.order=i; changed++; }
+  });
+  if(changed) await batch.commit();
+  return changed;
+}
+async function moveSponsor(from,to){
+  const list=window._sponsorList||[];
+  if(from===to||from<0||to<0||from>=list.length||to>=list.length) return;
+  const [moved]=list.splice(from,1);
+  list.splice(to,0,moved);
+  renderSponsors();
+  try{
+    await persistSponsorOrder();
+    toast('Orden guardado','success');
+  }catch(e){
+    toast('No se pudo guardar el orden: '+e.message,'error');
+    loadSponsors();
+  }
+}
+function renderSponsors(){
+  const grid=document.getElementById('sponsors-grid');
+  const list=window._sponsorList||[];
+  grid.innerHTML='';
+  list.forEach((item,idx)=>{
+    const s=item.data;
+    const div=document.createElement('div');
+    div.draggable=true;
+    div.style.cssText="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1rem;text-align:center;cursor:grab;transition:opacity .15s,border-color .15s;";
+    div.title='Arrastra para cambiar el orden';
+
+    div.addEventListener('dragstart',e=>{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',String(idx)); div.style.opacity='.4'; });
+    div.addEventListener('dragend',()=>{ div.style.opacity=''; });
+    div.addEventListener('dragover',e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; div.style.borderColor='var(--accent-bright)'; });
+    div.addEventListener('dragleave',()=>{ div.style.borderColor='rgba(255,255,255,0.08)'; });
+    div.addEventListener('drop',e=>{ e.preventDefault(); div.style.borderColor='rgba(255,255,255,0.08)'; moveSponsor(Number(e.dataTransfer.getData('text/plain')),idx); });
+
+    const pos=document.createElement('div'); pos.style.cssText="font-size:.65rem;color:rgba(255,255,255,0.35);text-align:left;margin-bottom:.35rem;font-weight:700;"; pos.textContent='#'+(idx+1); div.appendChild(pos);
+
+    if(s.logo) {
+      const img=document.createElement('img'); img.src=s.logo; img.draggable=false; img.style.cssText="height:40px;object-fit:contain;margin:0 auto .75rem;display:block;";
+      img.onerror=()=>img.style.display='none';
+      div.appendChild(img);
+    } else {
+      const iconHolder=document.createElement('div'); iconHolder.style.cssText="height:40px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);margin-bottom:.75rem;";
+      const icon=createIcon('image'); icon.style.cssText="width:24px;height:24px;";
+      iconHolder.appendChild(icon);
+      div.appendChild(iconHolder);
+    }
+
+    const nameDiv=document.createElement('div'); nameDiv.style.cssText="font-weight:700;font-size:.85rem;color:white;margin-bottom:.25rem;"; nameDiv.textContent=s.name; div.appendChild(nameDiv);
+    const catDiv=document.createElement('div'); catDiv.className="badge badge-blue"; catDiv.style.cssText="margin-bottom:.75rem;"; catDiv.textContent=s.category||'colaborador'; div.appendChild(catDiv);
+
+    const actionDiv=document.createElement('div'); actionDiv.style.cssText="display:flex;gap:.4rem;justify-content:center;";
+    const mkBtn=(cls,icon,title,onclick,disabled)=>{
+      const b=document.createElement('button'); b.className=cls; b.title=title; b.onclick=onclick;
+      if(disabled){ b.disabled=true; b.style.opacity='.3'; b.style.cursor='default'; }
+      const i=document.createElement('i'); i.setAttribute('data-feather',icon); b.appendChild(i); return b;
+    };
+    actionDiv.appendChild(mkBtn('btn btn-ghost btn-sm','chevron-left','Mover antes',()=>moveSponsor(idx,idx-1),idx===0));
+    actionDiv.appendChild(mkBtn('btn btn-ghost btn-sm','edit-2','Editar',()=>editSponsor(item.id),false));
+    actionDiv.appendChild(mkBtn('btn btn-danger btn-sm','trash-2','Eliminar',()=>deleteSponsor(item.id),false));
+    actionDiv.appendChild(mkBtn('btn btn-ghost btn-sm','chevron-right','Mover después',()=>moveSponsor(idx,idx+1),idx===list.length-1));
+    div.appendChild(actionDiv);
+    grid.appendChild(div);
+  });
+  feather.replace();
+}
 async function loadSponsors(){
   const grid=document.getElementById('sponsors-grid');
   grid.innerHTML='<div style="text-align:center;padding:2rem;"><div class="spinner" style="margin:0 auto;"></div></div>';
   try{
     const snap=await db.collection('sponsors').get();
-    if(snap.empty){grid.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-size:.82rem;grid-column:1/-1;">Sin patrocinadores registrados</div>';return;}
-    
-    grid.innerHTML = '';
-    snap.docs.forEach(doc => {
-      const s = doc.data();
-      const div = document.createElement('div');
-      div.style.cssText = "background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:1rem;text-align:center;";
-      
-      if(s.logo) {
-          const img = document.createElement('img'); img.src = s.logo; img.style.cssText = "height:40px;object-fit:contain;margin:0 auto .75rem;display:block;";
-          img.onerror = () => img.style.display = 'none';
-          div.appendChild(img);
-      } else {
-          const iconHolder = document.createElement('div'); iconHolder.style.cssText = "height:40px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.2);margin-bottom:.75rem;";
-          const icon = createIcon('image'); icon.style.cssText = "width:24px;height:24px;";
-          iconHolder.appendChild(icon);
-          div.appendChild(iconHolder);
-      }
-      
-      const nameDiv = document.createElement('div'); nameDiv.style.cssText = "font-weight:700;font-size:.85rem;color:white;margin-bottom:.25rem;"; nameDiv.textContent = s.name; div.appendChild(nameDiv);
-      const catDiv = document.createElement('div'); catDiv.className = "badge badge-blue"; catDiv.style.cssText = "margin-bottom:.75rem;"; catDiv.textContent = s.category || 'colaborador'; div.appendChild(catDiv);
-      
-      const actionDiv = document.createElement('div'); actionDiv.style.cssText = "display:flex;gap:.5rem;justify-content:center;";
-      const btnEdit = document.createElement('button'); btnEdit.className = "btn btn-ghost btn-sm"; btnEdit.onclick = () => editSponsor(doc.id);
-      const iconEdit = document.createElement('i'); iconEdit.setAttribute('data-feather', 'edit-2'); btnEdit.appendChild(iconEdit);
-      const btnDelete = document.createElement('button'); btnDelete.className = "btn btn-danger btn-sm"; btnDelete.onclick = () => deleteSponsor(doc.id);
-      const iconDelete = document.createElement('i'); iconDelete.setAttribute('data-feather', 'trash-2'); btnDelete.appendChild(iconDelete);
-      
-      actionDiv.appendChild(btnEdit); actionDiv.appendChild(btnDelete); div.appendChild(actionDiv);
-      grid.appendChild(div);
-    });
-
-    feather.replace();
+    if(snap.empty){window._sponsorList=[];grid.innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-size:.82rem;grid-column:1/-1;">Sin patrocinadores registrados</div>';return;}
+    const list=snap.docs.map(d=>({id:d.id,data:d.data()}));
+    // Con "order" primero y por ese orden; los que aún no lo tienen, al final y en el orden en que ya se veían.
+    const ord=s=>Number.isFinite(s.data.order)?s.data.order:Infinity;
+    list.sort((a,b)=>{const oa=ord(a),ob=ord(b); return oa===ob?0:(oa<ob?-1:1);});
+    window._sponsorList=list;
+    renderSponsors();
+    // Deja numerados 0..n-1 los que no lo estaban (la primera vez que se abre esta sección)
+    persistSponsorOrder().catch(e=>console.warn('[admin] No se pudo numerar los patrocinadores:',e.message));
   }catch(e){grid.innerHTML=`<div style="color:#f87171;font-size:.8rem;padding:1rem;grid-column:1/-1;">Error: ${e.message}</div>`;}
 }
 async function editSponsor(id){
