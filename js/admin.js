@@ -17,10 +17,22 @@ function cropWhitespace(file) {
       const data = imgData.data;
       let minX = canvas.width, minY = canvas.height, maxX = 0, maxY = 0;
       let hasContent = false;
+      // Fondo: si la imagen tiene transparencia se recorta solo por transparencia (así un
+      // logo con letras blancas sobre fondo transparente no pierde esas letras). Si es
+      // opaca (JPG, PNG con fondo), el fondo es el color de las esquinas, normalmente blanco.
+      let transparentPx = 0;
+      for (let i = 3; i < data.length; i += 4) { if (data[i] < 10) transparentPx++; }
+      const hasAlpha = transparentPx > (data.length / 4) * 0.02;
+      const corners = [0, (canvas.width - 1) * 4, (canvas.height - 1) * canvas.width * 4, (canvas.height * canvas.width - 1) * 4];
+      const bgR = Math.round(corners.reduce((s, c) => s + data[c], 0) / 4);
+      const bgG = Math.round(corners.reduce((s, c) => s + data[c+1], 0) / 4);
+      const bgB = Math.round(corners.reduce((s, c) => s + data[c+2], 0) / 4);
       for (let y = 0; y < canvas.height; y++) {
         for (let x = 0; x < canvas.width; x++) {
           const i = (y * canvas.width + x) * 4;
-          const isBg = data[i+3] < 10 || (data[i]>250 && data[i+1]>250 && data[i+2]>250 && data[i+3]>250);
+          const isBg = hasAlpha
+            ? data[i+3] < 10
+            : (Math.abs(data[i]-bgR) + Math.abs(data[i+1]-bgG) + Math.abs(data[i+2]-bgB)) < 45;
           if (!isBg) {
             hasContent = true;
             if (x < minX) minX = x;
