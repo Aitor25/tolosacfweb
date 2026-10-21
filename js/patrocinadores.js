@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const docs = typeof sortSponsorDocs === 'function' ? sortSponsorDocs(snap.docs) : snap.docs;
         docs.forEach((doc, i) => {
           const s = doc.data();
-          const href = safeURL(s.link || s.enlace, 'link');
+          const href = typeof sponsorLink === 'function' ? sponsorLink(s) : safeURL(s.url || s.link || s.enlace, 'link');
           const logo = safeURL(s.logo || s.imagen, 'image');
           const delay = i * 50;
           

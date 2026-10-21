@@ -394,6 +394,15 @@ function sortSponsorDocs(docs) {
 }
 window.sortSponsorDocs = sortSponsorDocs;
 
+// Enlace web de un patrocinador. El panel lo guarda en "url" (antes se leía "link"/"enlace",
+// por eso nunca funcionaba). Si se escribió sin https:// se completa.
+function sponsorLink(s) {
+  const raw = String((s && (s.url || s.link || s.enlace)) || '').trim();
+  if (!raw) return '';
+  return safeURL(/^[a-z][a-z0-9+.-]*:/i.test(raw) ? raw : 'https://' + raw, 'link');
+}
+window.sponsorLink = sponsorLink;
+
 // ── PARTNERS MARQUEE (home) ──
 // Rellena el carrusel de patrocinadores del inicio con los datos reales de
 // Firestore (misma colección 'sponsors' que patrocinadores.html). Si no hay
@@ -413,7 +422,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (!logo) return; // sin logo no hay nada que mostrar en el carrusel
       items.push({
         name: s.name || s.nombre || 'Patrocinador',
-        href: safeURL(s.link || s.enlace, 'link'),
+        href: sponsorLink(s),
         logo
       });
     });

@@ -1598,7 +1598,9 @@ async function saveSponsor(){
     const uploadedUrl = await uploadImageToStorage('sponsor-logo-file', 'sponsor-upload-progress', 'sponsors');
     if (uploadedUrl) logoUrl = uploadedUrl;
     
-    const data={name,logo:logoUrl,url:document.getElementById('sponsor-url').value,category:document.getElementById('sponsor-category').value};
+    let webUrl=(document.getElementById('sponsor-url').value||'').trim();
+    if(webUrl && !/^[a-z][a-z0-9+.-]*:/i.test(webUrl)) webUrl='https://'+webUrl; // www.empresa.com -> https://www.empresa.com
+    const data={name,logo:logoUrl,url:webUrl,category:document.getElementById('sponsor-category').value};
     const editId=document.getElementById('sponsor-edit-id').value;
     if(editId) await db.collection('sponsors').doc(editId).update(data);
     else {
