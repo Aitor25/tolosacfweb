@@ -326,9 +326,93 @@ const AdminLogic={
     }));
   },
 
-  parseJourneyText(text,journeyNumber=1){
+  // ── Formato "tabla" (nov-2026) ──
+  // Cabecera "Equipos / Marcador / Fecha / Lugar" y, por partido:
+  //   iniciales / Equipo local / iniciales / Equipo visitante /
+  //   "35 - 24 ⇥ domingo, 22 de noviembre · 12:15 ⇥ [Sede](enlace de Google Maps)"
+  // La fecha viene en texto y SIN año, así que el año se deduce de la temporada
+  // (ago-dic = primer año, ene-jul = segundo) y, si trae el día de la semana,
+  // se comprueba que coincida. Las iniciales (1-3 mayúsculas) se descartan.
+  _MONTHS_ES:{enero:1,febrero:2,marzo:3,abril:4,mayo:5,junio:6,julio:7,agosto:8,septiembre:9,setiembre:9,octubre:10,noviembre:11,diciembre:12},
+  _WEEKDAYS_ES:{domingo:0,lunes:1,martes:2,miercoles:3,jueves:4,viernes:5,sabado:6},
+
+  _matchDateText(line){
+    const plain=String(line).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+    const m=plain.match(/(?:\b(domingo|lunes|martes|miercoles|jueves|viernes|sabado)\b[,\s]*)?\b(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\b(?:\s+de\s+(\d{4}))?/);
+    if(!m) return null;
+    return {weekday:m[1]?this._WEEKDAYS_ES[m[1]]:null, day:parseInt(m[2],10), month:this._MONTHS_ES[m[3]], year:m[4]?parseInt(m[4],10):null};
+  },
+
+  _inferYear(d,season){
+    if(d.year) return d.year;
+    const sm=String(season||'').match(/(\d{4})/);
+    const base=sm ? (d.month>=8 ? parseInt(sm[1],10) : parseInt(sm[1],10)+1) : new Date().getFullYear();
+    if(d.weekday===null) return base;
+    for(const y of [base,base+1,base-1]){
+      const dt=new Date(y,d.month-1,d.day);
+      if(dt.getMonth()===d.month-1 && dt.getDay()===d.weekday) return y;
+    }
+    return base;
+  },
+
+  _isTableResultsFormat(lines){
+    return lines.some(l=>this._matchDateText(l) && (/\t/.test(l) || /\]\(/.test(l) || /^\d+\s*[-–]\s*\d+/.test(l)));
+  },
+
+  _parseTableResults(lines, journeyNumber, opts){
+    const j=parseInt(journeyNumber,10)||1;
+    const season=opts && opts.season;
+    const INITIALS=/^[A-ZÁÉÍÓÚÑÜ]{1,3}$/;
+    const SCORE_ONLY=/^\d+\s*[-–]\s*\d+$/;
+    const HEADER=/^equipos?\b.*\bmarcador\b/i;
+    const pad=n=>String(n).padStart(2,'0');
+    const rows=[]; let pending=[];
+
+    for(const line of lines){
+      const dt=this._matchDateText(line);
+      const link=line.match(/\[([^\]]*)\]\([^)]*\)/);
+      if(!dt && !link){ pending.push(line); continue; }
+
+      const names=pending.filter(l=>!INITIALS.test(l) && !SCORE_ONLY.test(l) && !HEADER.test(l));
+      const prevScore=pending.slice().reverse().find(l=>SCORE_ONLY.test(l));
+      pending=[];
+      if(names.length<2) continue; // fila incompleta: sin los dos equipos no se puede guardar
+      const home=names[names.length-2], away=names[names.length-1];
+
+      const rest=line.replace(/\[[^\]]*\]\([^)]*\)/g,' ');
+      let venue=link?link[1].trim():'';
+      if(!venue){ const cols=line.split(/\t+/).map(s=>s.trim()); if(cols.length>=3) venue=cols[2]; }
+
+      const sm=rest.match(/^\s*(\d+)\s*[-–]\s*(\d+)/) || (prevScore && prevScore.match(/^(\d+)\s*[-–]\s*(\d+)$/));
+      let score='vs', status='Programado';
+      if(sm){
+        const a=parseInt(sm[1],10), b=parseInt(sm[2],10);
+        if(!(a===0 && b===0)){ score=`${a}-${b}`; status='Finalizado'; } // "0 - 0" = no jugado
+      }
+
+      const tm=rest.match(/(\d{1,2}):(\d{2})/);
+      let time='Pendiente';
+      if(tm){ const h=parseInt(tm[1],10), mi=parseInt(tm[2],10); if(!(h===0 && mi===0)) time=`${pad(h)}:${pad(mi)}`; }
+
+      let date=null, ts=null;
+      if(dt){ const y=this._inferYear(dt,season); date=`${pad(dt.day)}/${pad(dt.month)}/${y}`; ts=new Date(y,dt.month-1,dt.day); }
+      rows.push({journey:j, date, ts, time, venue:venue||'Pabellon', home:home.trim(), away:away.trim(), score, status});
+    }
+
+    // Partidos sin fecha: domingo de la semana de la primera fecha conocida (como en los otros formatos)
+    const first=rows.find(r=>r.ts);
+    let fallback=null;
+    if(first){
+      const dt=new Date(first.ts); dt.setDate(dt.getDate()+((7-dt.getDay())%7));
+      fallback=`${pad(dt.getDate())}/${pad(dt.getMonth()+1)}/${dt.getFullYear()}`;
+    }
+    return rows.filter(r=>r.date||fallback).map(r=>({journey:r.journey, date:r.date||fallback, time:r.time, venue:r.venue, home:r.home, away:r.away, score:r.score, status:r.status}));
+  },
+
+  parseJourneyText(text,journeyNumber=1,opts={}){
     const lines=text.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
     if(this._isVsBlockFormat(lines)) return this._parseVsBlockText(lines, journeyNumber);
+    if(this._isTableResultsFormat(lines)) return this._parseTableResults(lines, journeyNumber, opts);
     const matches=[];let currentJourney=journeyNumber,currentDate='',currentTime='',currentVenue='';
     for(let i=0;i<lines.length;i++){
       const line=lines[i];
@@ -1246,7 +1330,7 @@ function processInput(){
   if(!text.trim())return;
   if(!currentDBData){toast('Carga primero los datos de la categoría','error');return;}
   if(compMode==='journey'){
-    const newMatches=AdminLogic.parseJourneyText(text,journeyNum);
+    const newMatches=AdminLogic.parseJourneyText(text,journeyNum,{season:currentDBData&&currentDBData.season});
     if(!newMatches.length){toast('No se detectaron partidos','error');return;}
     const hist=(currentDBData.results||[]).filter(m=>Number(m.journey||1)!==journeyNum);
     const allResults=AdminLogic.mergeResults(hist,newMatches);
